@@ -13,6 +13,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Lexend"', '"Inter"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       fontSize: {
@@ -20,11 +21,12 @@ export default {
         'sm':  ['0.8125rem', { lineHeight: '1.25rem' }],
         'base': ['0.875rem', { lineHeight: '1.5rem' }],
         'lg':  ['1rem',     { lineHeight: '1.5rem' }],
-        'xl':  ['1.125rem', { lineHeight: '1.75rem' }],
-        '2xl': ['1.375rem', { lineHeight: '1.75rem', letterSpacing: '-0.01em' }],
-        '3xl': ['1.75rem',  { lineHeight: '2.25rem', letterSpacing: '-0.02em' }],
-        '4xl': ['2.25rem',  { lineHeight: '2.5rem',  letterSpacing: '-0.02em' }],
-        '5xl': ['3rem',     { lineHeight: '3.25rem', letterSpacing: '-0.03em' }],
+        'xl':  ['1.25rem',  { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem',   { lineHeight: '2rem', letterSpacing: '-0.02em' }],
+        '3xl': ['2rem',     { lineHeight: '2.25rem', letterSpacing: '-0.02em' }],
+        '4xl': ['2.75rem',  { lineHeight: '3rem',  letterSpacing: '-0.03em' }],
+        '5xl': ['3.5rem',   { lineHeight: '3.75rem', letterSpacing: '-0.03em' }],
+        '6xl': ['4.25rem',  { lineHeight: '4.25rem', letterSpacing: '-0.04em' }],
       },
       colors: {
         border: "hsl(var(--border))",
