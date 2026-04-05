@@ -1,0 +1,1 @@
+ALTER TABLE public.startups ALTER COLUMN blockchain SET DEFAULT 'Sepolia';

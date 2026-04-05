@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=DM+Mono:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Light mode — Ice / Electric Blue */
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 215 28% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 28% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 28% 17%;
+    --primary: 217 91% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 214 100% 97%;
+    --secondary-foreground: 215 28% 17%;
+    --muted: 210 22% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 189 94% 37%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 36 78% 41%;
+    --warning-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 91% 52%;
+    --radius: 0.75rem;
+    --surface: 210 17% 95%;
+    --electric: 217 91% 60%;
+
+    --sidebar-background: 210 20% 98%;
+    --sidebar-foreground: 215 28% 17%;
+    --sidebar-primary: 217 91% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 100% 97%;
+    --sidebar-accent-foreground: 215 28% 17%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  /* Dark mode — Deep Navy / Electric Blue / Cyan */
+  .dark {
+    --background: 216 72% 11%;
+    --foreground: 214 32% 91%;
+    --card: 215 28% 17%;
+    --card-foreground: 214 32% 91%;
+    --popover: 216 72% 13%;
+    --popover-foreground: 214 32% 91%;
+    --primary: 217 91% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 39% 17%;
+    --secondary-foreground: 214 32% 91%;
+    --muted: 215 39% 17%;
+    --muted-foreground: 215 17% 53%;
+    --accent: 189 94% 43%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 36 78% 50%;
+    --warning-foreground: 0 0% 100%;
+    --border: 215 24% 27%;
+    --input: 215 24% 27%;
+    --ring: 217 91% 53%;
+    --surface: 222 100% 4%;
+    --electric: 217 91% 60%;
+
+    --sidebar-background: 222 100% 4%;
+    --sidebar-foreground: 214 32% 91%;
+    --sidebar-primary: 217 91% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 39% 17%;
+    --sidebar-accent-foreground: 214 32% 91%;
+    --sidebar-border: 215 24% 27%;
+    --sidebar-ring: 217 91% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    font-size: 130%;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-cyan-400 bg-clip-text text-transparent;
+  }
+  .glass-card {
+    @apply bg-white/[0.05] backdrop-blur-xl border border-white/10;
+  }
+  .gradient-border {
+    position: relative;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(217 91% 60% / 0.4), hsl(189 94% 43% / 0.4), hsl(217 91% 60% / 0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .glow-dot {
+    box-shadow: 0 0 6px 2px currentColor;
+  }
+  .startup-card-hover {
+    @apply transition-all duration-300;
+  }
+  .startup-card-hover:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px -5px hsl(217 91% 60% / 0.2), 0 10px 30px -10px rgba(0,0,0,0.4);
+  }
+}
+
+/* Print styles */
+@media print {
+  body { background: white !important; color: black !important; }
+  nav, footer, .print\\:hidden { display: none !important; }
+  .glass-card, .gradient-border { border: 1px solid #ddd !important; background: white !important; }
+  * { color: black !important; border-color: #ddd !important; }
+  .bg-card, .bg-muted, .bg-secondary { background: white !important; }
+  .text-primary, .text-accent { color: #2563eb !important; }
+  .text-destructive { color: #dc2626 !important; }
+  .text-muted-foreground { color: #666 !important; }
+  .font-mono { font-family: monospace !important; }
+  svg { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
