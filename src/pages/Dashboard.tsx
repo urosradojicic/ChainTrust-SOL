@@ -51,6 +51,7 @@ export default function Dashboard() {
   const [sortAsc, setSortAsc] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [search, setSearch] = useState('');
+  const [csvExported, setCsvExported] = useState(false);
 
   const filtered = useMemo(() => {
     if (!startups) return [];
@@ -160,10 +161,19 @@ export default function Dashboard() {
               </div>
               <span className="text-xs text-muted-foreground">{filtered.length} startup{filtered.length !== 1 ? 's' : ''}</span>
               <button
-                onClick={() => exportCSV(filtered.map(s => ({ Name: s.name, Category: s.category, MRR: s.mrr, Users: s.users, Growth: s.growth_rate, Trust: s.trust_score, Verified: s.verified, Sustainability: s.sustainability_score })), 'chaintrust-startups.csv')}
-                className="ml-auto rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium text-muted-foreground transition hover:text-foreground hover:bg-secondary"
+                onClick={() => {
+                  exportCSV(filtered.map(s => ({ Name: s.name, Category: s.category, MRR: s.mrr, Users: s.users, Growth: s.growth_rate, Trust: s.trust_score, Verified: s.verified, Sustainability: s.sustainability_score })), 'chaintrust-startups.csv');
+                  setCsvExported(true);
+                  setTimeout(() => setCsvExported(false), 2000);
+                }}
+                className="ml-auto rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium text-muted-foreground transition hover:text-foreground hover:bg-secondary flex items-center gap-1.5"
               >
-                Export CSV
+                {csvExported ? (
+                  <>
+                    <svg className="h-3.5 w-3.5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    Exported!
+                  </>
+                ) : 'Export CSV'}
               </button>
             </div>
             <div className="flex flex-wrap items-center gap-3">
@@ -316,7 +326,10 @@ export default function Dashboard() {
           <div className="sticky top-24 space-y-6">
             <NetworkPulse />
             <div>
-              <h3 className="mb-4 font-bold text-foreground">Recent Activity</h3>
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="font-bold text-foreground">Recent Activity</h3>
+                <span className="rounded-full bg-muted px-2 py-0.5 text-[9px] font-medium text-muted-foreground">Simulated</span>
+              </div>
               <div className="space-y-4">
                 {ACTIVITY_FEED.map((e, i) => (
                   <motion.div key={i} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.08 }} className="flex gap-3">

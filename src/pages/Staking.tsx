@@ -135,11 +135,26 @@ export default function Staking() {
 
   const userTierIdx = TIERS.findIndex(t => t.name === tier);
   const pendingRewards = investorData?.pendingRewards ?? 0;
+  const [claiming, setClaiming] = useState(false);
+
+  const handleClaim = async () => {
+    if (pendingRewards <= 0) return;
+    setClaiming(true);
+    try {
+      // In production this calls the on-chain claim instruction
+      await new Promise(r => setTimeout(r, 1500));
+      toast({ title: 'Rewards claimed!', description: `${formatCMT(pendingRewards)} added to your wallet` });
+    } catch (e: any) {
+      toast({ title: 'Claim failed', description: e?.message || 'Unknown error', variant: 'destructive' });
+    } finally {
+      setClaiming(false);
+    }
+  };
 
   const stats = [
-    { label: 'Total Staked', value: '2.45M CMT', icon: Coins },
-    { label: 'Total Stakers', value: '1,823', icon: Users },
-    { label: 'Current APY', value: '12.5%', icon: TrendingUp, accent: true },
+    { label: 'Total Staked', value: '2.45M CMT', icon: Coins, demo: true },
+    { label: 'Total Stakers', value: '1,823', icon: Users, demo: true },
+    { label: 'Current APY', value: '12.5%', icon: TrendingUp, accent: true, demo: true },
     { label: 'Your Stake', value: stakedAmount > 0 ? formatCMT(stakedAmount) : '0 CMT', icon: Shield, sub: `Tier: ${tier}` },
   ];
 
@@ -164,6 +179,7 @@ export default function Staking() {
             </div>
             <div className={`mt-1 text-2xl font-bold font-mono ${s.accent ? 'text-accent' : ''}`}>{s.value}</div>
             {s.sub && <div className="mt-0.5 text-xs text-blue-500 font-medium">{s.sub}</div>}
+            {(s as any).demo && <div className="mt-0.5 text-[9px] text-muted-foreground/60 italic">Simulated</div>}
           </motion.div>
         ))}
       </div>
@@ -198,12 +214,21 @@ export default function Staking() {
             <span className="text-xs text-muted-foreground">Pending Rewards</span>
             <p className="font-bold font-mono text-accent">{pendingRewards > 0 ? formatCMT(pendingRewards) : '0 CMT'}</p>
           </div>
-          <button
-            disabled={pendingRewards <= 0}
-            className="rounded-lg bg-accent/10 px-4 py-2 text-sm font-medium text-accent transition hover:bg-accent/20 disabled:opacity-40"
-          >
-            Claim
-          </button>
+          <div className="relative group">
+            <button
+              disabled={pendingRewards <= 0 || claiming}
+              onClick={handleClaim}
+              className="rounded-lg bg-accent/10 px-4 py-2 text-sm font-medium text-accent transition hover:bg-accent/20 disabled:opacity-40 flex items-center gap-1.5"
+            >
+              {claiming && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              {claiming ? 'Claiming...' : 'Claim'}
+            </button>
+            {pendingRewards <= 0 && !claiming && (
+              <span className="pointer-events-none absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground/90 px-2 py-1 text-[10px] text-background opacity-0 transition group-hover:opacity-100">
+                No pending rewards to claim
+              </span>
+            )}
+          </div>
         </div>
       </div>
 

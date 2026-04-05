@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@/contexts/WalletContext';
 import { useStartups } from '@/hooks/use-startups';
-import { Navigate, Link } from 'react-router-dom';
-import { Bookmark, Bell, TrendingDown, TrendingUp, FileText, Shield, Plus, X, AlertTriangle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Bookmark, Bell, TrendingDown, TrendingUp, FileText, Shield, Plus, X, AlertTriangle, Info } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/format';
 
 const TIER_COLORS: Record<string, string> = {
@@ -44,9 +44,10 @@ export default function Portfolio() {
     localStorage.setItem('chaintrust_alerts', JSON.stringify(alerts));
   }, [alerts]);
 
-  if (!connected) return <Navigate to="/dashboard" replace />;
-
   const bookmarked = startups?.filter(s => bookmarkedStartups.includes(s.id)) ?? [];
+
+  // Allow browsing even without wallet — show connect prompt instead of redirect
+  const showConnectPrompt = !connected;
 
   const addAlert = () => {
     if (!newAlert.startupName.trim()) return;
@@ -61,7 +62,22 @@ export default function Portfolio() {
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
       <h1 className="mb-8 text-3xl font-bold text-foreground">My Portfolio</h1>
 
+      {/* Connect wallet prompt */}
+      {showConnectPrompt && (
+        <div className="mb-8 flex items-center gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-6">
+          <Shield className="h-8 w-8 text-primary flex-shrink-0" />
+          <div className="flex-1">
+            <h2 className="font-bold text-foreground">Connect your wallet to unlock full portfolio features</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Track bookmarks, set alerts, and view your staking tier. You can browse the dashboard below in the meantime.</p>
+          </div>
+          <Link to="/staking" className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90">
+            Connect & Stake
+          </Link>
+        </div>
+      )}
+
       {/* Wallet overview */}
+      {!showConnectPrompt && (
       <div className="mb-8 grid gap-4 sm:grid-cols-4">
         <div className="rounded-2xl border border-border bg-card p-6">
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Wallet</p>
@@ -86,6 +102,7 @@ export default function Portfolio() {
           <p className="mt-2 text-xs text-muted-foreground">{alerts.filter(a => a.triggered).length} alerts triggered</p>
         </div>
       </div>
+      )}
 
       {/* Bookmarked startups */}
       <section className="mb-8">

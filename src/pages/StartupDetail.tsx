@@ -26,7 +26,7 @@ import RetentionChart from '@/components/startup/RetentionChart';
 import TimeRangeSelector, { sliceByRange } from '@/components/startup/TimeRangeSelector';
 import { exportElementAsPDF } from '@/lib/export-pdf';
 import {
-  Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar,
+  Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar, Clock,
   Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Loader2, Download, FileText,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -160,18 +160,31 @@ export default function StartupDetail() {
         </div>
       )}
 
+      {/* Last Updated */}
+      {metrics.length > 0 && (
+        <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
+          <Clock className="h-3.5 w-3.5" />
+          <span>Last metrics update: {new Date(metrics[metrics.length - 1].month_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+        </div>
+      )}
+
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
         <TabsList className="w-full justify-start overflow-x-auto">
+          {/* Core */}
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="verification">Verification</TabsTrigger>
           <TabsTrigger value="financials">Financials</TabsTrigger>
+          <TabsTrigger value="valuation">Valuation</TabsTrigger>
+          {/* Sustainability & Impact */}
+          <span className="mx-1 h-4 w-px bg-border" />
           <TabsTrigger value="sustainability">Sustainability</TabsTrigger>
           <TabsTrigger value="impact-pl">Impact P&L</TabsTrigger>
-          <TabsTrigger value="valuation">Valuation</TabsTrigger>
+          <TabsTrigger value="pledges">Pledges</TabsTrigger>
+          {/* On-Chain & Trust */}
+          <span className="mx-1 h-4 w-px bg-border" />
+          <TabsTrigger value="verification">Verification</TabsTrigger>
           <TabsTrigger value="tokenomics">Tokenomics</TabsTrigger>
           <TabsTrigger value="funding">Funding</TabsTrigger>
-          <TabsTrigger value="pledges">Pledges</TabsTrigger>
           <TabsTrigger value="audit">Audit Trail</TabsTrigger>
         </TabsList>
 

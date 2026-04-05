@@ -28,9 +28,10 @@ export default function BlockchainStatus() {
         setIsDemo(!registryInfo || !vaultInfo || !daoInfo);
         setSlot(currentSlot);
         setNetworkOk(true);
-      } catch {
+      } catch (err) {
         setIsDemo(true);
         setNetworkOk(false);
+        console.warn('[BlockchainStatus] Network check failed:', err);
       }
       setChecked(true);
     };

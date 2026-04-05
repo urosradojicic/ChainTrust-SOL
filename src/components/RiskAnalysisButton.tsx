@@ -97,8 +97,11 @@ export default function RiskAnalysisButton({ startup }: Props) {
               <p className="text-sm text-muted-foreground animate-pulse">Generating on-chain risk analysis...</p>
             </div>
           ) : error ? (
-            <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-center text-sm text-destructive">
-              {error}
+            <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-center">
+              <p className="text-sm text-destructive">{error}</p>
+              <button onClick={() => { setSections(null); setError(null); run(); }} className="mt-3 rounded-lg bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition">
+                Retry Analysis
+              </button>
             </div>
           ) : sections ? (
             <div className="grid gap-3 py-2">
@@ -113,7 +116,7 @@ export default function RiskAnalysisButton({ startup }: Props) {
                   <p className="text-sm leading-relaxed text-muted-foreground">{s.content}</p>
                 </div>
               ))}
-              <p className="text-center text-[10px] text-muted-foreground">Powered by Lovable AI · Analysis is for demonstration purposes only</p>
+              <p className="text-center text-[10px] text-muted-foreground">Powered by AI · Not financial advice</p>
             </div>
           ) : null}
         </DialogContent>

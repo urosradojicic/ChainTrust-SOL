@@ -52,9 +52,9 @@ function ThemeToggle() {
 }
 
 const NOTIFICATIONS = [
-  { icon: TrendingDown, text: 'DeFiYield sustainability score dropped below 50', time: '2h ago', color: 'text-destructive' },
-  { icon: FileText, text: 'GreenChain published new monthly metrics', time: '5h ago', color: 'text-primary' },
-  { icon: Shield, text: 'PayFlow earned a verified soulbound badge', time: '1d ago', color: 'text-accent' },
+  { icon: TrendingDown, text: 'DeFiYield sustainability score dropped below 50', time: '2h ago', color: 'text-destructive', actionUrl: '/startup/defiyield' },
+  { icon: FileText, text: 'GreenChain published new monthly metrics', time: '5h ago', color: 'text-primary', actionUrl: '/startup/greenchain' },
+  { icon: Shield, text: 'PayFlow earned a verified soulbound badge', time: '1d ago', color: 'text-accent', actionUrl: '/startup/payflow' },
 ];
 
 function NotificationBell() {
@@ -93,17 +93,17 @@ function NotificationBell() {
             </div>
             <div className="max-h-64 overflow-y-auto">
               {NOTIFICATIONS.map((n, i) => (
-                <div key={i} className="flex items-start gap-3 px-4 py-3 transition hover:bg-muted/50 cursor-pointer border-b border-border/50 last:border-0">
+                <Link key={i} to={n.actionUrl} onClick={() => setOpen(false)} className="flex items-start gap-3 px-4 py-3 transition hover:bg-muted/50 cursor-pointer border-b border-border/50 last:border-0">
                   <n.icon className={`mt-0.5 h-4 w-4 shrink-0 ${n.color}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-foreground leading-snug">{n.text}</p>
                     <p className="text-[10px] text-muted-foreground mt-0.5">{n.time}</p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
             <div className="border-t border-border px-4 py-2.5 text-center">
-              <button className="text-xs text-primary hover:underline">View all notifications</button>
+              <Link to="/portfolio" onClick={() => setOpen(false)} className="text-xs text-primary hover:underline">View all alerts</Link>
             </div>
           </motion.div>
         )}
@@ -135,7 +135,7 @@ export default function Navbar() {
   // Build nav links dynamically
   const links = [
     ...NAV_LINKS.slice(0, 1),
-    ...(connected ? [{ path: '/portfolio', label: 'My Portfolio' }] : []),
+    { path: '/portfolio', label: 'Portfolio' },
     ...(role === 'startup' ? [STARTUP_NAV] : []),
     ...NAV_LINKS.slice(1),
   ];
@@ -212,6 +212,8 @@ export default function Navbar() {
             <button
               className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition hover:bg-secondary md:hidden"
               onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 {mobileOpen ? (

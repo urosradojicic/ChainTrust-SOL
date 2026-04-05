@@ -7,7 +7,9 @@ import { formatCurrency } from '@/lib/format';
 
 const PAGES = [
   { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
+  { path: '/portfolio', label: 'Portfolio', icon: Shield },
   { path: '/leaderboard', label: 'Leaderboard', icon: TrendingUp },
+  { path: '/screener', label: 'Screener', icon: Search },
   { path: '/staking', label: 'Staking', icon: Shield },
   { path: '/governance', label: 'Governance', icon: Vote },
   { path: '/compare', label: 'Compare', icon: Building2 },
@@ -56,6 +58,8 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -20, scale: 0.95 }}
           onClick={e => e.stopPropagation()}
+          role="dialog"
+          aria-label="Search"
           className="w-full max-w-lg rounded-xl border border-border bg-card shadow-2xl overflow-hidden"
         >
           {/* Search input */}
@@ -66,6 +70,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Search startups, pages..."
+              aria-label="Search startups and pages"
               className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none text-sm"
               onKeyDown={e => {
                 if (e.key === 'Escape') onClose();
@@ -117,7 +122,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
                   >
                     <p.icon className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm font-medium text-foreground">{p.label}</span>
-                    <ArrowRight className="ml-auto h-3.5 w-3.5 text-muted-foreground" />
+                    <ArrowRight className="ml-auto h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                   </button>
                 ))}
               </div>

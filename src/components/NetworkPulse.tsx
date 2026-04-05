@@ -134,8 +134,8 @@ export default function NetworkPulse() {
             <Wifi className="h-3.5 w-3.5" />
             <span className="text-[10px] uppercase tracking-wider">Energy</span>
           </div>
-          <p className="mt-1 font-bold font-mono text-accent">0.001 kWh</p>
-          <p className="text-[9px] text-muted-foreground">per tx (PoS)</p>
+          <p className="mt-1 font-bold font-mono text-accent">~0.001 kWh</p>
+          <p className="text-[9px] text-muted-foreground">est. per tx (PoS)</p>
         </div>
       </div>
 

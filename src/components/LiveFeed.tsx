@@ -104,6 +104,7 @@ export default function LiveFeed() {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
             <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">On-Chain</span>
+            <span className="rounded bg-muted/80 px-1.5 py-0.5 text-[8px] font-medium text-muted-foreground ml-1">DEMO</span>
           </div>
 
           {/* Scrolling ticker */}
