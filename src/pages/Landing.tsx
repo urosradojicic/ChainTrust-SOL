@@ -2,38 +2,39 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useStartups } from '@/hooks/use-startups';
 import { formatCurrency, formatNumber } from '@/lib/format';
+import { Shield, Zap, Award, BarChart3, Layers, Globe, ArrowRight, CheckCircle } from 'lucide-react';
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 12 },
   visible: (i: number) => ({
     opacity: 1, y: 0,
-    transition: { delay: i * 0.15, duration: 0.5 },
+    transition: { delay: i * 0.12, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
   }),
 };
 
 const steps = [
-  { icon: 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z', title: 'Register', desc: 'Register your startup and connect data sources' },
-  { icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12', title: 'Publish', desc: 'Publish metrics on-chain with SHA-256 proof hashes' },
-  { icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', title: 'Verify', desc: 'Chainlink oracles cross-verify your data independently' },
-  { icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6', title: 'Grow', desc: 'Investors discover and trust verified startups' },
+  { icon: Layers, title: 'Register', desc: 'Connect data sources and register your startup on-chain' },
+  { icon: Zap, title: 'Publish', desc: 'Publish metrics with SHA-256 proof hashes to Solana' },
+  { icon: Shield, title: 'Verify', desc: 'Oracle nodes cross-verify data against real-world sources' },
+  { icon: BarChart3, title: 'Grow', desc: 'Investors discover and trust your verified startup' },
 ];
 
 const features = [
-  { icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', title: 'Cryptographic Proofs', desc: 'Every metric is hashed with SHA-256 and stored on Solana. View the full proof chain interactively.' },
-  { icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', title: 'Oracle Verification', desc: 'Independent oracle nodes cross-check metrics against real-world data sources.' },
-  { icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z', title: 'Soulbound Badges', desc: 'Earn non-transferable reputation badges stored as PDAs on Solana.' },
-  { icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', title: 'DAO Governance', desc: 'Token holders vote on protocol decisions. Transparent, on-chain, verifiable.' },
-  { icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4', title: 'Staking & Tiers', desc: 'Stake CMT tokens to unlock Screener, Alerts, API access, and premium analytics.' },
-  { icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064', title: 'Impact-Weighted P&L', desc: 'See true profitability after accounting for environmental externalities.' },
+  { icon: Shield, title: 'Cryptographic Proofs', desc: 'Every metric is hashed with SHA-256 and stored on Solana. View the full proof chain interactively.', span: true },
+  { icon: CheckCircle, title: 'Oracle Verification', desc: 'Independent oracle nodes cross-check metrics against real-world data sources.' },
+  { icon: Award, title: 'Soulbound Badges', desc: 'Non-transferable reputation badges stored as PDAs on Solana.' },
+  { icon: BarChart3, title: 'DAO Governance', desc: 'Token holders vote on protocol decisions. Transparent, on-chain, verifiable.' },
+  { icon: Layers, title: 'Staking & Tiers', desc: 'Stake CMT tokens to unlock Screener, API access, and premium analytics.' },
+  { icon: Globe, title: 'Impact-Weighted P&L', desc: 'True profitability after accounting for environmental externalities.' },
 ];
 
 const tools = [
-  { label: 'Proof Chain Visualizer', desc: 'Watch the cryptographic verification flow in real-time', path: '/dashboard' },
+  { label: 'Proof Chain Visualizer', desc: 'Watch cryptographic verification in real-time', path: '/dashboard' },
   { label: 'Multi-Metric Screener', desc: '8-dimension filter with CSV export', path: '/screener' },
-  { label: 'Startup Comparison', desc: 'Radar chart + table across 9 metrics', path: '/compare' },
+  { label: 'AI Due Diligence', desc: 'Algorithmic risk analysis and investment grading', path: '/dashboard' },
   { label: 'Network Pulse', desc: 'Live Solana TPS, slot progression, block time', path: '/dashboard' },
-  { label: 'Ecosystem Heatmap', desc: 'Visual treemap sized by MRR, colored by sustainability', path: '/dashboard' },
-  { label: 'Trust Score Engine', desc: 'Transparent algorithm breakdown per factor', path: '/dashboard' },
+  { label: 'LP Report Generator', desc: 'Institutional quarterly PDF reports', path: '/dashboard' },
+  { label: 'Compliance Dashboard', desc: 'KYC, audit, multi-sig verification per startup', path: '/security' },
 ];
 
 export default function Landing() {
@@ -46,31 +47,47 @@ export default function Landing() {
     { label: 'Startups Tracked', value: startupCount > 0 ? `${startupCount}+` : '127+' },
     { label: 'MRR Verified', value: totalMrr > 0 ? formatCurrency(totalMrr) + '+' : '$45M+' },
     { label: 'Carbon Offset', value: totalCarbon > 0 ? `${formatNumber(totalCarbon)}t` : '560t+' },
-    { label: 'On Solana', value: 'Devnet' },
+    { label: 'Network', value: 'Solana' },
   ];
 
   return (
     <div className="overflow-hidden">
       {/* Hero */}
-      <section className="relative flex min-h-[80vh] items-center justify-center px-4 py-24">
-        <video autoPlay loop muted playsInline className="pointer-events-none absolute inset-0 h-full w-full object-cover" src="/hero-bg.mp4" />
-        <div className="pointer-events-none absolute inset-0 bg-background/75 backdrop-blur-[2px]" />
+      <section className="relative flex min-h-[85vh] items-center justify-center px-4 py-24 ambient-glow">
+        {/* Ambient gradient orbs */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-primary/[0.07] blur-[120px] animate-float" />
+          <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/[0.05] blur-[100px] animate-float-slow" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-primary/[0.03] blur-[80px] animate-pulse-glow" />
+        </div>
+
         <div className="relative z-10 mx-auto max-w-4xl text-center">
-          <motion.h1 custom={0} variants={fadeUp} initial="hidden" animate="visible" className="text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          <motion.div custom={0} variants={fadeUp} initial="hidden" animate="visible" className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+            </span>
+            <span className="text-muted-foreground">Built on <span className="font-semibold text-foreground">Solana</span></span>
+          </motion.div>
+
+          <motion.h1 custom={1} variants={fadeUp} initial="hidden" animate="visible" className="text-4xl font-bold leading-tight text-foreground sm:text-5xl lg:text-5xl">
             Transparent Startup Metrics,{' '}
             <span className="gradient-text">Verified On-Chain</span>
           </motion.h1>
-          <motion.p custom={1} variants={fadeUp} initial="hidden" animate="visible" className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+
+          <motion.p custom={2} variants={fadeUp} initial="hidden" animate="visible" className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground leading-relaxed">
             ChainTrust brings radical transparency to startup fundraising. Publish metrics on Solana, get verified by oracles, and build investor trust with cryptographic proof chains.
           </motion.p>
-          <motion.div custom={2} variants={fadeUp} initial="hidden" animate="visible" className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link to="/dashboard" className="rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90">
+
+          <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible" className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link to="/dashboard" className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground btn-glow transition hover:bg-primary/90">
               Explore Dashboard
+              <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link to="/demo" className="rounded-xl border border-primary/30 bg-primary/10 px-6 py-3 font-semibold text-primary transition hover:bg-primary/20">
+            <Link to="/demo" className="rounded-xl border border-primary/30 bg-primary/5 px-6 py-3 font-semibold text-primary transition hover:bg-primary/10 hover:border-primary/50">
               Try Interactive Demo
             </Link>
-            <Link to="/register" className="rounded-xl border border-white/20 px-6 py-3 font-semibold text-foreground transition hover:border-primary hover:text-primary">
+            <Link to="/register" className="rounded-xl border border-border px-6 py-3 font-semibold text-foreground transition hover:border-primary/40 hover:text-primary">
               Register Startup
             </Link>
           </motion.div>
@@ -78,12 +95,12 @@ export default function Landing() {
       </section>
 
       {/* Stats */}
-      <section className="border-y border-white/10 bg-card/50">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
+      <section className="border-y border-border/50 bg-card/30 backdrop-blur-sm">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4 lg:px-8">
           {dynamicStats.map((s, i) => (
-            <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-50px' }} transition={{ delay: i * 0.1 }} className="text-center">
-              <div className="text-3xl font-bold text-foreground">{s.value}</div>
-              <div className="mt-1 text-sm text-muted-foreground">{s.label}</div>
+            <motion.div key={s.label} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="text-center">
+              <div className="text-2xl font-bold text-foreground tabular-nums">{s.value}</div>
+              <div className="mt-1 text-xs text-muted-foreground uppercase tracking-wider">{s.label}</div>
             </motion.div>
           ))}
         </div>
@@ -91,49 +108,74 @@ export default function Landing() {
 
       {/* How it Works */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <h2 className="text-center text-3xl font-bold text-foreground">How it Works</h2>
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground">How it Works</h2>
+          <p className="mt-2 text-muted-foreground">Four steps to verified startup metrics</p>
+        </motion.div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s, i) => (
-            <motion.div key={s.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-50px' }} transition={{ delay: i * 0.1 }} className="rounded-2xl glass-card p-6 text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-                <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={s.icon} /></svg>
+            <motion.div key={s.title} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="relative rounded-2xl border border-border bg-card p-6 text-center transition hover:border-primary/20 hover:shadow-glow-sm">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                <s.icon className="h-5 w-5 text-primary" />
               </div>
-              <div className="mt-3 text-xs font-semibold text-primary">Step {i + 1}</div>
+              <div className="mt-3 text-[10px] font-bold text-primary uppercase tracking-wider">Step {i + 1}</div>
               <h3 className="mt-1 text-lg font-bold text-foreground">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+              {i < steps.length - 1 && (
+                <div className="hidden lg:block absolute top-1/2 -right-3 -translate-y-1/2 z-10">
+                  <ArrowRight className="h-4 w-4 text-muted-foreground/30" />
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Features */}
-      <section className="bg-surface py-20">
+      {/* Features — Bento Grid */}
+      <section className="bg-surface/50 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-foreground">Built for Trust</h2>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground">Built for Trust</h2>
+            <p className="mt-2 text-muted-foreground">Institutional-grade transparency infrastructure</p>
+          </motion.div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => (
-              <motion.div key={f.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-50px' }} transition={{ delay: i * 0.08 }} className="rounded-2xl glass-card p-6 transition hover:shadow-lg hover:shadow-primary/5">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                  <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d={f.icon} /></svg>
+              <motion.div
+                key={f.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+                className={`group rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-primary/20 hover:shadow-glow-sm ${f.span ? 'sm:col-span-2 lg:col-span-1' : ''}`}
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition group-hover:bg-primary/15">
+                  <f.icon className="h-5 w-5 text-primary" />
                 </div>
                 <h3 className="mt-4 font-bold text-foreground">{f.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Analytics Tools Showcase */}
+      {/* Analytics Tools */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <h2 className="text-center text-3xl font-bold text-foreground">Powerful Analytics Tools</h2>
-        <p className="mt-2 text-center text-muted-foreground">Everything you need to evaluate startups with confidence</p>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-foreground">Powerful Analytics Tools</h2>
+          <p className="mt-2 text-muted-foreground">Everything you need to evaluate startups with confidence</p>
+        </motion.div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((t, i) => (
-            <motion.div key={t.label} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
-              <Link to={t.path} className="block rounded-xl border border-border bg-card p-5 transition hover:border-primary/30 hover:bg-primary/5">
-                <h3 className="font-bold text-foreground">{t.label}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{t.desc}</p>
+            <motion.div key={t.label} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
+              <Link to={t.path} className="group flex items-start gap-4 rounded-xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/20 hover:bg-primary/[0.02]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 flex-shrink-0 mt-0.5">
+                  <ArrowRight className="h-3.5 w-3.5 text-primary transition group-hover:translate-x-0.5" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">{t.label}</h3>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{t.desc}</p>
+                </div>
               </Link>
             </motion.div>
           ))}
@@ -142,14 +184,24 @@ export default function Landing() {
 
       {/* CTA */}
       <section className="px-4 py-20 sm:px-6 lg:px-8">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-primary to-cyan-700 p-12 text-center shadow-xl shadow-primary/20">
-          <h2 className="text-3xl font-bold text-primary-foreground">Ready to Build Investor Trust?</h2>
-          <p className="mx-auto mt-4 max-w-md text-cyan-200">
-            Join {startupCount > 0 ? `${startupCount}+` : '127+'} startups already publishing verified metrics on Solana.
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link to="/register" className="rounded-xl bg-background px-6 py-3 font-semibold text-primary transition hover:bg-background/90">Register Now</Link>
-            <Link to="/demo" className="rounded-xl border border-primary-foreground/40 px-6 py-3 font-semibold text-primary-foreground transition hover:bg-primary-foreground/10">Try Demo</Link>
+        <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="relative mx-auto max-w-3xl overflow-hidden rounded-3xl p-12 text-center noise-overlay">
+          {/* Gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/80 to-accent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+
+          <div className="relative z-10">
+            <h2 className="text-3xl font-bold text-white">Ready to Build Investor Trust?</h2>
+            <p className="mx-auto mt-4 max-w-md text-white/70">
+              Join {startupCount > 0 ? `${startupCount}+` : '127+'} startups already publishing verified metrics on Solana.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link to="/register" className="rounded-xl bg-white px-6 py-3 font-semibold text-primary transition hover:bg-white/90 shadow-lg">
+                Register Now
+              </Link>
+              <Link to="/demo" className="rounded-xl border border-white/30 px-6 py-3 font-semibold text-white transition hover:bg-white/10">
+                Try Demo
+              </Link>
+            </div>
           </div>
         </motion.div>
       </section>

@@ -4,10 +4,13 @@ export const inputCls =
 export const labelCls = 'mb-1.5 block text-sm font-medium text-foreground';
 
 export const chartTooltipStyle = {
-  borderRadius: 8,
-  border: '1px solid hsl(var(--border))',
-  background: 'hsl(var(--card))',
+  borderRadius: 12,
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+  background: 'rgba(13, 13, 21, 0.95)',
+  backdropFilter: 'blur(20px)',
+  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.4)',
   fontSize: 12,
+  padding: '8px 12px',
 };
 
 export const categoryColors: Record<string, 'info' | 'primary' | 'warning' | 'success'> = {
