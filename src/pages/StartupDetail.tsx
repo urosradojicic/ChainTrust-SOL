@@ -130,7 +130,7 @@ export default function StartupDetail() {
       <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-3xl font-bold">{startup.name}</h1>
+            <h1 className="text-2xl font-bold">{startup.name}</h1>
             <Badge variant={categoryColors[startup.category] || 'neutral'}>{startup.category}</Badge>
             {startup.verified && <Badge variant="success">✓ Verified</Badge>}
             <Badge variant="info">{startup.blockchain}</Badge>
@@ -212,10 +212,10 @@ export default function StartupDetail() {
         {/* Overview */}
         <TabsContent value="overview" className="mt-6 space-y-6">
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
-            <MetricCard label="MRR" value={formatCurrency(startup.mrr)} icon={Wallet} bg="bg-blue-50 dark:bg-blue-950/30" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
-            <MetricCard label="Total Users" value={formatNumber(startup.users)} icon={Users} bg="bg-purple-50 dark:bg-purple-950/30" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
-            <MetricCard label="Growth" value={`${Number(startup.growth_rate) >= 0 ? '+' : ''}${startup.growth_rate}%`} icon={TrendingUp} bg="bg-emerald-50 dark:bg-emerald-950/30" provenance="computed" />
-            <MetricCard label="Treasury" value={formatCurrency(Number(startup.treasury))} icon={Coins} bg="bg-amber-50 dark:bg-amber-950/30" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
+            <MetricCard label="MRR" value={formatCurrency(startup.mrr)} icon={Wallet} bg="" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
+            <MetricCard label="Total Users" value={formatNumber(startup.users)} icon={Users} bg="" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
+            <MetricCard label="Growth" value={`${Number(startup.growth_rate) >= 0 ? '+' : ''}${startup.growth_rate}%`} icon={TrendingUp} bg="" provenance="computed" />
+            <MetricCard label="Treasury" value={formatCurrency(Number(startup.treasury))} icon={Coins} bg="" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
           </div>
 
           <div className="flex items-center justify-between">

@@ -16,7 +16,7 @@ type SortKey = 'mrr' | 'growth_rate' | 'trust_score' | 'users';
 
 function StartupCardSkeleton() {
   return (
-    <div className="rounded-xl glass-card p-5 animate-pulse">
+    <div className="rounded-lg border border-border bg-card p-5 animate-pulse">
       <div className="flex gap-2"><div className="h-5 w-16 rounded-full bg-muted" /><div className="h-5 w-14 rounded-full bg-muted" /></div>
       <div className="mt-3 h-6 w-32 rounded bg-muted" />
       <div className="mt-3 grid grid-cols-3 gap-3">
@@ -76,10 +76,10 @@ export default function Dashboard() {
   const startupCount = startups?.length ?? 0;
 
   const platformStats = [
-    { label: 'Total MRR', value: formatCurrency(totalMrr), change: '+11.4%', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', accent: 'text-blue-400' },
-    { label: 'Total Users', value: formatNumber(totalUsers), change: '+8.7%', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z', accent: 'text-purple-400' },
-    { label: 'Startups', value: String(startupCount), change: '+16.7%', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', accent: 'text-amber-400' },
-    { label: 'Carbon Offset', value: `${formatNumber(totalCarbon)}t`, change: '+22.3%', icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064', accent: 'text-emerald-400' },
+    { label: 'Total MRR', value: formatCurrency(totalMrr), change: '+11.4%' },
+    { label: 'Total Users', value: formatNumber(totalUsers), change: '+8.7%' },
+    { label: 'Startups', value: String(startupCount), change: '+16.7%' },
+    { label: 'Carbon Offset', value: `${formatNumber(totalCarbon)}t`, change: '+22.3%' },
   ];
 
   if (error) {
@@ -103,7 +103,7 @@ export default function Dashboard() {
           <div className="mt-2 h-4 w-64 rounded bg-muted animate-pulse" />
         </div>
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map(i => (<div key={i} className="glass-card rounded-xl p-5 animate-pulse"><div className="h-4 w-24 rounded bg-muted" /><div className="mt-3 h-7 w-20 rounded bg-muted" /></div>))}
+          {[1, 2, 3, 4].map(i => (<div key={i} className="rounded-lg border border-border bg-card p-5 animate-pulse"><div className="h-4 w-24 rounded bg-muted" /><div className="mt-3 h-7 w-20 rounded bg-muted" /></div>))}
         </div>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map(i => (<StartupCardSkeleton key={i} />))}
@@ -118,22 +118,17 @@ export default function Dashboard() {
       <BlockchainStatus />
 
       <div className="mb-8 mt-6">
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="mt-1 text-muted-foreground">Platform-wide metrics and startup leaderboard</p>
+        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Platform-wide metrics and startup overview</p>
       </div>
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {platformStats.map((s, i) => (
-          <motion.div key={s.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="glass-card gradient-border rounded-xl p-5">
-            <div className="flex items-center gap-3">
-              <svg className={`h-5 w-5 ${s.accent}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d={s.icon} />
-              </svg>
-              <span className="text-sm text-muted-foreground">{s.label}</span>
-            </div>
-            <div className="mt-2 flex items-end gap-2">
-              <span className="text-2xl font-bold text-foreground">{s.value}</span>
-              <span className="mb-0.5 text-sm font-medium text-primary">{s.change}</span>
+          <motion.div key={s.label} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.08 }} className="rounded-lg border border-border bg-card p-5">
+            <span className="text-xs text-muted-foreground">{s.label}</span>
+            <div className="mt-1 flex items-end gap-2">
+              <span className="text-xl font-bold text-foreground tabular-nums">{s.value}</span>
+              <span className="mb-0.5 text-xs font-medium text-primary">{s.change}</span>
             </div>
           </motion.div>
         ))}
@@ -224,8 +219,8 @@ export default function Dashboard() {
           {viewMode === 'grid' && filtered.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map((s, i) => (
-                <motion.div key={s.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                  <Link to={`/startup/${s.id}`} className="block rounded-xl glass-card p-5 startup-card-hover">
+                <motion.div key={s.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }}>
+                  <Link to={`/startup/${s.id}`} className="block rounded-lg border border-border bg-card p-5 startup-card-hover">
                     <div className="flex items-center gap-2">
                       <Badge variant={categoryColors[s.category] || 'neutral'}>{s.category}</Badge>
                       {s.verified && (
@@ -265,7 +260,7 @@ export default function Dashboard() {
               ))}
             </div>
           ) : filtered.length > 0 ? (
-            <div className="overflow-x-auto rounded-xl glass-card">
+            <div className="overflow-x-auto rounded-lg border border-border bg-card">
               <table className="w-full text-sm">
                 <thead className="border-b border-white/10">
                   <tr>

@@ -9,17 +9,17 @@ interface MetricCardProps {
   provenance?: ProvenanceType;
 }
 
-export default function MetricCard({ label, value, icon: Icon, bg, provenance }: MetricCardProps) {
+export default function MetricCard({ label, value, icon: Icon, provenance }: MetricCardProps) {
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`rounded-xl border p-4 ${bg}`}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-lg border border-border bg-card p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-muted-foreground">
-          <Icon className="h-4 w-4" />
+          <Icon className="h-3.5 w-3.5" />
           <span className="text-xs">{label}</span>
         </div>
         {provenance && <DataProvenance type={provenance} compact />}
       </div>
-      <div className="mt-1.5 text-lg font-bold font-mono">{value}</div>
+      <div className="mt-1.5 text-lg font-bold font-mono tabular-nums">{value}</div>
     </motion.div>
   );
 }
