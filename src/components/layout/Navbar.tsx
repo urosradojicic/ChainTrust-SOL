@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWallet } from '@/contexts/WalletContext';
 import { Button } from '@/components/ui/button';
-import { LogIn, LogOut, User, Sun, Moon, Bell, TrendingDown, FileText, Shield, Search } from 'lucide-react';
+import { LogIn, LogOut, User, Sun, Moon, Bell, TrendingDown, FileText, Shield, Search, Building2 } from 'lucide-react';
 import SearchModal from '@/components/SearchModal';
+import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
 
 const NAV_LINKS: { path: string; label: string; live?: boolean }[] = [
   { path: '/dashboard', label: 'Dashboard', live: true },
@@ -14,6 +15,7 @@ const NAV_LINKS: { path: string; label: string; live?: boolean }[] = [
   { path: '/screener', label: 'Screener' },
   { path: '/staking', label: 'Staking' },
   { path: '/governance', label: 'Governance' },
+  { path: '/security', label: 'Security' },
   { path: '/demo', label: 'Demo' },
 ];
 
@@ -117,6 +119,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { user, role, signOut } = useAuth();
   const { connected, address, disconnect } = useWallet();
+  const { institutionalMode, toggleInstitutionalMode } = useInstitutionalView();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -187,6 +190,18 @@ export default function Navbar() {
               <Search className="h-3.5 w-3.5" />
               <span>Search...</span>
               <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">⌘K</kbd>
+            </button>
+            <button
+              onClick={toggleInstitutionalMode}
+              className={`hidden sm:flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+                institutionalMode
+                  ? 'bg-primary/10 text-primary border border-primary/30'
+                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+              }`}
+              title="Toggle Institutional View — dense data, no animations"
+            >
+              <Building2 className="h-3.5 w-3.5" />
+              {institutionalMode ? 'Institutional' : 'Standard'}
             </button>
             <ThemeToggle />
             <NotificationBell />

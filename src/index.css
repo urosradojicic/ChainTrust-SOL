@@ -132,6 +132,28 @@
 }
 
 /* Print styles */
+/* Institutional View — dense data, no animations, compact spacing */
+.institutional-view * {
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+}
+.institutional-view .glass-card,
+.institutional-view .rounded-xl {
+  border-radius: 8px;
+}
+.institutional-view .space-y-6 > * + * {
+  margin-top: 1rem;
+}
+.institutional-view .p-5 {
+  padding: 0.75rem;
+}
+.institutional-view .p-6 {
+  padding: 1rem;
+}
+.institutional-view .text-3xl {
+  font-size: 1.5rem;
+}
+
 @media print {
   body { background: white !important; color: black !important; }
   nav, footer, .print\\:hidden { display: none !important; }

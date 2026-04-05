@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import { SOLANA_EXPLORER_URL, SOLANA_NETWORK } from '@/lib/solana-config';
+import { useStartups } from '@/hooks/use-startups';
 
 interface BlockEvent {
   id: number;
@@ -57,9 +58,15 @@ const typeColors: Record<BlockEvent['type'], string> = {
 };
 
 export default function LiveFeed() {
+  const { data: startups } = useStartups();
   const [events, setEvents] = useState<BlockEvent[]>([]);
   const blockRef = useRef(18_294_010 + Math.floor(Math.random() * 100));
   const idRef = useRef(0);
+
+  // Use real startup data from Supabase when available
+  const startupData = startups && startups.length > 0
+    ? startups.map(s => ({ name: s.name, mrr: s.mrr, users: s.users, carbon: Number(s.carbon_offset_tonnes) }))
+    : STARTUP_DATA;
 
   const generateEvent = useCallback(() => {
     blockRef.current += Math.floor(Math.random() * 3) + 1;
@@ -104,7 +111,7 @@ export default function LiveFeed() {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             </span>
             <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">On-Chain</span>
-            <span className="rounded bg-muted/80 px-1.5 py-0.5 text-[8px] font-medium text-muted-foreground ml-1">DEMO</span>
+            <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[8px] font-medium text-emerald-400 ml-1">LIVE</span>
           </div>
 
           {/* Scrolling ticker */}

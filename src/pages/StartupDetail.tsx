@@ -9,6 +9,7 @@ import {
 import { formatCurrency, formatNumber } from '@/lib/format';
 import { chartTooltipStyle, categoryColors } from '@/lib/constants';
 import Badge from '@/components/common/Badge';
+import DataProvenance from '@/components/common/DataProvenance';
 import SustainabilityScore from '@/components/SustainabilityScore';
 import SustainabilityGauge from '@/components/startup/SustainabilityGauge';
 import MetricCard from '@/components/startup/MetricCard';
@@ -24,13 +25,20 @@ import ValuationMetrics from '@/components/startup/ValuationMetrics';
 import TokenUnlockCalendar from '@/components/startup/TokenUnlockCalendar';
 import RetentionChart from '@/components/startup/RetentionChart';
 import TimeRangeSelector, { sliceByRange } from '@/components/startup/TimeRangeSelector';
+import AIDueDiligence from '@/components/startup/AIDueDiligence';
+import FundFlowSankey from '@/components/startup/FundFlowSankey';
+import ComplianceDashboard from '@/components/startup/ComplianceDashboard';
+import MultiSigTreasury from '@/components/startup/MultiSigTreasury';
+import PercentileRank from '@/components/startup/PercentileRank';
 import { exportElementAsPDF } from '@/lib/export-pdf';
+import { exportLPReport } from '@/lib/lp-report';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar, Clock,
-  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Loader2, Download, FileText,
+  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Loader2, Download, FileText, Brain, BarChart3,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useStartup, useMetricsHistory, useStartupPledges, useStartups } from '@/hooks/use-startups';
+import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
 import type { SustainabilityData } from '@/components/SustainabilityScore';
 import type { DbStartup } from '@/types/database';
 
@@ -64,6 +72,7 @@ export default function StartupDetail() {
   const { data: metrics = [] } = useMetricsHistory(id);
   const { data: pledges = [] } = useStartupPledges(id);
   const { data: allStartups } = useStartups();
+  const { institutionalMode } = useInstitutionalView();
   const [activeTab, setActiveTab] = useState('overview');
   const [timeRange, setTimeRange] = useState('6M');
 
@@ -109,8 +118,10 @@ export default function StartupDetail() {
     verified: startup.verified,
   }));
 
+  const motionProps = institutionalMode ? {} : { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
+
   return (
-    <div id="startup-detail-content" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div id="startup-detail-content" className={`mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 ${institutionalMode ? 'institutional-view' : ''}`}>
       <Link to="/dashboard" className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition print:hidden">
         <ChevronLeft className="h-4 w-4" /> Back to Dashboard
       </Link>
@@ -146,6 +157,12 @@ export default function StartupDetail() {
             >
               <FileText className="h-3 w-3" /> Export PDF
             </button>
+            <button
+              onClick={() => exportLPReport({ generatedAt: new Date().toISOString(), quarter: '', startup, metrics, allStartups: allStartups || [] })}
+              className="inline-flex items-center gap-1 rounded-md border border-primary/30 bg-primary/5 px-2.5 py-1 text-xs font-medium text-primary transition hover:bg-primary/10"
+            >
+              <BarChart3 className="h-3 w-3" /> LP Report
+            </button>
           </div>
         </motion.div>
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}>
@@ -173,10 +190,14 @@ export default function StartupDetail() {
         <TabsList className="w-full justify-start overflow-x-auto">
           {/* Core */}
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="due-diligence" className="flex items-center gap-1">
+            <Brain className="h-3 w-3" /> AI Due Diligence
+          </TabsTrigger>
           <TabsTrigger value="financials">Financials</TabsTrigger>
           <TabsTrigger value="valuation">Valuation</TabsTrigger>
-          {/* Sustainability & Impact */}
+          {/* Compliance & Trust */}
           <span className="mx-1 h-4 w-px bg-border" />
+          <TabsTrigger value="compliance">Compliance</TabsTrigger>
           <TabsTrigger value="sustainability">Sustainability</TabsTrigger>
           <TabsTrigger value="impact-pl">Impact P&L</TabsTrigger>
           <TabsTrigger value="pledges">Pledges</TabsTrigger>
@@ -191,10 +212,10 @@ export default function StartupDetail() {
         {/* Overview */}
         <TabsContent value="overview" className="mt-6 space-y-6">
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
-            <MetricCard label="MRR" value={formatCurrency(startup.mrr)} icon={Wallet} bg="bg-blue-50 dark:bg-blue-950/30" />
-            <MetricCard label="Total Users" value={formatNumber(startup.users)} icon={Users} bg="bg-purple-50 dark:bg-purple-950/30" />
-            <MetricCard label="Growth" value={`${Number(startup.growth_rate) >= 0 ? '+' : ''}${startup.growth_rate}%`} icon={TrendingUp} bg="bg-emerald-50 dark:bg-emerald-950/30" />
-            <MetricCard label="Treasury" value={formatCurrency(Number(startup.treasury))} icon={Coins} bg="bg-amber-50 dark:bg-amber-950/30" />
+            <MetricCard label="MRR" value={formatCurrency(startup.mrr)} icon={Wallet} bg="bg-blue-50 dark:bg-blue-950/30" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
+            <MetricCard label="Total Users" value={formatNumber(startup.users)} icon={Users} bg="bg-purple-50 dark:bg-purple-950/30" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
+            <MetricCard label="Growth" value={`${Number(startup.growth_rate) >= 0 ? '+' : ''}${startup.growth_rate}%`} icon={TrendingUp} bg="bg-emerald-50 dark:bg-emerald-950/30" provenance="computed" />
+            <MetricCard label="Treasury" value={formatCurrency(Number(startup.treasury))} icon={Coins} bg="bg-amber-50 dark:bg-amber-950/30" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
           </div>
 
           <div className="flex items-center justify-between">
@@ -255,6 +276,21 @@ export default function StartupDetail() {
               </tbody>
             </table>
           </div>
+        </TabsContent>
+
+        {/* AI Due Diligence */}
+        <TabsContent value="due-diligence" className="mt-6 space-y-6">
+          <AIDueDiligence startup={startup} metrics={metrics} allStartups={allStartups || []} />
+          <div className="grid gap-6 lg:grid-cols-2">
+            <PercentileRank startup={startup} allStartups={allStartups || []} />
+            <MultiSigTreasury startup={startup} />
+          </div>
+          <FundFlowSankey startup={startup} metrics={metrics} />
+        </TabsContent>
+
+        {/* Compliance */}
+        <TabsContent value="compliance" className="mt-6 space-y-6">
+          <ComplianceDashboard startup={startup} />
         </TabsContent>
 
         {/* Verification — Proof Chain */}

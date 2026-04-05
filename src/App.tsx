@@ -14,6 +14,8 @@ import PageTransition from "./components/layout/PageTransition";
 import { useRealtimeSync } from "./hooks/use-realtime";
 import { Loader2 } from "lucide-react";
 
+import { InstitutionalViewProvider } from "./contexts/InstitutionalViewContext";
+
 // Route-level code splitting — each page is loaded on demand
 const Landing = lazy(() => import("./pages/Landing"));
 const Login = lazy(() => import("./pages/Login"));
@@ -28,6 +30,7 @@ const Demo = lazy(() => import("./pages/Demo"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
 const MyStartup = lazy(() => import("./pages/MyStartup"));
 const Screener = lazy(() => import("./pages/Screener"));
+const Security = lazy(() => import("./pages/Security"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageLoader() {
@@ -63,6 +66,7 @@ const AnimatedRoutes = () => {
           <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
           <Route path="/my-startup" element={<PageTransition><MyStartup /></PageTransition>} />
           <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
+          <Route path="/security" element={<PageTransition><Security /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>
@@ -75,6 +79,7 @@ const App = () => (
   <AuthProvider>
     <Web3Provider>
       <WalletProvider>
+        <InstitutionalViewProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -90,6 +95,7 @@ const App = () => (
             </RealtimeProvider>
           </BrowserRouter>
         </TooltipProvider>
+      </InstitutionalViewProvider>
       </WalletProvider>
     </Web3Provider>
   </AuthProvider>

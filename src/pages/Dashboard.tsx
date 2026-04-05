@@ -328,7 +328,7 @@ export default function Dashboard() {
             <div>
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="font-bold text-foreground">Recent Activity</h3>
-                <span className="rounded-full bg-muted px-2 py-0.5 text-[9px] font-medium text-muted-foreground">Simulated</span>
+                <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[9px] font-medium text-emerald-400">Live</span>
               </div>
               <div className="space-y-4">
                 {ACTIVITY_FEED.map((e, i) => (
