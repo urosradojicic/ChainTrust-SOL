@@ -178,6 +178,92 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── Powered by Solana — the hype section ── */}
+      <section className="relative overflow-hidden">
+        {/* Background image with overlay */}
+        <div className="absolute inset-0">
+          <img src="https://images.unsplash.com/photo-1639762681057-408e52192e55?w=1600&h=900&fit=crop&q=80" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-background/92" />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
+            {/* Left — headline */}
+            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+              <p className="text-xs font-medium uppercase tracking-widest text-primary mb-4 font-mono">Powered by Solana</p>
+              <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl" style={{ lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+                The fastest blockchain
+                <br />
+                in production
+              </h2>
+              <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-md">
+                Visa, PayPal, Stripe, and Franklin Templeton all chose Solana. From $8 post-FTX collapse to $260+ — the greatest comeback in crypto history. And we're building on it.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                {['Visa', 'PayPal', 'Stripe', 'Franklin Templeton', 'Shopify'].map(name => (
+                  <span key={name} className="rounded border border-border bg-card/80 px-3 py-1.5 text-xs font-medium text-muted-foreground">
+                    {name}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right — stats grid */}
+            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.15 }} className="mt-12 lg:mt-0">
+              <div className="grid grid-cols-2 gap-px bg-border rounded-lg overflow-hidden">
+                {[
+                  { value: '65,000', label: 'Peak TPS capacity', sub: 'Firedancer hit 1M in testing' },
+                  { value: '$0.00025', label: 'Avg transaction fee', sub: '100,000x cheaper than Ethereum' },
+                  { value: '400ms', label: 'Block time', sub: 'vs 12 seconds on Ethereum' },
+                  { value: '50M+', label: 'Daily transactions', sub: 'More than ETH + L2s combined' },
+                  { value: '$10B+', label: 'DeFi TVL', sub: '5-7x growth in under a year' },
+                  { value: '2,000+', label: 'Active developers', sub: 'Monthly active builders' },
+                ].map((stat, i) => (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.08 }}
+                    className="bg-card p-5"
+                  >
+                    <div className="text-xl font-display font-bold text-foreground tabular-nums">{stat.value}</div>
+                    <div className="mt-1 text-xs font-medium text-foreground">{stat.label}</div>
+                    <div className="mt-0.5 text-[11px] text-muted-foreground">{stat.sub}</div>
+                  </motion.div>
+                ))}
+              </div>
+              <div className="mt-4 flex items-center gap-3">
+                <div className="flex items-center gap-2 rounded border border-border bg-card/80 px-3 py-2">
+                  <div className="h-5 w-5 rounded-full bg-gradient-to-br from-[#9945FF] to-[#14F195] flex items-center justify-center">
+                    <span className="text-[8px] font-bold text-white">S</span>
+                  </div>
+                  <div>
+                    <div className="text-xs font-semibold text-foreground">Solana ETF</div>
+                    <div className="text-[10px] text-muted-foreground">Filed by VanEck, 21Shares, Grayscale, Bitwise</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 rounded border border-border bg-card/80 px-3 py-2">
+                  <span className="text-[10px] text-muted-foreground">Zero major outages in 2024</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Bottom — protocol logos / notable projects */}
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mt-16 border-t border-border pt-8">
+            <p className="text-xs text-muted-foreground mb-4 uppercase tracking-wider">Built alongside the Solana ecosystem</p>
+            <div className="flex flex-wrap gap-3">
+              {['Jupiter', 'Marinade', 'Jito', 'Pyth Network', 'Helium', 'Render', 'Hivemapper', 'Raydium', 'Tensor'].map(name => (
+                <span key={name} className="rounded border border-border px-3 py-1.5 text-xs text-muted-foreground transition hover:text-foreground hover:border-primary/30">
+                  {name}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Tools list ── */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <h2 className="font-display text-3xl font-bold text-foreground">Analytics tools</h2>
