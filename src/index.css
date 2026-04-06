@@ -6,38 +6,38 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
+    --background: 220 20% 97%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 220 70% 50%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 14% 92%;
+    --secondary: 220 14% 96%;
     --secondary-foreground: 222 47% 11%;
-    --muted: 220 14% 92%;
-    --muted-foreground: 220 9% 46%;
-    --accent: 220 70% 50%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 43%;
+    --accent: 221 83% 53%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --border: 220 13% 87%;
-    --input: 220 13% 87%;
-    --ring: 220 70% 50%;
+    --border: 220 13% 90%;
+    --input: 220 13% 90%;
+    --ring: 221 83% 53%;
     --radius: 0.5rem;
-    --surface: 220 14% 95%;
+    --surface: 220 20% 94%;
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 220 70% 50%;
+    --sidebar-primary: 221 83% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 92%;
+    --sidebar-accent: 220 14% 96%;
     --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 220 13% 87%;
-    --sidebar-ring: 220 70% 50%;
+    --sidebar-border: 220 13% 90%;
+    --sidebar-ring: 221 83% 53%;
   }
 
   .dark {
@@ -88,16 +88,21 @@
 
   .card-elevated {
     @apply bg-card border border-border;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03);
   }
   .card-elevated:hover {
     border-color: hsl(var(--primary) / 0.3);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 10px 24px rgba(0,0,0,0.06);
   }
 
   .glass-card {
-    @apply bg-card/80 border border-border;
+    @apply bg-card border border-border;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+  :is(.dark) .glass-card {
+    @apply bg-card/80;
     backdrop-filter: blur(12px);
+    box-shadow: none;
   }
 
   .gradient-border {
@@ -126,8 +131,11 @@
   }
   .startup-card-hover:hover {
     transform: translateY(-2px);
-    border-color: hsl(var(--primary) / 0.2);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    border-color: hsl(var(--primary) / 0.25);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+  }
+  :is(.dark) .startup-card-hover:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
   }
 
   .tabular-nums { font-variant-numeric: tabular-nums; }

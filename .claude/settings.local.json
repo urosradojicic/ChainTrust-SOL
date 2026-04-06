@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s \"https://api.search.brave.com/res/v1/web/search?q=BlackRock+crypto+blockchain+investment+thesis+2025+2026+tokenized+assets+RWA&count=10\" -H \"Accept: application/json\" -H \"Accept-Encoding: gzip\")",
+      "WebFetch(domain:www.fundz.net)"
+    ]
+  }
+}

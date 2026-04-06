@@ -91,12 +91,12 @@ function ThemeToggle() {
 
   useEffect(() => {
     const saved = localStorage.getItem('theme');
-    if (saved === 'light') {
-      document.documentElement.classList.remove('dark');
-      setDark(false);
-    } else {
+    if (saved === 'dark') {
       document.documentElement.classList.add('dark');
       setDark(true);
+    } else {
+      document.documentElement.classList.remove('dark');
+      setDark(false);
     }
   }, []);
 

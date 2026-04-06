@@ -156,7 +156,7 @@ export default function Governance() {
                 <Leaf className="h-4 w-4" /> Create Sustainability Pledge
               </button>
             </DialogTrigger>
-            <DialogContent className="glass-card border-white/10 sm:max-w-md">
+            <DialogContent className="glass-card border-border sm:max-w-md">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-foreground">
                   <Leaf className="h-5 w-5 text-primary" /> New Sustainability Pledge
@@ -192,7 +192,7 @@ export default function Governance() {
                 Create Proposal
               </button>
             </DialogTrigger>
-            <DialogContent className="glass-card border-white/10 sm:max-w-md">
+            <DialogContent className="glass-card border-border sm:max-w-md">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-foreground">
                   <Plus className="h-5 w-5 text-primary" /> New Proposal

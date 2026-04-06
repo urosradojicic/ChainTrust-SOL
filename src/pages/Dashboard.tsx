@@ -277,7 +277,7 @@ export default function Dashboard() {
           ) : filtered.length > 0 ? (
             <div className="overflow-x-auto rounded-lg border border-border bg-card">
               <table className="w-full text-sm">
-                <thead className="border-b border-white/10">
+                <thead className="border-b border-border">
                   <tr>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">#</th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">Startup</th>
@@ -289,9 +289,9 @@ export default function Dashboard() {
                     <th className="px-4 py-3 text-center font-medium text-muted-foreground">Verified</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-border">
                   {filtered.map((s, i) => (
-                    <motion.tr key={s.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }} className="cursor-pointer transition hover:bg-white/[0.03]" onClick={() => navigate(`/startup/${s.id}`)}>
+                    <motion.tr key={s.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }} className="cursor-pointer transition hover:bg-muted/50" onClick={() => navigate(`/startup/${s.id}`)}>
                       <td className="px-4 py-3 font-mono text-muted-foreground">{i + 1}</td>
                       <td className="px-4 py-3 font-semibold text-foreground">
                         <Link to={`/startup/${s.id}`} className="flex items-center gap-2">

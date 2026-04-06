@@ -109,7 +109,7 @@ export default function Leaderboard() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="rounded-xl glass-card overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="border-white/10 bg-white/[0.03]">
+            <TableRow className="border-border bg-muted/30">
               <TableHead className="w-16 text-center">#</TableHead>
               <TableHead>Startup</TableHead>
               <TableHead className="text-center">Score</TableHead>
@@ -121,7 +121,7 @@ export default function Leaderboard() {
           </TableHeader>
           <TableBody>
             {ranked.map((s, i) => (
-              <TableRow key={s.id} className={`transition-colors border-white/5 ${podiumStyles[i] ?? 'hover:bg-white/[0.03]'}`}>
+              <TableRow key={s.id} className={`transition-colors border-border ${podiumStyles[i] ?? 'hover:bg-muted/50'}`}>
                 <TableCell className="text-center font-mono font-bold text-foreground">
                   <div className="flex items-center justify-center gap-1">
                     {i < 3 && <Trophy className={`h-4 w-4 ${podiumIcons[i]}`} />}

@@ -158,7 +158,7 @@ export default function Compare() {
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-10 overflow-x-auto rounded-xl glass-card">
         <table className="w-full text-sm min-w-[600px]">
           <thead>
-            <tr className="border-b border-white/10">
+            <tr className="border-b border-border">
               <th className="px-5 py-4 text-left font-medium text-muted-foreground w-56">Metric</th>
               {startups.map(s => (
                 <th key={s.id} className="px-5 py-4 text-center font-semibold text-foreground">
@@ -171,11 +171,11 @@ export default function Compare() {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-border">
             {rows.map(row => {
               const numericValues = startups.map(s => row.getNumeric(s));
               return (
-                <tr key={row.key} className="transition hover:bg-white/[0.02]">
+                <tr key={row.key} className="transition hover:bg-muted/50">
                   <td className="px-5 py-3.5 font-medium text-muted-foreground">{row.label}</td>
                   {startups.map((s, idx) => {
                     const val = row.getValue(s);

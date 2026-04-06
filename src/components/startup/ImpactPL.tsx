@@ -55,7 +55,7 @@ export default function ImpactPL({ startup, metrics }: { startup: DbStartup; met
               <span className="text-muted-foreground">− Operating Costs</span>
               <span className="font-mono font-medium text-destructive">−{fmt(totalCosts)}</span>
             </div>
-            <div className="border-t border-white/10 pt-3 flex justify-between">
+            <div className="border-t border-border pt-3 flex justify-between">
               <span className="font-semibold text-foreground">Reported Profit</span>
               <span className={`font-mono font-bold ${reportedProfit >= 0 ? 'text-primary' : 'text-destructive'}`}>
                 {fmt(reportedProfit)}
@@ -79,7 +79,7 @@ export default function ImpactPL({ startup, metrics }: { startup: DbStartup; met
               <span className="text-muted-foreground">− Environmental Externalities</span>
               <span className="font-mono font-medium text-amber-400">−{fmt(envExternalities)}</span>
             </div>
-            <div className="border-t border-white/10 pt-3 flex justify-between">
+            <div className="border-t border-border pt-3 flex justify-between">
               <span className="font-semibold text-foreground">Impact-Adjusted Profit</span>
               <span className={`font-mono font-bold ${impactProfit >= 0 ? 'text-primary' : 'text-destructive'}`}>
                 {fmt(impactProfit)}
