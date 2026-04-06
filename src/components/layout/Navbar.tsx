@@ -12,19 +12,23 @@ import {
 } from 'lucide-react';
 import SearchModal from '@/components/SearchModal';
 import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
+import { canAccess } from '@/lib/role-access';
 
-/* ── Header links — only the essentials ── */
-const HEADER_LINKS: { path: string; label: string; live?: boolean }[] = [
-  { path: '/dashboard', label: 'Dashboard', live: true },
-  { path: '/screener', label: 'Screener' },
-  { path: '/staking', label: 'Staking' },
-  { path: '/governance', label: 'Governance' },
+/* ── Header links — role-aware essentials ── */
+interface HeaderLink { path: string; label: string; live?: boolean; roles: ('investor' | 'startup' | 'admin' | null)[] }
+
+const HEADER_LINKS_ALL: HeaderLink[] = [
+  { path: '/dashboard', label: 'Dashboard', live: true, roles: ['investor', 'startup', 'admin', null] },
+  { path: '/portfolio', label: 'Portfolio', roles: ['investor', 'admin'] },
+  { path: '/screener', label: 'Screener', roles: ['investor', 'admin'] },
+  { path: '/my-startup', label: 'My Startup', roles: ['startup', 'admin'] },
+  { path: '/staking', label: 'Staking', roles: ['investor', 'startup', 'admin'] },
+  { path: '/governance', label: 'Governance', roles: ['investor', 'startup', 'admin'] },
 ];
 
-const STARTUP_NAV = { path: '/my-startup', label: 'My Startup' };
-
 /* ── Sidebar sections ── */
-const SIDEBAR_SECTIONS: { title: string; links: { path: string; label: string; icon: any; desc: string }[] }[] = [
+interface SidebarLink { path: string; label: string; icon: any; desc: string }
+const SIDEBAR_SECTIONS: { title: string; links: SidebarLink[] }[] = [
   {
     title: 'Core',
     links: [
@@ -33,6 +37,13 @@ const SIDEBAR_SECTIONS: { title: string; links: { path: string; label: string; i
       { path: '/screener', label: 'Screener', icon: Search, desc: 'Multi-metric filter' },
       { path: '/leaderboard', label: 'Leaderboard', icon: TrendingUp, desc: 'Top startups ranked' },
       { path: '/compare', label: 'Compare', icon: GitCompareArrows, desc: 'Side-by-side analysis' },
+    ],
+  },
+  {
+    title: 'My Business',
+    links: [
+      { path: '/my-startup', label: 'My Startup', icon: Building2, desc: 'Manage profile & metrics' },
+      { path: '/register', label: 'Register Startup', icon: FileText, desc: 'On-chain registration' },
     ],
   },
   {
@@ -186,13 +197,10 @@ export default function Navbar() {
     setSidebarOpen(false);
   }, [location.pathname]);
 
-  // Build header links
-  const headerLinks = [
-    ...HEADER_LINKS.slice(0, 1),
-    { path: '/portfolio', label: 'Portfolio' },
-    ...(role === 'startup' ? [STARTUP_NAV] : []),
-    ...HEADER_LINKS.slice(1),
-  ];
+  // Filter header links by role
+  const headerLinks = HEADER_LINKS_ALL.filter(
+    link => link.roles.includes(role) || link.roles.includes(null)
+  );
 
   return (
     <>
@@ -321,59 +329,50 @@ export default function Navbar() {
                 </button>
               </div>
 
-              {/* My Startup link for startup users */}
-              {role === 'startup' && (
-                <div className="px-3 pt-3">
-                  <Link
-                    to="/my-startup"
-                    onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-                      location.pathname === '/my-startup'
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                    }`}
-                  >
-                    <Building2 className="h-4 w-4" />
-                    <div className="flex-1 min-w-0">
-                      <div>My Startup</div>
-                      <div className="text-[10px] text-muted-foreground">Manage profile & metrics</div>
-                    </div>
-                  </Link>
+              {/* Role indicator */}
+              {role && (
+                <div className="mx-5 mt-3 rounded-lg bg-primary/5 border border-primary/20 px-3 py-2">
+                  <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Signed in as</div>
+                  <div className="text-sm font-bold text-primary capitalize">{role}</div>
                 </div>
               )}
 
-              {/* Sidebar sections */}
+              {/* Sidebar sections — filtered by role */}
               <div className="px-3 py-3 space-y-5">
-                {SIDEBAR_SECTIONS.map((section) => (
-                  <div key={section.title}>
-                    <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      {section.title}
-                    </p>
-                    <div className="space-y-0.5">
-                      {section.links.map((link) => (
-                        <Link
-                          key={link.path}
-                          to={link.path}
-                          onClick={() => setSidebarOpen(false)}
-                          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
-                            location.pathname === link.path
-                              ? 'bg-primary/10 text-primary font-medium'
-                              : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                          }`}
-                        >
-                          <link.icon className="h-4 w-4 shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <div className="text-sm">{link.label}</div>
-                            <div className="text-[10px] text-muted-foreground truncate">{link.desc}</div>
-                          </div>
-                          {location.pathname === link.path && (
-                            <ChevronRight className="h-3 w-3 text-primary shrink-0" />
-                          )}
-                        </Link>
-                      ))}
+                {SIDEBAR_SECTIONS.map((section) => {
+                  const visibleLinks = section.links.filter(link => canAccess(role, link.path));
+                  if (visibleLinks.length === 0) return null;
+                  return (
+                    <div key={section.title}>
+                      <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {section.title}
+                      </p>
+                      <div className="space-y-0.5">
+                        {visibleLinks.map((link) => (
+                          <Link
+                            key={link.path}
+                            to={link.path}
+                            onClick={() => setSidebarOpen(false)}
+                            className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
+                              location.pathname === link.path
+                                ? 'bg-primary/10 text-primary font-medium'
+                                : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                            }`}
+                          >
+                            <link.icon className="h-4 w-4 shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm">{link.label}</div>
+                              <div className="text-[10px] text-muted-foreground truncate">{link.desc}</div>
+                            </div>
+                            {location.pathname === link.path && (
+                              <ChevronRight className="h-3 w-3 text-primary shrink-0" />
+                            )}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Sidebar footer */}

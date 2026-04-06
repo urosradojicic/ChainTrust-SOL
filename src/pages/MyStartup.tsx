@@ -83,7 +83,7 @@ export default function MyStartup() {
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
-    if (role && role !== 'startup') { navigate('/dashboard'); return; }
+    // Role guard in App.tsx handles access — just fetch data
     fetchStartup();
   }, [user, role]);
 

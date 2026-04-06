@@ -11,6 +11,7 @@ import Web3Provider from "./providers/Web3Provider";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import PageTransition from "./components/layout/PageTransition";
+import RoleGuard from "./components/RoleGuard";
 import { useRealtimeSync } from "./hooks/use-realtime";
 import { Loader2 } from "lucide-react";
 
@@ -53,6 +54,15 @@ function RealtimeProvider({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+/** Helper — wraps a page with role guard + page transition */
+function G({ path, children }: { path: string; children: React.ReactNode }) {
+  return (
+    <RoleGuard path={path}>
+      <PageTransition>{children}</PageTransition>
+    </RoleGuard>
+  );
+}
+
 const AnimatedRoutes = () => {
   const location = useLocation();
 
@@ -60,27 +70,35 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <Suspense fallback={<PageLoader />}>
         <Routes location={location} key={location.pathname}>
+          {/* Public */}
           <Route path="/" element={<PageTransition><Landing /></PageTransition>} />
           <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
-          <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
-          <Route path="/leaderboard" element={<PageTransition><Leaderboard /></PageTransition>} />
-          <Route path="/compare" element={<PageTransition><Compare /></PageTransition>} />
-          <Route path="/startup/:id" element={<PageTransition><StartupDetail /></PageTransition>} />
-          <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
-          <Route path="/staking" element={<PageTransition><Staking /></PageTransition>} />
-          <Route path="/governance" element={<PageTransition><Governance /></PageTransition>} />
-          <Route path="/screener" element={<PageTransition><Screener /></PageTransition>} />
           <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
-          <Route path="/my-startup" element={<PageTransition><MyStartup /></PageTransition>} />
-          <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
-          <Route path="/security" element={<PageTransition><Security /></PageTransition>} />
-          <Route path="/compliance" element={<PageTransition><Compliance /></PageTransition>} />
-          <Route path="/analytics" element={<PageTransition><Analytics /></PageTransition>} />
-          <Route path="/cost-calculator" element={<PageTransition><CostCalculator /></PageTransition>} />
-          <Route path="/api" element={<PageTransition><API /></PageTransition>} />
-          <Route path="/provenance" element={<PageTransition><Provenance /></PageTransition>} />
-          <Route path="/investors" element={<PageTransition><Investors /></PageTransition>} />
-          <Route path="/tokenomics" element={<PageTransition><Tokenomics /></PageTransition>} />
+
+          {/* All authenticated users */}
+          <Route path="/dashboard" element={<G path="/dashboard"><Dashboard /></G>} />
+          <Route path="/leaderboard" element={<G path="/leaderboard"><Leaderboard /></G>} />
+          <Route path="/startup/:id" element={<G path="/dashboard"><StartupDetail /></G>} />
+          <Route path="/staking" element={<G path="/staking"><Staking /></G>} />
+          <Route path="/governance" element={<G path="/governance"><Governance /></G>} />
+          <Route path="/security" element={<G path="/security"><Security /></G>} />
+          <Route path="/tokenomics" element={<G path="/tokenomics"><Tokenomics /></G>} />
+          <Route path="/compliance" element={<G path="/compliance"><Compliance /></G>} />
+          <Route path="/provenance" element={<G path="/provenance"><Provenance /></G>} />
+
+          {/* Investor-only */}
+          <Route path="/portfolio" element={<G path="/portfolio"><Portfolio /></G>} />
+          <Route path="/screener" element={<G path="/screener"><Screener /></G>} />
+          <Route path="/compare" element={<G path="/compare"><Compare /></G>} />
+          <Route path="/analytics" element={<G path="/analytics"><Analytics /></G>} />
+          <Route path="/cost-calculator" element={<G path="/cost-calculator"><CostCalculator /></G>} />
+          <Route path="/investors" element={<G path="/investors"><Investors /></G>} />
+          <Route path="/api" element={<G path="/api"><API /></G>} />
+
+          {/* Startup-only */}
+          <Route path="/my-startup" element={<G path="/my-startup"><MyStartup /></G>} />
+          <Route path="/register" element={<G path="/register"><Register /></G>} />
+
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>
