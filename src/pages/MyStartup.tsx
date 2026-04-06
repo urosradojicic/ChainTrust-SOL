@@ -8,7 +8,7 @@ import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import {
   Loader2, Save, CheckCircle2, Plus, History,
-  Building2, BarChart3, Leaf, FileText, AlertTriangle,
+  Building2, BarChart3, Leaf, FileText, AlertTriangle, Award, Lock, Shield,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
@@ -246,6 +246,7 @@ export default function MyStartup() {
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="profile" className="gap-1.5"><Building2 className="h-3.5 w-3.5" /> Profile & Metrics</TabsTrigger>
           <TabsTrigger value="monthly" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" /> Monthly Data</TabsTrigger>
+          <TabsTrigger value="badge" className="gap-1.5"><Award className="h-3.5 w-3.5" /> Verification Badge</TabsTrigger>
           <TabsTrigger value="audit" className="gap-1.5"><History className="h-3.5 w-3.5" /> Audit Trail</TabsTrigger>
         </TabsList>
 
@@ -346,6 +347,134 @@ export default function MyStartup() {
               className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90 disabled:opacity-50">
               {submittingMonth ? <><Loader2 className="h-4 w-4 animate-spin" /> Recording...</> : <><FileText className="h-4 w-4" /> Submit & Record On-Chain</>}
             </button>
+          </div>
+        </TabsContent>
+
+        {/* Badge Claiming */}
+        <TabsContent value="badge" className="mt-6 space-y-6">
+          {startup.verified ? (
+            <div className="relative overflow-hidden rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-primary/5 p-6">
+              <div className="absolute -top-16 -right-16 h-32 w-32 rounded-full bg-primary/10 blur-3xl" />
+              <div className="flex items-start gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-primary">
+                  <Award className="h-7 w-7 text-primary-foreground" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold">Soulbound Verification Badge</h3>
+                    <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                      <Lock className="h-2.5 w-2.5" /> Non-Transferable
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1">{startup.name} — Verified on ChainTrust</p>
+                  <div className="mt-3 grid grid-cols-3 gap-4">
+                    <div>
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Trust Score</span>
+                      <p className="text-xl font-bold font-mono text-primary">{startup.trust_score}</p>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Category</span>
+                      <p className="text-sm font-medium">{startup.category}</p>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Status</span>
+                      <p className="text-sm font-medium text-emerald-400">Verified</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-xl border bg-card p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted">
+                  <Shield className="h-7 w-7 text-muted-foreground" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold">Verification Badge — Not Yet Earned</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Complete the steps below to earn your soulbound verification badge on Solana.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Badge requirements checklist */}
+          <div className="rounded-xl border bg-card p-6">
+            <h3 className="font-bold mb-4">Badge Requirements</h3>
+            <div className="space-y-3">
+              {[
+                { label: 'Complete startup profile', done: !!(startup.name && startup.category && startup.description), desc: 'Name, category, description, and website filled out' },
+                { label: 'Publish metrics on-chain', done: startup.mrr > 0, desc: 'At least one set of metrics published to Solana' },
+                { label: 'Achieve trust score > 60', done: startup.trust_score > 60, desc: `Current: ${startup.trust_score}/100` },
+                { label: 'Submit sustainability data', done: Number(startup.carbon_offset_tonnes) > 0, desc: 'Carbon offset and energy data reported' },
+                { label: 'Pass oracle verification', done: startup.verified || false, desc: 'Independent oracle attestation of published metrics' },
+              ].map((req, i) => (
+                <div key={i} className="flex items-start gap-3 rounded-lg bg-muted/30 p-3">
+                  {req.done ? (
+                    <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+                  ) : (
+                    <div className="h-5 w-5 rounded-full border-2 border-muted-foreground/30 shrink-0 mt-0.5" />
+                  )}
+                  <div>
+                    <span className={`text-sm font-medium ${req.done ? 'text-foreground' : 'text-muted-foreground'}`}>{req.label}</span>
+                    <p className="text-xs text-muted-foreground mt-0.5">{req.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {!startup.verified && (
+              <button
+                onClick={() => {
+                  toast({ title: 'Verification requested', description: 'Your startup will be reviewed by oracle verifiers within 48 hours.' });
+                }}
+                disabled={startup.trust_score <= 60 || startup.mrr <= 0}
+                className="mt-4 flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90 disabled:opacity-40"
+              >
+                <Award className="h-4 w-4" /> Request Verification Badge
+              </button>
+            )}
+            {startup.verified && (
+              <button
+                onClick={() => {
+                  toast({ title: 'Badge minted!', description: 'Soulbound verification badge has been minted on Solana.' });
+                }}
+                className="mt-4 flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90"
+              >
+                <Award className="h-4 w-4" /> Mint Soulbound Badge on Solana
+              </button>
+            )}
+          </div>
+
+          {/* Badge tiers */}
+          <div className="rounded-xl border bg-card p-6">
+            <h3 className="font-bold mb-4">Badge Tiers</h3>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                { tier: 'Bronze', min: 60, color: 'border-amber-700/50 bg-amber-900/10', textColor: 'text-amber-600', features: ['Basic verification', 'Leaderboard listing', 'Public proof chain'] },
+                { tier: 'Silver', min: 75, color: 'border-gray-400/50 bg-gray-500/10', textColor: 'text-gray-400', features: ['Priority oracle verification', 'Institutional visibility', 'API access'] },
+                { tier: 'Gold', min: 90, color: 'border-amber-400/50 bg-amber-400/10', textColor: 'text-amber-400', features: ['Featured placement', 'Investor introductions', 'Premium analytics'] },
+              ].map((t, i) => (
+                <div key={t.tier} className={`rounded-xl border p-4 ${t.color} ${startup.trust_score >= t.min ? '' : 'opacity-50'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`font-bold ${t.textColor}`}>{t.tier}</span>
+                    <span className="text-xs font-mono text-muted-foreground">{t.min}+ trust</span>
+                  </div>
+                  <ul className="space-y-1">
+                    {t.features.map(f => (
+                      <li key={f} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <CheckCircle2 className={`h-3 w-3 shrink-0 ${startup.trust_score >= t.min ? t.textColor : 'text-muted-foreground/30'}`} />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  {startup.trust_score >= t.min && (
+                    <span className={`mt-2 block text-[10px] font-bold ${t.textColor}`}>Eligible</span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </TabsContent>
 

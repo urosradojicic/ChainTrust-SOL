@@ -15,9 +15,11 @@ const NAV_LINKS: { path: string; label: string; live?: boolean }[] = [
   { path: '/screener', label: 'Screener' },
   { path: '/staking', label: 'Staking' },
   { path: '/governance', label: 'Governance' },
+  { path: '/provenance', label: 'Provenance' },
   { path: '/compliance', label: 'Compliance' },
   { path: '/analytics', label: 'Analytics' },
   { path: '/security', label: 'Security' },
+  { path: '/investors', label: 'Investors' },
   { path: '/api', label: 'API' },
   { path: '/demo', label: 'Demo' },
 ];

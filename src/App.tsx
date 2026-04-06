@@ -35,6 +35,8 @@ const Compliance = lazy(() => import("./pages/Compliance"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const CostCalculator = lazy(() => import("./pages/CostCalculator"));
 const API = lazy(() => import("./pages/API"));
+const Provenance = lazy(() => import("./pages/Provenance"));
+const Investors = lazy(() => import("./pages/Investors"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageLoader() {
@@ -75,6 +77,8 @@ const AnimatedRoutes = () => {
           <Route path="/analytics" element={<PageTransition><Analytics /></PageTransition>} />
           <Route path="/cost-calculator" element={<PageTransition><CostCalculator /></PageTransition>} />
           <Route path="/api" element={<PageTransition><API /></PageTransition>} />
+          <Route path="/provenance" element={<PageTransition><Provenance /></PageTransition>} />
+          <Route path="/investors" element={<PageTransition><Investors /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>

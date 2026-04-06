@@ -410,11 +410,12 @@ export default function Landing() {
           {[
             { label: 'Proof Chain Visualizer', desc: 'Watch cryptographic verification in real-time', path: '/dashboard' },
             { label: 'Multi-Metric Screener', desc: '8-dimension filter with CSV export', path: '/screener' },
+            { label: 'Provenance Certificates', desc: 'RWA-tokenized supply chain verification records', path: '/provenance' },
             { label: 'EU DPP Compliance', desc: 'Digital Product Passport compliance tracker', path: '/compliance' },
             { label: 'Platform Analytics', desc: 'Real-time KPIs, verification funnel, activity feed', path: '/analytics' },
             { label: 'Cost Calculator', desc: 'See your savings vs traditional verification', path: '/cost-calculator' },
             { label: 'API & Integrations', desc: 'REST API, webhooks, ERP connectors', path: '/api' },
-            { label: 'LP Report Generator', desc: 'Institutional quarterly PDF reports', path: '/dashboard' },
+            { label: 'Investor Relations', desc: 'Traction, case studies, market opportunity, roadmap', path: '/investors' },
             { label: 'Security & Audits', desc: 'OtterSec, Sec3, CertiK audit reports', path: '/security' },
           ].map((t, i) => (
             <motion.div key={t.label} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
