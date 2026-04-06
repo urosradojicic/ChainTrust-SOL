@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ArrowRight, TrendingUp, Building2, BarChart3, Shield, Vote } from 'lucide-react';
+import {
+  Search, ArrowRight, TrendingUp, Building2, BarChart3, Shield, Vote,
+  FileCheck, Award, Calculator, Code, Coins, Users, Globe, Eye,
+} from 'lucide-react';
 import { useStartups } from '@/hooks/use-startups';
 import { formatCurrency } from '@/lib/format';
 
@@ -10,9 +13,18 @@ const PAGES = [
   { path: '/portfolio', label: 'Portfolio', icon: Shield },
   { path: '/leaderboard', label: 'Leaderboard', icon: TrendingUp },
   { path: '/screener', label: 'Screener', icon: Search },
-  { path: '/staking', label: 'Staking', icon: Shield },
+  { path: '/staking', label: 'Staking', icon: Coins },
   { path: '/governance', label: 'Governance', icon: Vote },
   { path: '/compare', label: 'Compare', icon: Building2 },
+  { path: '/provenance', label: 'Provenance Certificates', icon: Award },
+  { path: '/compliance', label: 'EU DPP Compliance', icon: FileCheck },
+  { path: '/analytics', label: 'Platform Analytics', icon: BarChart3 },
+  { path: '/cost-calculator', label: 'Cost Calculator', icon: Calculator },
+  { path: '/tokenomics', label: 'Token Economics', icon: Coins },
+  { path: '/investors', label: 'Investor Relations', icon: Users },
+  { path: '/api', label: 'API & Integrations', icon: Code },
+  { path: '/security', label: 'Security & Compliance', icon: Shield },
+  { path: '/demo', label: 'Interactive Demo', icon: Eye },
 ];
 
 export default function SearchModal({ open, onClose }: { open: boolean; onClose: () => void }) {

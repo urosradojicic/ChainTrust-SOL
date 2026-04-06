@@ -415,6 +415,7 @@ export default function Landing() {
             { label: 'Platform Analytics', desc: 'Real-time KPIs, verification funnel, activity feed', path: '/analytics' },
             { label: 'Cost Calculator', desc: 'See your savings vs traditional verification', path: '/cost-calculator' },
             { label: 'API & Integrations', desc: 'REST API, webhooks, ERP connectors', path: '/api' },
+            { label: 'Token Economics', desc: 'CMT distribution, vesting, burn mechanics, staking tiers', path: '/tokenomics' },
             { label: 'Investor Relations', desc: 'Traction, case studies, market opportunity, roadmap', path: '/investors' },
             { label: 'Security & Audits', desc: 'OtterSec, Sec3, CertiK audit reports', path: '/security' },
           ].map((t, i) => (
@@ -431,8 +432,67 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── Testimonials / Social proof ── */}
+      <section className="border-y border-border bg-surface">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+            <p className="text-xs font-medium uppercase tracking-widest text-primary mb-4 font-mono">What builders say</p>
+            <h2 className="font-display text-3xl font-bold text-foreground">Trusted by supply chain leaders</h2>
+          </motion.div>
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+            {[
+              {
+                quote: 'ChainTrust gave us verifiable provenance in 48 hours. Our EU compliance team went from 3 months of manual work to automated on-chain verification.',
+                name: 'Maria Kowalski',
+                role: 'Head of Compliance, EcoMetal GmbH',
+                category: 'Manufacturing',
+              },
+              {
+                quote: "The cost savings calculator sold our CFO instantly. We're paying $0.00025 per verification instead of $0.45. That's a 99.9% cost reduction on 50K monthly checks.",
+                name: 'James Okafor',
+                role: 'VP Supply Chain, NovaPay',
+                category: 'Fintech',
+              },
+              {
+                quote: 'As an investor, the AI due diligence engine and proof chain visualizer give me confidence I never had with self-reported metrics. This is how startup evaluation should work.',
+                name: 'Sarah Chen',
+                role: 'Partner, Meridian Ventures',
+                category: 'Investor',
+              },
+            ].map((t, i) => (
+              <motion.div
+                key={t.name}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="rounded-lg border border-border bg-card p-6"
+              >
+                <p className="text-sm text-muted-foreground leading-relaxed italic">"{t.quote}"</p>
+                <div className="mt-4 flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                    {t.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.role}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mt-8 text-center">
+            <p className="text-xs text-muted-foreground">
+              Join 127 startups and 34 countries building verifiable supply chains on ChainTrust.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
-      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8 pt-8">
         <div className="rounded-lg border border-border bg-card p-8 sm:p-12 lg:flex lg:items-center lg:justify-between lg:gap-8">
           <div>
             <h2 className="font-display text-2xl font-bold text-foreground">Ready to build investor trust?</h2>

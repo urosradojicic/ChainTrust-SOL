@@ -37,6 +37,7 @@ const CostCalculator = lazy(() => import("./pages/CostCalculator"));
 const API = lazy(() => import("./pages/API"));
 const Provenance = lazy(() => import("./pages/Provenance"));
 const Investors = lazy(() => import("./pages/Investors"));
+const Tokenomics = lazy(() => import("./pages/Tokenomics"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageLoader() {
@@ -79,6 +80,7 @@ const AnimatedRoutes = () => {
           <Route path="/api" element={<PageTransition><API /></PageTransition>} />
           <Route path="/provenance" element={<PageTransition><Provenance /></PageTransition>} />
           <Route path="/investors" element={<PageTransition><Investors /></PageTransition>} />
+          <Route path="/tokenomics" element={<PageTransition><Tokenomics /></PageTransition>} />
           <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
         </Routes>
       </Suspense>

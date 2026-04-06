@@ -11,6 +11,7 @@ import LiveFeed from '@/components/LiveFeed';
 import BlockchainStatus from '@/components/BlockchainStatus';
 import NetworkPulse from '@/components/NetworkPulse';
 import EcosystemHeatmap from '@/components/EcosystemHeatmap';
+import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
 
 type SortKey = 'mrr' | 'growth_rate' | 'trust_score' | 'users';
 
@@ -46,10 +47,11 @@ function exportCSV(data: any[], filename: string) {
 export default function Dashboard() {
   const navigate = useNavigate();
   const { data: startups, isLoading, error } = useStartups();
+  const { institutionalMode, labels } = useInstitutionalView();
   const [category, setCategory] = useState('All');
   const [sortKey, setSortKey] = useState<SortKey>('mrr');
   const [sortAsc, setSortAsc] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>(institutionalMode ? 'table' : 'grid');
   const [search, setSearch] = useState('');
   const [csvExported, setCsvExported] = useState(false);
 
@@ -75,7 +77,12 @@ export default function Dashboard() {
   const totalCarbon = startups?.reduce((s, x) => s + Number(x.carbon_offset_tonnes), 0) ?? 0;
   const startupCount = startups?.length ?? 0;
 
-  const platformStats = [
+  const platformStats = institutionalMode ? [
+    { label: 'Verified MRR', value: formatCurrency(totalMrr), change: '+11.4%' },
+    { label: 'Total End Users', value: formatNumber(totalUsers), change: '+8.7%' },
+    { label: 'Companies Registered', value: String(startupCount), change: '+16.7%' },
+    { label: 'ESG Impact (CO2)', value: `${formatNumber(totalCarbon)}t`, change: '+22.3%' },
+  ] : [
     { label: 'Total MRR', value: formatCurrency(totalMrr), change: '+11.4%' },
     { label: 'Total Users', value: formatNumber(totalUsers), change: '+8.7%' },
     { label: 'Startups', value: String(startupCount), change: '+16.7%' },
@@ -118,8 +125,16 @@ export default function Dashboard() {
       <BlockchainStatus />
 
       <div className="mb-8 mt-6">
-        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Platform-wide metrics and startup overview</p>
+        <h1 className="text-2xl font-bold text-foreground">{institutionalMode ? 'Enterprise Dashboard' : 'Dashboard'}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {institutionalMode ? 'Verified portfolio metrics and due diligence overview' : 'Platform-wide metrics and startup overview'}
+        </p>
+        {institutionalMode && (
+          <div className="mt-2 flex items-center gap-2 rounded-lg bg-primary/5 border border-primary/20 px-3 py-1.5 w-fit">
+            <div className="h-2 w-2 rounded-full bg-primary" />
+            <span className="text-xs font-medium text-primary">Institutional View — Dense data, no animations, enterprise terminology</span>
+          </div>
+        )}
       </div>
 
       <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

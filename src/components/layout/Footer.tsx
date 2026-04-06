@@ -15,6 +15,7 @@ export default function Footer() {
             <Link to="/compliance" className="text-xs text-muted-foreground transition hover:text-foreground">Compliance</Link>
             <Link to="/provenance" className="text-xs text-muted-foreground transition hover:text-foreground">Provenance</Link>
             <Link to="/analytics" className="text-xs text-muted-foreground transition hover:text-foreground">Analytics</Link>
+            <Link to="/tokenomics" className="text-xs text-muted-foreground transition hover:text-foreground">Tokenomics</Link>
             <Link to="/investors" className="text-xs text-muted-foreground transition hover:text-foreground">Investors</Link>
             <Link to="/security" className="text-xs text-muted-foreground transition hover:text-foreground">Security</Link>
             <Link to="/api" className="text-xs text-muted-foreground transition hover:text-foreground">API</Link>

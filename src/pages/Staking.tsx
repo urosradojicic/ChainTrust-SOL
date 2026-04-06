@@ -8,8 +8,10 @@ import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { formatCMT } from '@/lib/format';
 import { explorerTxUrl } from '@/lib/solana-config';
 import { toast } from '@/hooks/use-toast';
+import { Link } from 'react-router-dom';
 import {
   Loader2, ExternalLink, Gift, AlertTriangle, Coins, TrendingUp, Users, Shield,
+  Calculator, History, ChevronRight,
 } from 'lucide-react';
 
 const TOKEN_DISTRIBUTION = [
@@ -122,6 +124,70 @@ function StakeModal({ mode, onClose }: { mode: 'stake' | 'unstake'; onClose: () 
           </>
         )}
       </motion.div>
+    </div>
+  );
+}
+
+function RewardsCalculator() {
+  const [calcAmount, setCalcAmount] = useState('10000');
+  const [calcPeriod, setCalcPeriod] = useState('12');
+
+  const amt = Number(calcAmount) || 0;
+  const months = Number(calcPeriod) || 12;
+  const apy = amt >= 50000 ? 0.15 : amt >= 5000 ? 0.125 : amt > 0 ? 0.08 : 0;
+  const calcTier = amt >= 50000 ? 'Whale' : amt >= 5000 ? 'Pro' : amt > 0 ? 'Basic' : 'Free';
+  const monthlyRate = apy / 12;
+  const totalRewards = amt * monthlyRate * months;
+  const totalValue = amt + totalRewards;
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      <div className="space-y-4">
+        <div>
+          <label className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">Stake Amount (CMT)</span>
+            <span className="text-sm font-mono text-primary">{Number(calcAmount || 0).toLocaleString()}</span>
+          </label>
+          <input
+            type="range" min="0" max="100000" step="500"
+            value={calcAmount}
+            onChange={e => setCalcAmount(e.target.value)}
+            className="w-full accent-primary"
+          />
+          <div className="flex justify-between text-[10px] text-muted-foreground mt-1"><span>0</span><span>100K</span></div>
+        </div>
+        <div>
+          <label className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">Lock Period (months)</span>
+            <span className="text-sm font-mono text-primary">{calcPeriod}mo</span>
+          </label>
+          <input
+            type="range" min="1" max="48" step="1"
+            value={calcPeriod}
+            onChange={e => setCalcPeriod(e.target.value)}
+            className="w-full accent-primary"
+          />
+          <div className="flex justify-between text-[10px] text-muted-foreground mt-1"><span>1mo</span><span>48mo</span></div>
+        </div>
+      </div>
+      <div className="space-y-3">
+        <div className="rounded-lg bg-muted/30 p-3 flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Tier</span>
+          <span className="font-bold text-primary">{calcTier}</span>
+        </div>
+        <div className="rounded-lg bg-muted/30 p-3 flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">APY</span>
+          <span className="font-bold font-mono">{(apy * 100).toFixed(1)}%</span>
+        </div>
+        <div className="rounded-lg bg-muted/30 p-3 flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Estimated Rewards</span>
+          <span className="font-bold font-mono text-emerald-400">{totalRewards.toLocaleString(undefined, { maximumFractionDigits: 0 })} CMT</span>
+        </div>
+        <div className="rounded-lg bg-primary/5 border border-primary/20 p-3 flex items-center justify-between">
+          <span className="text-sm font-medium">Total After {months}mo</span>
+          <span className="font-bold font-mono text-primary text-lg">{totalValue.toLocaleString(undefined, { maximumFractionDigits: 0 })} CMT</span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -274,11 +340,51 @@ export default function Staking() {
         ))}
       </div>
 
+      {/* Rewards Calculator */}
+      <div className="mt-12 rounded-xl border bg-card p-6">
+        <h3 className="font-bold flex items-center gap-2 mb-4">
+          <Calculator className="h-5 w-5 text-primary" /> Rewards Calculator
+        </h3>
+        <RewardsCalculator />
+      </div>
+
+      {/* Delegation History */}
+      <div className="mt-8 rounded-xl border bg-card p-6">
+        <h3 className="font-bold flex items-center gap-2 mb-4">
+          <History className="h-5 w-5 text-primary" /> Staking Activity
+        </h3>
+        <div className="space-y-0 divide-y divide-border">
+          {[
+            { action: 'Staked', amount: '5,000 CMT', tier: 'Pro', time: '2 days ago', tx: '4xRm...7yBn' },
+            { action: 'Rewards Claimed', amount: '62.5 CMT', tier: 'Pro', time: '7 days ago', tx: '3zKm...9wFn' },
+            { action: 'Staked', amount: '2,500 CMT', tier: 'Basic', time: '14 days ago', tx: '5KjP...2xqR' },
+            { action: 'Delegated Votes', amount: 'to 7Kp2...xQ4f', tier: 'Basic', time: '21 days ago', tx: '8mN3...6bJ4' },
+          ].map((entry, i) => (
+            <div key={i} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+              <div className="flex items-center gap-3">
+                <div className={`h-2 w-2 rounded-full ${entry.action.includes('Staked') ? 'bg-primary' : entry.action.includes('Claimed') ? 'bg-emerald-400' : 'bg-blue-400'}`} />
+                <div>
+                  <span className="text-sm font-medium">{entry.action}</span>
+                  <span className="text-sm text-muted-foreground ml-2">{entry.amount}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-xs text-muted-foreground">{entry.time}</span>
+                <span className="text-xs font-mono text-primary">{entry.tx}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-[10px] text-muted-foreground italic">Showing simulated staking history. Connect wallet for real transaction data.</p>
+      </div>
+
       {/* Token Distribution */}
       <div className="mt-12">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-bold">CMT Token Distribution</h3>
-          <span className="text-sm font-mono text-muted-foreground">Total Supply: 100,000,000 CMT</span>
+          <Link to="/tokenomics" className="flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+            Full tokenomics <ChevronRight className="h-3 w-3" />
+          </Link>
         </div>
         <div className="space-y-3">
           {TOKEN_DISTRIBUTION.map((d, i) => (
