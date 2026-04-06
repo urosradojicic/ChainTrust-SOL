@@ -4,28 +4,69 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWallet } from '@/contexts/WalletContext';
 import { Button } from '@/components/ui/button';
-import { LogIn, LogOut, User, Sun, Moon, Bell, TrendingDown, FileText, Shield, Search, Building2 } from 'lucide-react';
+import {
+  LogIn, LogOut, User, Sun, Moon, Bell, TrendingDown, FileText, Shield,
+  Search, Building2, Menu, X, BarChart3, Coins, Vote, Eye, Award,
+  FileCheck, Calculator, Code, Users, Globe, TrendingUp, GitCompareArrows,
+  Scale, ChevronRight,
+} from 'lucide-react';
 import SearchModal from '@/components/SearchModal';
 import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
 
-const NAV_LINKS: { path: string; label: string; live?: boolean }[] = [
+/* ── Header links — only the essentials ── */
+const HEADER_LINKS: { path: string; label: string; live?: boolean }[] = [
   { path: '/dashboard', label: 'Dashboard', live: true },
-  { path: '/leaderboard', label: 'Leaderboard' },
-  { path: '/compare', label: 'Compare' },
   { path: '/screener', label: 'Screener' },
   { path: '/staking', label: 'Staking' },
   { path: '/governance', label: 'Governance' },
-  { path: '/provenance', label: 'Provenance' },
-  { path: '/compliance', label: 'Compliance' },
-  { path: '/analytics', label: 'Analytics' },
-  { path: '/security', label: 'Security' },
-  { path: '/tokenomics', label: 'Tokenomics' },
-  { path: '/investors', label: 'Investors' },
-  { path: '/api', label: 'API' },
-  { path: '/demo', label: 'Demo' },
 ];
 
 const STARTUP_NAV = { path: '/my-startup', label: 'My Startup' };
+
+/* ── Sidebar sections ── */
+const SIDEBAR_SECTIONS: { title: string; links: { path: string; label: string; icon: any; desc: string }[] }[] = [
+  {
+    title: 'Core',
+    links: [
+      { path: '/dashboard', label: 'Dashboard', icon: BarChart3, desc: 'Platform metrics overview' },
+      { path: '/portfolio', label: 'Portfolio', icon: Shield, desc: 'Bookmarks & alerts' },
+      { path: '/screener', label: 'Screener', icon: Search, desc: 'Multi-metric filter' },
+      { path: '/leaderboard', label: 'Leaderboard', icon: TrendingUp, desc: 'Top startups ranked' },
+      { path: '/compare', label: 'Compare', icon: GitCompareArrows, desc: 'Side-by-side analysis' },
+    ],
+  },
+  {
+    title: 'Verification',
+    links: [
+      { path: '/provenance', label: 'Provenance Certificates', icon: Award, desc: 'RWA supply chain records' },
+      { path: '/compliance', label: 'EU DPP Compliance', icon: FileCheck, desc: 'Digital Product Passport' },
+      { path: '/security', label: 'Security & Audits', icon: Shield, desc: 'Audit reports, MiCA status' },
+    ],
+  },
+  {
+    title: 'Token & Governance',
+    links: [
+      { path: '/staking', label: 'Staking', icon: Coins, desc: 'Stake CMT, earn rewards' },
+      { path: '/governance', label: 'Governance', icon: Vote, desc: 'Proposals & voting' },
+      { path: '/tokenomics', label: 'Token Economics', icon: Coins, desc: 'Distribution, vesting, burns' },
+    ],
+  },
+  {
+    title: 'Intelligence',
+    links: [
+      { path: '/analytics', label: 'Platform Analytics', icon: BarChart3, desc: 'KPIs & growth metrics' },
+      { path: '/cost-calculator', label: 'Cost Calculator', icon: Calculator, desc: 'Savings vs. traditional' },
+      { path: '/investors', label: 'Investor Relations', icon: Users, desc: 'Traction & case studies' },
+    ],
+  },
+  {
+    title: 'Developers',
+    links: [
+      { path: '/api', label: 'API & Integrations', icon: Code, desc: 'REST API, webhooks, SDKs' },
+      { path: '/demo', label: 'Interactive Demo', icon: Eye, desc: 'Try the full workflow' },
+    ],
+  },
+];
 
 function ThemeToggle() {
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
@@ -126,7 +167,7 @@ export default function Navbar() {
   const { user, role, signOut } = useAuth();
   const { connected, address, disconnect } = useWallet();
   const { institutionalMode, toggleInstitutionalMode } = useInstitutionalView();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
@@ -140,26 +181,40 @@ export default function Navbar() {
     return () => document.removeEventListener('keydown', handler);
   }, []);
 
+  // Close sidebar on route change
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
 
-  // Build nav links dynamically
-  const links = [
-    ...NAV_LINKS.slice(0, 1),
+  // Build header links
+  const headerLinks = [
+    ...HEADER_LINKS.slice(0, 1),
     { path: '/portfolio', label: 'Portfolio' },
     ...(role === 'startup' ? [STARTUP_NAV] : []),
-    ...NAV_LINKS.slice(1),
+    ...HEADER_LINKS.slice(1),
   ];
 
   return (
     <>
       <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-          <Link to="/" className="text-xl font-bold text-primary">
-            ChainTrust
-          </Link>
+          {/* Left: logo + sidebar toggle */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <Link to="/" className="text-xl font-bold text-primary">
+              ChainTrust
+            </Link>
+          </div>
 
-          {/* Desktop nav */}
-          <div className="hidden items-center gap-1 md:flex">
-            {links.map((link) => (
+          {/* Center: header links (desktop only) */}
+          <div className="hidden items-center gap-1 lg:flex">
+            {headerLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
@@ -174,7 +229,7 @@ export default function Navbar() {
                 )}
                 <span className="relative z-10 flex items-center gap-1.5">
                   {link.label}
-                  {link.live && (
+                  {(link as any).live && (
                     <span className="flex items-center gap-1">
                       <span className="relative flex h-1.5 w-1.5">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -188,6 +243,7 @@ export default function Navbar() {
             ))}
           </div>
 
+          {/* Right: search, institutional, theme, notifications, auth */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSearchOpen(true)}
@@ -226,57 +282,124 @@ export default function Navbar() {
                 <LogIn className="h-4 w-4 mr-1" /> Sign In
               </Button>
             )}
-
-
-
-
-            <button
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition hover:bg-secondary md:hidden"
-              onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={mobileOpen}
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                {mobileOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
           </div>
         </div>
+      </nav>
 
-        <AnimatePresence>
-          {mobileOpen && (
+      {/* ── Sidebar overlay ── */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <>
+            {/* Backdrop */}
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden border-t border-white/10 md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm"
+              onClick={() => setSidebarOpen(false)}
+            />
+
+            {/* Sidebar panel */}
+            <motion.div
+              initial={{ x: -320, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -320, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="fixed left-0 top-0 bottom-0 z-[70] w-80 border-r border-border bg-background overflow-y-auto"
             >
-              <div className="flex flex-col gap-1 px-4 py-3">
-                {links.map((link) => (
+              {/* Sidebar header */}
+              <div className="flex items-center justify-between border-b border-border px-5 py-4">
+                <Link to="/" onClick={() => setSidebarOpen(false)} className="text-lg font-bold text-primary">
+                  ChainTrust
+                </Link>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* My Startup link for startup users */}
+              {role === 'startup' && (
+                <div className="px-3 pt-3">
                   <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setMobileOpen(false)}
-                    className={`rounded-lg px-4 py-2.5 text-sm font-medium transition ${
-                      location.pathname === link.path
+                    to="/my-startup"
+                    onClick={() => setSidebarOpen(false)}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                      location.pathname === '/my-startup'
                         ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:bg-secondary'
+                        : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                     }`}
                   >
-                    {link.label}
+                    <Building2 className="h-4 w-4" />
+                    <div className="flex-1 min-w-0">
+                      <div>My Startup</div>
+                      <div className="text-[10px] text-muted-foreground">Manage profile & metrics</div>
+                    </div>
                   </Link>
+                </div>
+              )}
+
+              {/* Sidebar sections */}
+              <div className="px-3 py-3 space-y-5">
+                {SIDEBAR_SECTIONS.map((section) => (
+                  <div key={section.title}>
+                    <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      {section.title}
+                    </p>
+                    <div className="space-y-0.5">
+                      {section.links.map((link) => (
+                        <Link
+                          key={link.path}
+                          to={link.path}
+                          onClick={() => setSidebarOpen(false)}
+                          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
+                            location.pathname === link.path
+                              ? 'bg-primary/10 text-primary font-medium'
+                              : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                          }`}
+                        >
+                          <link.icon className="h-4 w-4 shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm">{link.label}</div>
+                            <div className="text-[10px] text-muted-foreground truncate">{link.desc}</div>
+                          </div>
+                          {location.pathname === link.path && (
+                            <ChevronRight className="h-3 w-3 text-primary shrink-0" />
+                          )}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 ))}
+              </div>
 
-
+              {/* Sidebar footer */}
+              <div className="border-t border-border px-5 py-4 mt-2">
+                {user ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="flex items-center gap-1 rounded-lg bg-secondary px-3 py-1.5 text-xs font-medium text-foreground">
+                        <User className="h-3.5 w-3.5" />
+                        {role ?? '...'}
+                      </span>
+                    </div>
+                    <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-foreground" onClick={() => { signOut(); navigate('/'); setSidebarOpen(false); }}>
+                      <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                    </Button>
+                  </div>
+                ) : (
+                  <Button variant="outline" size="sm" className="w-full border-border text-foreground" onClick={() => { navigate('/login'); setSidebarOpen(false); }}>
+                    <LogIn className="h-4 w-4 mr-2" /> Sign In
+                  </Button>
+                )}
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
+          </>
+        )}
+      </AnimatePresence>
 
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>

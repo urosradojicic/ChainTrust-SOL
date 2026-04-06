@@ -9,6 +9,7 @@ import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import {
   Loader2, Save, CheckCircle2, Plus, History,
   Building2, BarChart3, Leaf, FileText, AlertTriangle, Award, Lock, Shield,
+  Upload, X, File, Download,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
@@ -27,6 +28,45 @@ export default function MyStartup() {
   const [saved, setSaved] = useState(false);
   const [auditLog, setAuditLog] = useState<DbAuditEntry[]>([]);
   const [activeTab, setActiveTab] = useState('profile');
+
+  // BMC PDF upload state
+  const [bmcFile, setBmcFile] = useState<{ name: string; size: number; uploadedAt: string; dataUrl: string } | null>(() => {
+    try {
+      const saved = localStorage.getItem('chaintrust_bmc');
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  });
+  const [bmcDragOver, setBmcDragOver] = useState(false);
+
+  const handleBmcUpload = (file: File) => {
+    if (file.type !== 'application/pdf') {
+      toast({ title: 'Invalid file', description: 'Please upload a PDF file.', variant: 'destructive' });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: 'File too large', description: 'Maximum file size is 10MB.', variant: 'destructive' });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const entry = {
+        name: file.name,
+        size: file.size,
+        uploadedAt: new Date().toISOString(),
+        dataUrl: reader.result as string,
+      };
+      setBmcFile(entry);
+      localStorage.setItem('chaintrust_bmc', JSON.stringify(entry));
+      toast({ title: 'BMC uploaded', description: `${file.name} saved successfully.` });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeBmc = () => {
+    setBmcFile(null);
+    localStorage.removeItem('chaintrust_bmc');
+    toast({ title: 'BMC removed' });
+  };
 
   // Editable fields
   const [form, setForm] = useState({
@@ -246,6 +286,7 @@ export default function MyStartup() {
         <TabsList className="w-full justify-start overflow-x-auto">
           <TabsTrigger value="profile" className="gap-1.5"><Building2 className="h-3.5 w-3.5" /> Profile & Metrics</TabsTrigger>
           <TabsTrigger value="monthly" className="gap-1.5"><BarChart3 className="h-3.5 w-3.5" /> Monthly Data</TabsTrigger>
+          <TabsTrigger value="bmc" className="gap-1.5"><FileText className="h-3.5 w-3.5" /> Business Model Canvas</TabsTrigger>
           <TabsTrigger value="badge" className="gap-1.5"><Award className="h-3.5 w-3.5" /> Verification Badge</TabsTrigger>
           <TabsTrigger value="audit" className="gap-1.5"><History className="h-3.5 w-3.5" /> Audit Trail</TabsTrigger>
         </TabsList>
@@ -347,6 +388,142 @@ export default function MyStartup() {
               className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90 disabled:opacity-50">
               {submittingMonth ? <><Loader2 className="h-4 w-4 animate-spin" /> Recording...</> : <><FileText className="h-4 w-4" /> Submit & Record On-Chain</>}
             </button>
+          </div>
+        </TabsContent>
+
+        {/* Business Model Canvas */}
+        <TabsContent value="bmc" className="mt-6 space-y-6">
+          <div className="rounded-xl border border-border bg-card p-6">
+            <h2 className="font-bold text-foreground flex items-center gap-2 mb-2">
+              <FileText className="h-4 w-4 text-primary" /> Business Model Canvas
+            </h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Upload your Business Model Canvas as a PDF. This helps investors quickly understand your value proposition,
+              revenue streams, key partners, and cost structure. Drag and drop or click to upload.
+            </p>
+
+            {bmcFile ? (
+              <div className="space-y-4">
+                {/* Uploaded file card */}
+                <div className="flex items-center gap-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 shrink-0">
+                    <File className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-foreground truncate">{bmcFile.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {(bmcFile.size / 1024).toFixed(0)} KB — Uploaded {new Date(bmcFile.uploadedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <a
+                      href={bmcFile.dataUrl}
+                      download={bmcFile.name}
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                      title="Download"
+                    >
+                      <Download className="h-4 w-4" />
+                    </a>
+                    <button
+                      onClick={removeBmc}
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
+                      title="Remove"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* PDF preview */}
+                <div className="rounded-xl border border-border overflow-hidden bg-muted/20">
+                  <iframe
+                    src={bmcFile.dataUrl}
+                    className="w-full h-[600px]"
+                    title="Business Model Canvas Preview"
+                  />
+                </div>
+
+                {/* Replace button */}
+                <label className="flex items-center justify-center gap-2 rounded-lg border border-dashed border-border px-4 py-3 text-sm text-muted-foreground transition hover:border-primary hover:text-primary cursor-pointer">
+                  <Upload className="h-4 w-4" />
+                  Replace with a new PDF
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    className="hidden"
+                    onChange={e => {
+                      const f = e.target.files?.[0];
+                      if (f) handleBmcUpload(f);
+                      e.target.value = '';
+                    }}
+                  />
+                </label>
+              </div>
+            ) : (
+              /* Drop zone */
+              <div
+                onDragOver={e => { e.preventDefault(); setBmcDragOver(true); }}
+                onDragLeave={() => setBmcDragOver(false)}
+                onDrop={e => {
+                  e.preventDefault();
+                  setBmcDragOver(false);
+                  const f = e.dataTransfer.files[0];
+                  if (f) handleBmcUpload(f);
+                }}
+                className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-12 transition ${
+                  bmcDragOver
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border bg-card/50 hover:border-primary/50'
+                }`}
+              >
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 mb-4">
+                  <Upload className="h-8 w-8 text-primary" />
+                </div>
+                <p className="text-sm font-semibold text-foreground">
+                  {bmcDragOver ? 'Drop your PDF here' : 'Drag & drop your BMC PDF'}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  or click to browse — PDF only, max 10MB
+                </p>
+                <label className="mt-4 cursor-pointer rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90">
+                  Choose File
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    className="hidden"
+                    onChange={e => {
+                      const f = e.target.files?.[0];
+                      if (f) handleBmcUpload(f);
+                      e.target.value = '';
+                    }}
+                  />
+                </label>
+              </div>
+            )}
+          </div>
+
+          {/* What to include */}
+          <div className="rounded-xl border border-border bg-card p-6">
+            <h3 className="font-bold text-foreground mb-3">What to include in your BMC</h3>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                { title: 'Value Proposition', items: ['What problem you solve', 'Unique selling point', 'Target customer segments'] },
+                { title: 'Revenue & Cost', items: ['Revenue streams & pricing', 'Key cost drivers', 'Unit economics (if available)'] },
+                { title: 'Operations', items: ['Key partners & suppliers', 'Distribution channels', 'Key resources & activities'] },
+              ].map(section => (
+                <div key={section.title} className="rounded-lg bg-muted/30 p-4">
+                  <h4 className="text-sm font-semibold mb-2">{section.title}</h4>
+                  <ul className="space-y-1">
+                    {section.items.map(item => (
+                      <li key={item} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
         </TabsContent>
 
