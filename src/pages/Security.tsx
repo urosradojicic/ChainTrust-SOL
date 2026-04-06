@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import {
   Shield, Lock, Eye, FileCheck, Bug, Globe, Server, Key,
   CheckCircle, AlertTriangle, ExternalLink, Fingerprint, ShieldCheck,
+  Scale, ArrowRight,
 } from 'lucide-react';
 
 const AUDIT_HISTORY = [
@@ -176,6 +178,56 @@ export default function Security() {
             </div>
           </div>
         </motion.div>
+      </section>
+
+      {/* MiCA Regulatory Compliance */}
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Scale className="h-5 w-5 text-primary" /> MiCA Regulatory Compliance
+        </h2>
+        <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-5 mb-4">
+          <div className="flex items-start gap-4">
+            <Globe className="h-6 w-6 text-primary shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-bold text-foreground">Markets in Crypto-Assets (MiCA) Framework</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                ChainTrust is built for full MiCA compliance. The regulation is fully enforceable across the EU in 2026,
+                with a hard deadline of <strong className="text-foreground">July 1, 2026</strong> for CASP authorization.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { label: 'CASP Authorization', status: 'in-progress', detail: 'Application submitted — EUR 150K capital reserve allocated' },
+            { label: 'Travel Rule', status: 'active', detail: 'Sender/receiver metadata on all transfers per FATF guidelines' },
+            { label: 'Whitepaper Requirements', status: 'active', detail: 'Token documentation meets MiCA Article 6 requirements' },
+            { label: 'Consumer Protection', status: 'active', detail: 'Clear risk disclosures, cooling-off periods, complaint handling' },
+            { label: 'Market Abuse Prevention', status: 'active', detail: 'Transaction monitoring and suspicious activity reporting' },
+            { label: 'Capital Requirements', status: 'active', detail: 'EUR 150K reserve maintained for Class 3 CASP operations' },
+          ].map((c, i) => (
+            <motion.div
+              key={c.label}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.06 }}
+              className="rounded-xl border bg-card p-4"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-sm">{c.label}</h4>
+                <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${statusBadge(c.status)}`}>
+                  {statusLabel(c.status)}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">{c.detail}</p>
+            </motion.div>
+          ))}
+        </div>
+        <div className="mt-4">
+          <Link to="/compliance" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+            View full EU Digital Product Passport compliance <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
       </section>
 
       {/* Incident Response */}

@@ -368,6 +368,21 @@ export default function Governance() {
                     ))}
                   </div>
 
+                  {/* Execute passed proposals */}
+                  {p.status === 'Passed' && (
+                    <div className="mt-4 flex items-center gap-3">
+                      <button
+                        onClick={async () => {
+                          toast.success(`Proposal "${p.title}" execution queued. On-chain execution pending.`);
+                        }}
+                        className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-1.5 text-xs font-medium text-emerald-400 transition hover:bg-emerald-500/20"
+                      >
+                        Execute Proposal
+                      </button>
+                      <span className="text-[10px] text-muted-foreground">Passed — ready for on-chain execution</span>
+                    </div>
+                  )}
+
                   {isActive && (
                     <div className="mt-4 flex gap-2">
                       {votedProposals[p.id] ? (

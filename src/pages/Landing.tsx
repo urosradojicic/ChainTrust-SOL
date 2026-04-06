@@ -264,6 +264,144 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── Institutional adoption — BlackRock / RWA ── */}
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+          <p className="text-xs font-medium uppercase tracking-widest text-primary mb-4 font-mono">Institutional adoption</p>
+          <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl" style={{ lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+            Built for the $9.4 trillion
+            <br />
+            RWA tokenization wave
+          </h2>
+          <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-lg">
+            BlackRock's BUIDL fund deployed $500M+ on Solana. Vanguard opened $11T to crypto ETFs.
+            The EU Digital Product Passport is now law. ChainTrust is the compliance infrastructure
+            these institutions need.
+          </p>
+        </motion.div>
+
+        <div className="mt-10 grid gap-px bg-border rounded-lg overflow-hidden lg:grid-cols-3">
+          {[
+            { value: '$500M+', label: 'BlackRock BUIDL on Solana', sub: 'Largest tokenized fund on our chain' },
+            { value: '$1.8B', label: 'RWA on Solana', sub: '10x year-over-year growth' },
+            { value: 'Jan 2026', label: 'EU DPP Active', sub: 'Digital Product Passport mandate' },
+            { value: '46%', label: 'Supply chain firms', sub: 'Adopting blockchain verification' },
+            { value: '33%', label: 'Cost reduction', sub: 'Vs. traditional traceability systems' },
+            { value: '$14.8B', label: 'Blockchain funding 2025', sub: '127% year-over-year increase' },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06 }}
+              className="bg-card p-6"
+            >
+              <div className="text-2xl font-display font-bold text-foreground tabular-nums">{stat.value}</div>
+              <div className="mt-1 text-xs font-medium text-foreground">{stat.label}</div>
+              <div className="mt-0.5 text-[11px] text-muted-foreground">{stat.sub}</div>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mt-6 flex flex-wrap gap-3">
+          {['BlackRock', 'Vanguard', 'Franklin Templeton', 'Ondo Finance', 'Securitize', 'Western Union'].map(name => (
+            <span key={name} className="rounded border border-border bg-card/80 px-3 py-1.5 text-xs font-medium text-muted-foreground">
+              {name}
+            </span>
+          ))}
+          <span className="text-xs text-muted-foreground self-center ml-1">...building on Solana</span>
+        </motion.div>
+      </section>
+
+      {/* ── EU Compliance teaser ── */}
+      <section className="border-y border-border bg-surface">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
+            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+              <p className="text-xs font-medium uppercase tracking-widest text-primary mb-4 font-mono">Regulatory-ready</p>
+              <h2 className="font-display text-3xl font-bold text-foreground" style={{ lineHeight: 1.1 }}>
+                EU Digital Product Passport
+                <br />
+                compliance, built in
+              </h2>
+              <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-md">
+                The EU mandate requires verifiable product traceability for all goods sold in Europe.
+                Non-compliance: fines up to EUR 5.6M or 10% of annual turnover. ChainTrust makes
+                compliance automatic.
+              </p>
+              <div className="mt-6 flex gap-3">
+                <Link to="/compliance" className="inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition hover:opacity-90">
+                  View compliance status
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link to="/cost-calculator" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
+                  Calculate savings
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </motion.div>
+            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="mt-10 lg:mt-0">
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Product Identity', pct: 83, status: 'Active' },
+                  { label: 'Sustainability Data', pct: 67, status: 'Active' },
+                  { label: 'Regulatory (MiCA)', pct: 83, status: 'In Progress' },
+                  { label: 'Verification Trail', pct: 67, status: 'Active' },
+                ].map((item, i) => (
+                  <div key={item.label} className="rounded-lg border border-border bg-card p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-medium text-foreground">{item.label}</span>
+                      <span className="text-xs font-mono text-primary">{item.pct}%</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full rounded-full bg-primary" style={{ width: `${item.pct}%` }} />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground mt-1 block">{item.status}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Cost savings teaser ── */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="rounded-lg border border-border bg-card overflow-hidden lg:grid lg:grid-cols-5">
+          <div className="p-8 lg:col-span-3">
+            <p className="text-xs font-medium uppercase tracking-widest text-primary mb-3 font-mono">Cost advantage</p>
+            <h2 className="font-display text-2xl font-bold text-foreground">
+              100,000x cheaper than Ethereum
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-md">
+              Solana's $0.00025 transaction fee makes per-product verification economically viable at any scale.
+              Traditional systems charge $0.20–$5.00 per verification.
+            </p>
+            <Link to="/cost-calculator" className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary transition hover:underline">
+              Try the cost calculator <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <div className="lg:col-span-2 bg-muted/30 p-8 flex flex-col justify-center gap-3 border-t lg:border-t-0 lg:border-l border-border">
+            <div className="flex items-center gap-3">
+              <span className="w-28 text-xs text-muted-foreground">Traditional</span>
+              <div className="flex-1 h-3 rounded-full bg-muted overflow-hidden"><div className="h-full rounded-full bg-red-500" style={{ width: '100%' }} /></div>
+              <span className="text-xs font-mono text-red-400 w-14 text-right">$0.45</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="w-28 text-xs text-muted-foreground">Ethereum</span>
+              <div className="flex-1 h-3 rounded-full bg-muted overflow-hidden"><div className="h-full rounded-full bg-indigo-500" style={{ width: '90%' }} /></div>
+              <span className="text-xs font-mono text-indigo-400 w-14 text-right">$2.93</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="w-28 text-xs text-primary font-medium">ChainTrust</span>
+              <div className="flex-1 h-3 rounded-full bg-muted overflow-hidden"><div className="h-full rounded-full bg-primary" style={{ width: '1%' }} /></div>
+              <span className="text-xs font-mono text-primary w-14 text-right">$0.00025</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Tools list ── */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <h2 className="font-display text-3xl font-bold text-foreground">Analytics tools</h2>
@@ -272,10 +410,12 @@ export default function Landing() {
           {[
             { label: 'Proof Chain Visualizer', desc: 'Watch cryptographic verification in real-time', path: '/dashboard' },
             { label: 'Multi-Metric Screener', desc: '8-dimension filter with CSV export', path: '/screener' },
-            { label: 'AI Due Diligence', desc: 'Algorithmic risk analysis and investment grading', path: '/dashboard' },
+            { label: 'EU DPP Compliance', desc: 'Digital Product Passport compliance tracker', path: '/compliance' },
+            { label: 'Platform Analytics', desc: 'Real-time KPIs, verification funnel, activity feed', path: '/analytics' },
+            { label: 'Cost Calculator', desc: 'See your savings vs traditional verification', path: '/cost-calculator' },
+            { label: 'API & Integrations', desc: 'REST API, webhooks, ERP connectors', path: '/api' },
             { label: 'LP Report Generator', desc: 'Institutional quarterly PDF reports', path: '/dashboard' },
             { label: 'Security & Audits', desc: 'OtterSec, Sec3, CertiK audit reports', path: '/security' },
-            { label: 'Fund Flow Analysis', desc: 'Treasury inflow/outflow breakdown', path: '/dashboard' },
           ].map((t, i) => (
             <motion.div key={t.label} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
               <Link to={t.path} className="group flex items-center justify-between py-5 transition hover:pl-2">
