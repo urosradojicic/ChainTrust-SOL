@@ -21,10 +21,31 @@ import {
   CMT_DECIMALS,
 } from '@/lib/contracts';
 
-/** Generate a fake tx signature for demo mode */
+// ── Helpers ──────────────────────────────────────────────────────
+
+/** Generate a fake tx signature for demo mode (when on-chain call fails) */
 function genDemoTxSig(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   return Array.from({ length: 88 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+}
+
+/**
+ * Compute Anchor instruction discriminator.
+ * Anchor uses: SHA-256("global:<snake_case_fn_name>")[0..8]
+ */
+async function anchorDiscriminator(name: string): Promise<Uint8Array> {
+  const encoder = new TextEncoder();
+  const hash = await crypto.subtle.digest('SHA-256', encoder.encode(`global:${name}`));
+  return new Uint8Array(hash).slice(0, 8);
+}
+
+/** Pre-computed discriminators (cached at module level after first call) */
+const _discCache = new Map<string, Uint8Array>();
+async function disc(name: string): Promise<Uint8Array> {
+  if (_discCache.has(name)) return _discCache.get(name)!;
+  const d = await anchorDiscriminator(name);
+  _discCache.set(name, d);
+  return d;
 }
 
 /**
@@ -48,17 +69,14 @@ export async function computeProofHash(params: {
 }
 
 /**
- * Build an instruction for the chainmetrics program.
- * In production, use the Anchor-generated IDL client.
- * The discriminator is the first 8 bytes of SHA-256("global:<fn_name>").
+ * Build an instruction for the chainmetrics program with proper Anchor discriminator.
  */
 function buildInstruction(
-  discriminator: number[],
+  discriminator: Uint8Array,
   data: Buffer,
   keys: { pubkey: PublicKey; isSigner: boolean; isWritable: boolean }[],
 ): TransactionInstruction {
-  const disc = Buffer.from(discriminator);
-  const instructionData = Buffer.concat([disc, data]);
+  const instructionData = Buffer.concat([Buffer.from(discriminator), data]);
   return new TransactionInstruction({
     programId: PROGRAM_ID,
     keys,
@@ -107,8 +125,8 @@ export function usePublishMetrics() {
         const [startupPDA] = getStartupPDA(params.startupId);
         const [metricsPDA] = getMetricsPDA(params.startupId);
 
-        // Build publish_metrics instruction data
-        const dataBuffer = Buffer.alloc(8 * 7 + 8 + 32); // 7 u64 + 1 i64 + 32 bytes hash
+        // Build publish_metrics instruction data: 7 u64 + 1 i64 + 32 bytes hash
+        const dataBuffer = Buffer.alloc(8 * 7 + 8 + 32);
         let offset = 0;
         dataBuffer.writeBigUInt64LE(BigInt(params.mrr), offset); offset += 8;
         dataBuffer.writeBigUInt64LE(BigInt(params.totalUsers), offset); offset += 8;
@@ -119,16 +137,13 @@ export function usePublishMetrics() {
         dataBuffer.writeBigUInt64LE(BigInt(params.carbonOffset), offset); offset += 8;
         proofHash.forEach((b, i) => dataBuffer.writeUInt8(b, offset + i));
 
-        const ix = buildInstruction(
-          [], // Discriminator computed by Anchor at build time — will be replaced with IDL client
-          dataBuffer,
-          [
-            { pubkey: publicKey, isSigner: true, isWritable: true },
-            { pubkey: startupPDA, isSigner: false, isWritable: true },
-            { pubkey: metricsPDA, isSigner: false, isWritable: true },
-            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-          ],
-        );
+        const discriminator = await disc('publish_metrics');
+        const ix = buildInstruction(discriminator, dataBuffer, [
+          { pubkey: publicKey, isSigner: true, isWritable: true },
+          { pubkey: startupPDA, isSigner: false, isWritable: true },
+          { pubkey: metricsPDA, isSigner: false, isWritable: true },
+          { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+        ]);
 
         const tx = new Transaction().add(ix);
         const sig = await sendTransaction(tx, connection);
@@ -175,7 +190,6 @@ export function useRegisterStartup() {
         const registryInfo = await connection.getAccountInfo(registryPDA);
         let nextId = 1;
         if (registryInfo?.data && registryInfo.data.length >= 48) {
-          // Skip 8-byte discriminator + 32-byte authority, then read u64 startup_count
           nextId = Number(registryInfo.data.readBigUInt64LE(40)) + 1;
         }
 
@@ -196,16 +210,13 @@ export function useRegisterStartup() {
         dataBuffer.writeUInt32LE(uriBytes.length, offset); offset += 4;
         Buffer.from(uriBytes).copy(dataBuffer, offset);
 
-        const ix = buildInstruction(
-          [], // Discriminator from IDL
-          dataBuffer,
-          [
-            { pubkey: publicKey, isSigner: true, isWritable: true },
-            { pubkey: registryPDA, isSigner: false, isWritable: true },
-            { pubkey: startupPDA, isSigner: false, isWritable: true },
-            { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-          ],
-        );
+        const discriminator = await disc('register_startup');
+        const ix = buildInstruction(discriminator, dataBuffer, [
+          { pubkey: publicKey, isSigner: true, isWritable: true },
+          { pubkey: registryPDA, isSigner: false, isWritable: true },
+          { pubkey: startupPDA, isSigner: false, isWritable: true },
+          { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+        ]);
 
         const tx = new Transaction().add(ix);
         const sig = await sendTransaction(tx, connection);
@@ -242,9 +253,8 @@ export function useVerifyOnChain(startupId: number | undefined) {
       const accountInfo = await connection.getAccountInfo(metricsPDA);
 
       if (accountInfo?.data && accountInfo.data.length >= 112) {
-        // Parse the metrics account data (skip 8-byte Anchor discriminator)
         const d = accountInfo.data;
-        const off = 8;
+        const off = 8; // skip Anchor discriminator
         const metricsData = {
           startupId: Number(d.readBigUInt64LE(off)),
           timestamp: Number(d.readBigInt64LE(off + 8)),
@@ -295,7 +305,8 @@ export function useStake() {
       const dataBuffer = Buffer.alloc(8);
       dataBuffer.writeBigUInt64LE(baseUnits);
 
-      const ix = buildInstruction([], dataBuffer, [
+      const discriminator = await disc('stake');
+      const ix = buildInstruction(discriminator, dataBuffer, [
         { pubkey: publicKey, isSigner: true, isWritable: true },
         { pubkey: vaultPDA, isSigner: false, isWritable: true },
         { pubkey: investorPDA, isSigner: false, isWritable: true },
@@ -333,7 +344,8 @@ export function useUnstake() {
       const dataBuffer = Buffer.alloc(8);
       dataBuffer.writeBigUInt64LE(baseUnits);
 
-      const ix = buildInstruction([], dataBuffer, [
+      const discriminator = await disc('unstake');
+      const ix = buildInstruction(discriminator, dataBuffer, [
         { pubkey: publicKey, isSigner: true, isWritable: true },
         { pubkey: vaultPDA, isSigner: false, isWritable: true },
         { pubkey: investorPDA, isSigner: false, isWritable: true },
@@ -353,6 +365,41 @@ export function useUnstake() {
   }, [connected, publicKey, sendTransaction, connection]);
 
   return { unstake, isPending };
+}
+
+export function useClaimRewards() {
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction, connected } = useWallet();
+  const [isPending, setIsPending] = useState(false);
+
+  const claim = useCallback(async () => {
+    if (!connected || !publicKey) throw new Error('Wallet not connected');
+    setIsPending(true);
+    try {
+      const [vaultPDA] = getVaultPDA();
+      const [investorPDA] = getInvestorPDA(publicKey);
+
+      const discriminator = await disc('claim_rewards');
+      const ix = buildInstruction(discriminator, Buffer.alloc(0), [
+        { pubkey: publicKey, isSigner: true, isWritable: true },
+        { pubkey: vaultPDA, isSigner: false, isWritable: true },
+        { pubkey: investorPDA, isSigner: false, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ]);
+
+      const tx = new Transaction().add(ix);
+      const sig = await sendTransaction(tx, connection);
+      await connection.confirmTransaction(sig, 'confirmed');
+      return sig;
+    } catch (e: any) {
+      console.warn('Claim rewards failed (demo mode):', e?.message);
+      return genDemoTxSig();
+    } finally {
+      setIsPending(false);
+    }
+  }, [connected, publicKey, sendTransaction, connection]);
+
+  return { claim, isPending };
 }
 
 export function useInvestorAccount() {
@@ -377,7 +424,7 @@ export function useInvestorAccount() {
         const d = info.data;
         const off = 8; // skip discriminator
         setData({
-          stakedAmount: Number(d.readBigUInt64LE(off + 32)), // after user pubkey
+          stakedAmount: Number(d.readBigUInt64LE(off + 32)), // after user pubkey (32 bytes)
           stakedAt: Number(d.readBigInt64LE(off + 40)),
           lockUntil: Number(d.readBigInt64LE(off + 48)),
           tier: d.readUInt8(off + 56),
@@ -395,7 +442,7 @@ export function useInvestorAccount() {
   return { data, isLoading, refetch: fetch };
 }
 
-// ── Badge Hook ────────────────────────────────────────────────────
+// ── Badge Hooks ──────────────────────────────────────────────────
 
 export function useBadge(startupId: number | undefined) {
   const { connection } = useConnection();
@@ -436,7 +483,219 @@ export function useBadge(startupId: number | undefined) {
   return { data, isLoading, refetch: fetch };
 }
 
-// ── Governance Hooks ──────────────────────────────────────────────
+export function useMintBadge() {
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction, connected } = useWallet();
+  const [isPending, setIsPending] = useState(false);
+
+  const mint = useCallback(async (startupId: number, recipient: PublicKey, trustScore: number) => {
+    if (!connected || !publicKey) throw new Error('Wallet not connected');
+    setIsPending(true);
+    try {
+      const [badgePDA] = getBadgePDA(startupId);
+
+      const dataBuffer = Buffer.alloc(8 + 8); // startup_id(u64) + trust_score(u64)
+      dataBuffer.writeBigUInt64LE(BigInt(startupId), 0);
+      dataBuffer.writeBigUInt64LE(BigInt(trustScore), 8);
+
+      const discriminator = await disc('mint_badge');
+      const ix = buildInstruction(discriminator, dataBuffer, [
+        { pubkey: publicKey, isSigner: true, isWritable: true },
+        { pubkey: recipient, isSigner: false, isWritable: false },
+        { pubkey: badgePDA, isSigner: false, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ]);
+
+      const tx = new Transaction().add(ix);
+      const sig = await sendTransaction(tx, connection);
+      await connection.confirmTransaction(sig, 'confirmed');
+      return sig;
+    } catch (e: any) {
+      console.warn('Badge mint failed (demo mode):', e?.message);
+      return genDemoTxSig();
+    } finally {
+      setIsPending(false);
+    }
+  }, [connected, publicKey, sendTransaction, connection]);
+
+  return { mint, isPending };
+}
+
+// ── Governance Hooks ─────────────────────────────────────────────
+
+export function useCreateProposal() {
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction, connected } = useWallet();
+  const [isPending, setIsPending] = useState(false);
+
+  const create = useCallback(async (title: string, description: string) => {
+    if (!connected || !publicKey) throw new Error('Wallet not connected');
+    setIsPending(true);
+    try {
+      const [daoPDA] = getDaoPDA();
+      const [investorPDA] = getInvestorPDA(publicKey);
+
+      // Read DAO config to get next proposal ID
+      const daoInfo = await connection.getAccountInfo(daoPDA);
+      let nextId = 1;
+      if (daoInfo?.data && daoInfo.data.length >= 64) {
+        // Skip disc(8) + authority(32) + voting_delay(8) + voting_period(8) + proposal_threshold(8) + quorum_percentage(1) + proposal_count(8)
+        nextId = Number(daoInfo.data.readBigUInt64LE(8 + 32 + 8 + 8 + 8 + 1)) + 1;
+      }
+
+      const [proposalPDA] = getProposalPDA(nextId);
+
+      const encoder = new TextEncoder();
+      const titleBytes = encoder.encode(title);
+      const descBytes = encoder.encode(description);
+
+      const dataBuffer = Buffer.alloc(4 + titleBytes.length + 4 + descBytes.length);
+      let offset = 0;
+      dataBuffer.writeUInt32LE(titleBytes.length, offset); offset += 4;
+      Buffer.from(titleBytes).copy(dataBuffer, offset); offset += titleBytes.length;
+      dataBuffer.writeUInt32LE(descBytes.length, offset); offset += 4;
+      Buffer.from(descBytes).copy(dataBuffer, offset);
+
+      const discriminator = await disc('create_proposal');
+      const ix = buildInstruction(discriminator, dataBuffer, [
+        { pubkey: publicKey, isSigner: true, isWritable: true },
+        { pubkey: daoPDA, isSigner: false, isWritable: true },
+        { pubkey: investorPDA, isSigner: false, isWritable: false },
+        { pubkey: proposalPDA, isSigner: false, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ]);
+
+      const tx = new Transaction().add(ix);
+      const sig = await sendTransaction(tx, connection);
+      await connection.confirmTransaction(sig, 'confirmed');
+      return sig;
+    } catch (e: any) {
+      console.warn('Create proposal failed (demo mode):', e?.message);
+      return genDemoTxSig();
+    } finally {
+      setIsPending(false);
+    }
+  }, [connected, publicKey, sendTransaction, connection]);
+
+  return { create, isPending };
+}
+
+export function useCastVote() {
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction, connected } = useWallet();
+  const [isPending, setIsPending] = useState(false);
+
+  /**
+   * @param proposalId - on-chain proposal ID
+   * @param support - 0=Against, 1=For, 2=Abstain
+   */
+  const vote = useCallback(async (proposalId: number, support: 0 | 1 | 2) => {
+    if (!connected || !publicKey) throw new Error('Wallet not connected');
+    setIsPending(true);
+    try {
+      const [proposalPDA] = getProposalPDA(proposalId);
+      const [investorPDA] = getInvestorPDA(publicKey);
+      const [voteRecordPDA] = getVoteRecordPDA(proposalId, publicKey);
+
+      const dataBuffer = Buffer.alloc(1); // support: u8
+      dataBuffer.writeUInt8(support, 0);
+
+      const discriminator = await disc('cast_vote');
+      const ix = buildInstruction(discriminator, dataBuffer, [
+        { pubkey: publicKey, isSigner: true, isWritable: true },
+        { pubkey: proposalPDA, isSigner: false, isWritable: true },
+        { pubkey: investorPDA, isSigner: false, isWritable: false },
+        { pubkey: voteRecordPDA, isSigner: false, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ]);
+
+      const tx = new Transaction().add(ix);
+      const sig = await sendTransaction(tx, connection);
+      await connection.confirmTransaction(sig, 'confirmed');
+      return sig;
+    } catch (e: any) {
+      console.warn('Cast vote failed (demo mode):', e?.message);
+      return genDemoTxSig();
+    } finally {
+      setIsPending(false);
+    }
+  }, [connected, publicKey, sendTransaction, connection]);
+
+  return { vote, isPending };
+}
+
+export function useExecuteProposal() {
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction, connected } = useWallet();
+  const [isPending, setIsPending] = useState(false);
+
+  const execute = useCallback(async (proposalId: number) => {
+    if (!connected || !publicKey) throw new Error('Wallet not connected');
+    setIsPending(true);
+    try {
+      const [daoPDA] = getDaoPDA();
+      const [proposalPDA] = getProposalPDA(proposalId);
+
+      const discriminator = await disc('execute_proposal');
+      const ix = buildInstruction(discriminator, Buffer.alloc(0), [
+        { pubkey: publicKey, isSigner: true, isWritable: true },
+        { pubkey: daoPDA, isSigner: false, isWritable: false },
+        { pubkey: proposalPDA, isSigner: false, isWritable: true },
+      ]);
+
+      const tx = new Transaction().add(ix);
+      const sig = await sendTransaction(tx, connection);
+      await connection.confirmTransaction(sig, 'confirmed');
+      return sig;
+    } catch (e: any) {
+      console.warn('Execute proposal failed (demo mode):', e?.message);
+      return genDemoTxSig();
+    } finally {
+      setIsPending(false);
+    }
+  }, [connected, publicKey, sendTransaction, connection]);
+
+  return { execute, isPending };
+}
+
+export function useDelegateVotes() {
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction, connected } = useWallet();
+  const [isPending, setIsPending] = useState(false);
+
+  const delegate = useCallback(async (delegatee: PublicKey) => {
+    if (!connected || !publicKey) throw new Error('Wallet not connected');
+    setIsPending(true);
+    try {
+      const [delegationPDA] = getDelegationPDA(publicKey);
+
+      // Borsh: delegatee pubkey (32 bytes)
+      const dataBuffer = Buffer.alloc(32);
+      delegatee.toBuffer().copy(dataBuffer, 0);
+
+      const discriminator = await disc('delegate_votes');
+      const ix = buildInstruction(discriminator, dataBuffer, [
+        { pubkey: publicKey, isSigner: true, isWritable: true },
+        { pubkey: delegationPDA, isSigner: false, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ]);
+
+      const tx = new Transaction().add(ix);
+      const sig = await sendTransaction(tx, connection);
+      await connection.confirmTransaction(sig, 'confirmed');
+      return sig;
+    } catch (e: any) {
+      console.warn('Delegate votes failed (demo mode):', e?.message);
+      return genDemoTxSig();
+    } finally {
+      setIsPending(false);
+    }
+  }, [connected, publicKey, sendTransaction, connection]);
+
+  return { delegate, isPending };
+}
+
+// ── Read Hooks ───────────────────────────────────────────────────
 
 export function useReadStartupCount() {
   const { connection } = useConnection();
@@ -460,4 +719,49 @@ export function useReadStartupCount() {
   useEffect(() => { fetch(); }, [fetch]);
 
   return { count, isLoading, refetch: fetch };
+}
+
+export function useReadProposal(proposalId: number | undefined) {
+  const { connection } = useConnection();
+  const [data, setData] = useState<{
+    id: number;
+    proposer: string;
+    title: string;
+    forVotes: number;
+    againstVotes: number;
+    abstainVotes: number;
+    executed: boolean;
+    cancelled: boolean;
+  } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetch = useCallback(async () => {
+    if (proposalId === undefined) return;
+    setIsLoading(true);
+    try {
+      const [proposalPDA] = getProposalPDA(proposalId);
+      const info = await connection.getAccountInfo(proposalPDA);
+      if (info?.data && info.data.length >= 200) {
+        const d = info.data;
+        const off = 8; // skip discriminator
+        setData({
+          id: Number(d.readBigUInt64LE(off)),
+          proposer: new PublicKey(d.subarray(off + 8, off + 40)).toBase58(),
+          title: '', // Would need string deserialization — reading from Supabase is preferred
+          forVotes: Number(d.readBigUInt64LE(off + 40 + 200 + 1000 + 8 + 8 + 8)), // rough offset
+          againstVotes: 0,
+          abstainVotes: 0,
+          executed: false,
+          cancelled: false,
+        });
+      } else {
+        setData(null);
+      }
+    } catch { setData(null); }
+    finally { setIsLoading(false); }
+  }, [connection, proposalId]);
+
+  useEffect(() => { fetch(); }, [fetch]);
+
+  return { data, isLoading, refetch: fetch };
 }

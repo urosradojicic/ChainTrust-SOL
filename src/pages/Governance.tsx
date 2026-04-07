@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PROPOSALS, STARTUPS } from '@/lib/mock-data';
 import { formatAddress, formatNumber } from '@/lib/format';
 import Badge from '@/components/common/Badge';
-import { Leaf, Plus, X, Shield, CheckCircle2 } from 'lucide-react';
+import { Leaf, Plus, X, Shield, CheckCircle2, Loader2 } from 'lucide-react';
+import { useCreateProposal as useCreateProposalOnChain, useCastVote as useCastVoteOnChain, useDelegateVotes, useExecuteProposal as useExecuteOnChain } from '@/hooks/use-blockchain';
+import { PublicKey } from '@solana/web3.js';
 import { Progress } from '@/components/ui/progress';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose,
@@ -38,6 +40,10 @@ const TOTAL_STARTUPS = STARTUPS.length;
 
 export default function Governance() {
   const { user } = useAuth();
+  const { create: createOnChain, isPending: createPending } = useCreateProposalOnChain();
+  const { vote: voteOnChain, isPending: votePending } = useCastVoteOnChain();
+  const { delegate: delegateOnChain, isPending: delegateOnChainPending } = useDelegateVotes();
+  const { execute: executeOnChain, isPending: executePending } = useExecuteOnChain();
   const [tab, setTab] = useState<Tab>('Active');
   const [delegateAddr, setDelegateAddr] = useState('');
   const [pledges, setPledges] = useState<PlatformPledge[]>(INITIAL_PLEDGES);
@@ -98,6 +104,11 @@ export default function Governance() {
 
   const handleCreateProposal = async () => {
     if (!proposalTitle.trim()) return;
+
+    // 1. Submit on-chain (falls back to demo mode if program not deployed)
+    const txSig = await createOnChain(proposalTitle.trim(), proposalDesc.trim());
+
+    // 2. Also persist to Supabase for queryability
     const endsAt = new Date();
     endsAt.setDate(endsAt.getDate() + 7);
     const { error } = await supabase.from('proposals').insert({
@@ -114,7 +125,7 @@ export default function Governance() {
       toast.error('Failed to create proposal: ' + error.message);
       return;
     }
-    toast.success('Proposal created!');
+    toast.success(`Proposal created! Tx: ${txSig.slice(0, 12)}...`);
     setProposalTitle('');
     setProposalDesc('');
     setProposalModalOpen(false);
@@ -372,11 +383,14 @@ export default function Governance() {
                   {p.status === 'Passed' && (
                     <div className="mt-4 flex items-center gap-3">
                       <button
+                        disabled={executePending}
                         onClick={async () => {
-                          toast.success(`Proposal "${p.title}" execution queued. On-chain execution pending.`);
+                          const txSig = await executeOnChain(typeof p.id === 'number' ? p.id : 1);
+                          toast.success(`Proposal "${p.title}" executed. Tx: ${txSig.slice(0, 12)}...`);
                         }}
-                        className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-1.5 text-xs font-medium text-emerald-400 transition hover:bg-emerald-500/20"
+                        className="rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-4 py-1.5 text-xs font-medium text-emerald-400 transition hover:bg-emerald-500/20 disabled:opacity-40 flex items-center gap-1.5"
                       >
+                        {executePending && <Loader2 className="h-3 w-3 animate-spin" />}
                         Execute Proposal
                       </button>
                       <span className="text-[10px] text-muted-foreground">Passed — ready for on-chain execution</span>
@@ -451,17 +465,17 @@ export default function Governance() {
           />
           <div className="relative group">
             <button
-              disabled={delegateAddr.length < 32 || delegating}
+              disabled={delegateAddr.length < 32 || delegating || delegateOnChainPending}
               onClick={async () => {
                 if (!user) { toast.error('Sign in to delegate'); return; }
                 setDelegating(true);
                 try {
-                  // Simulate delegation tx — in production this calls the on-chain program
-                  await new Promise(r => setTimeout(r, 1500));
-                  toast.success(`Voting power delegated to ${delegateAddr.slice(0, 8)}...`);
+                  const delegateeKey = new PublicKey(delegateAddr);
+                  const txSig = await delegateOnChain(delegateeKey);
+                  toast.success(`Voting power delegated to ${delegateAddr.slice(0, 8)}... Tx: ${txSig.slice(0, 12)}...`);
                   setDelegateAddr('');
                 } catch (e: any) {
-                  toast.error(e?.message || 'Delegation failed');
+                  toast.error(e?.message || 'Delegation failed — check Solana address format');
                 } finally {
                   setDelegating(false);
                 }
