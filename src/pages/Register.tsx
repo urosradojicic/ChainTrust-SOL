@@ -237,41 +237,65 @@ export default function Register() {
         <motion.div key={step} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} className="mt-8 space-y-4">
 
           {step === 0 && (<>
+            {!isConnected && (
+              <div className="flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 mb-2">
+                <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">Connect your Solana wallet before starting</p>
+                  <p className="text-xs text-muted-foreground">You'll need a connected wallet to submit your registration on-chain at the final step.</p>
+                </div>
+                <button onClick={() => openWalletModal(true)} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition shrink-0">
+                  Connect
+                </button>
+              </div>
+            )}
             <div><label className={labelCls}>Startup Name *</label>
-              <input value={form.name} onChange={e => u('name', e.target.value)} className={inputCls} placeholder="e.g. GreenChain" maxLength={100} /></div>
+              <input value={form.name} onChange={e => u('name', e.target.value)} className={inputCls} placeholder="e.g. GreenChain" maxLength={100} />
+              <p className="text-[11px] text-muted-foreground mt-1">Your official company or project name as it will appear on the platform.</p></div>
             <div><label className={labelCls}>Description *</label>
-              <textarea value={form.description} onChange={e => u('description', e.target.value)} rows={3} className={inputCls + ' resize-none'} placeholder="What does your startup do?" maxLength={500} /></div>
+              <textarea value={form.description} onChange={e => u('description', e.target.value)} rows={3} className={inputCls + ' resize-none'} placeholder="What does your startup do?" maxLength={500} />
+              <p className="text-[11px] text-muted-foreground mt-1">A brief summary of your product, market, and mission (max 500 chars).</p></div>
             <div className="grid grid-cols-2 gap-4">
               <div><label className={labelCls}>Category</label>
                 <select value={form.category} onChange={e => u('category', e.target.value)} className={inputCls}>
                   {CATEGORIES.map(c => <option key={c}>{c}</option>)}
-                </select></div>
+                </select>
+                <p className="text-[11px] text-muted-foreground mt-1">The industry vertical your startup operates in.</p></div>
               <div><label className={labelCls}>Blockchain</label>
                 <select value={form.blockchain} onChange={e => u('blockchain', e.target.value)} className={inputCls}>
                   {BLOCKCHAINS.map(b => <option key={b}>{b}</option>)}
                 </select></div>
             </div>
             <div><label className={labelCls}>Website URL</label>
-              <input type="url" value={form.website} onChange={e => u('website', e.target.value)} className={inputCls} placeholder="https://..." /></div>
+              <input type="url" value={form.website} onChange={e => u('website', e.target.value)} className={inputCls} placeholder="https://yourcompany.com" />
+              <p className="text-[11px] text-muted-foreground mt-1">Must start with https://. Leave blank if you don't have one yet.</p></div>
             <div><label className={labelCls}>Founding Date</label>
               <input type="date" value={form.foundedDate} onChange={e => u('foundedDate', e.target.value)} className={inputCls} /></div>
           </>)}
 
           {step === 1 && (<>
+            <div className="rounded-lg bg-muted/50 p-3 mb-2">
+              <p className="text-xs text-muted-foreground">Enter your current business metrics. These will be published on-chain and visible to investors. Use approximate numbers if exact figures aren't available.</p>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div><label className={labelCls}>Monthly Recurring Revenue ($)</label>
-                <input type="number" value={form.mrr} onChange={e => u('mrr', e.target.value)} className={inputCls} placeholder="150000" min={0} /></div>
+                <input type="number" value={form.mrr} onChange={e => u('mrr', e.target.value)} className={inputCls} placeholder="150000" min={0} />
+                <p className="text-[11px] text-muted-foreground mt-1">Total predictable monthly revenue from subscriptions/contracts (USD).</p></div>
               <div><label className={labelCls}>Monthly Active Users</label>
-                <input type="number" value={form.mau} onChange={e => u('mau', e.target.value)} className={inputCls} placeholder="12000" min={0} /></div>
+                <input type="number" value={form.mau} onChange={e => u('mau', e.target.value)} className={inputCls} placeholder="12000" min={0} />
+                <p className="text-[11px] text-muted-foreground mt-1">Unique users who used your product in the last 30 days.</p></div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div><label className={labelCls}>Growth Rate (%)</label>
-                <input type="number" value={form.growthRate} onChange={e => u('growthRate', e.target.value)} className={inputCls} placeholder="12.5" step={0.1} /></div>
+                <input type="number" value={form.growthRate} onChange={e => u('growthRate', e.target.value)} className={inputCls} placeholder="12.5" step={0.1} />
+                <p className="text-[11px] text-muted-foreground mt-1">Month-over-month revenue or user growth percentage.</p></div>
               <div><label className={labelCls}>Total Funding Raised ($)</label>
-                <input type="number" value={form.fundingRaised} onChange={e => u('fundingRaised', e.target.value)} className={inputCls} placeholder="5000000" min={0} /></div>
+                <input type="number" value={form.fundingRaised} onChange={e => u('fundingRaised', e.target.value)} className={inputCls} placeholder="5000000" min={0} />
+                <p className="text-[11px] text-muted-foreground mt-1">Total capital raised to date across all rounds.</p></div>
             </div>
             <div><label className={labelCls}>Treasury Balance ($)</label>
-              <input type="number" value={form.treasury} onChange={e => u('treasury', e.target.value)} className={inputCls} placeholder="2000000" min={0} /></div>
+              <input type="number" value={form.treasury} onChange={e => u('treasury', e.target.value)} className={inputCls} placeholder="2000000" min={0} />
+              <p className="text-[11px] text-muted-foreground mt-1">Current cash + liquid assets available. Used to calculate runway.</p></div>
           </>)}
 
           {step === 2 && (<>

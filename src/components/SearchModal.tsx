@@ -41,7 +41,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
   }, [open]);
 
   const results = useMemo(() => {
-    if (!query.trim()) return { startups: [], pages: PAGES.slice(0, 3) };
+    if (!query.trim()) return { startups: [], pages: PAGES.slice(0, 5) };
     const q = query.toLowerCase();
     return {
       startups: (startups ?? []).filter(s => s.name.toLowerCase().includes(q) || s.category.toLowerCase().includes(q)).slice(0, 5),
@@ -125,7 +125,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
 
             {results.pages.length > 0 && (
               <div className="border-t border-border p-2">
-                <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Pages</p>
+                <p className="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{query.trim() ? 'Pages' : 'Browse pages'}</p>
                 {results.pages.map(p => (
                   <button
                     key={p.path}

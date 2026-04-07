@@ -149,12 +149,18 @@ export default function Portfolio() {
           <div className="mb-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
             <h3 className="text-sm font-semibold text-foreground mb-3">New Alert</h3>
             <div className="grid gap-3 sm:grid-cols-4">
-              <input
-                value={newAlert.startupName}
-                onChange={e => setNewAlert(a => ({ ...a, startupName: e.target.value }))}
-                placeholder="Startup name"
-                className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
-              />
+              <div className="relative">
+                <input
+                  value={newAlert.startupName}
+                  onChange={e => setNewAlert(a => ({ ...a, startupName: e.target.value }))}
+                  placeholder="Search startups..."
+                  className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none focus:border-primary w-full"
+                  list="startup-names"
+                />
+                <datalist id="startup-names">
+                  {startups?.map(s => <option key={s.id} value={s.name} />)}
+                </datalist>
+              </div>
               <select
                 value={newAlert.metric}
                 onChange={e => setNewAlert(a => ({ ...a, metric: e.target.value }))}

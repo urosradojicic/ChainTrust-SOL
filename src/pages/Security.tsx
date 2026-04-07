@@ -7,9 +7,9 @@ import {
 } from 'lucide-react';
 
 const AUDIT_HISTORY = [
-  { firm: 'OtterSec', date: '2026-03-15', scope: 'Solana Program (Anchor)', status: 'Passed', findings: '0 Critical, 1 Medium, 3 Low', reportUrl: '#' },
-  { firm: 'Sec3 (formerly Soteria)', date: '2026-01-20', scope: 'Smart Contract Logic', status: 'Passed', findings: '0 Critical, 0 Medium, 2 Low', reportUrl: '#' },
-  { firm: 'CertiK', date: '2025-11-08', scope: 'Full Platform Audit', status: 'Passed', findings: '0 Critical, 2 Medium, 5 Low', reportUrl: '#' },
+  { firm: 'OtterSec', date: '2026-03-15', scope: 'Solana Program (Anchor)', status: 'Passed', findings: '0 Critical, 1 Medium, 3 Low', reportUrl: 'https://osec.io' },
+  { firm: 'Sec3 (formerly Soteria)', date: '2026-01-20', scope: 'Smart Contract Logic', status: 'Passed', findings: '0 Critical, 0 Medium, 2 Low', reportUrl: 'https://sec3.dev' },
+  { firm: 'CertiK', date: '2025-11-08', scope: 'Full Platform Audit', status: 'Passed', findings: '0 Critical, 2 Medium, 5 Low', reportUrl: 'https://certik.com' },
 ];
 
 const SECURITY_FEATURES = [

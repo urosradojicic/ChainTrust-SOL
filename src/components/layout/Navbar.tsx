@@ -259,7 +259,7 @@ export default function Navbar() {
             >
               <Search className="h-3.5 w-3.5" />
               <span>Search...</span>
-              <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">⌘K</kbd>
+              <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[10px] font-mono">{navigator.platform?.includes('Mac') ? '⌘K' : 'Ctrl+K'}</kbd>
             </button>
             <button
               onClick={toggleInstitutionalMode}

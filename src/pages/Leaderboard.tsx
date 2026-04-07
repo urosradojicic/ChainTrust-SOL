@@ -41,15 +41,21 @@ export default function Leaderboard() {
   const [search, setSearch] = useState('');
   const [catFilter, setCatFilter] = useState('All');
   const [chainFilter, setChainFilter] = useState('All');
+  const [rankBy, setRankBy] = useState<'sustainability_score' | 'trust_score' | 'mrr' | 'growth_rate'>('sustainability_score');
+  const [page, setPage] = useState(0);
+  const PAGE_SIZE = 20;
 
   const ranked = useMemo(() => {
     if (!startups) return [];
     let list = [...startups];
     if (catFilter !== 'All') list = list.filter(s => s.category === catFilter);
     if (search.trim()) list = list.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
-    list.sort((a, b) => b.sustainability_score - a.sustainability_score);
+    list.sort((a, b) => Number(b[rankBy]) - Number(a[rankBy]));
     return list;
-  }, [startups, search, catFilter, chainFilter]);
+  }, [startups, search, catFilter, chainFilter, rankBy]);
+
+  const totalPages = Math.ceil(ranked.length / PAGE_SIZE);
+  const pagedRanked = ranked.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   const totalCarbonOffset = startups?.reduce((sum, s) => sum + Number(s.carbon_offset_tonnes), 0) ?? 0;
 
@@ -80,10 +86,10 @@ export default function Leaderboard() {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="font-display text-4xl font-bold tracking-tight text-foreground">
-          🏆 Sustainability Leaderboard
+          Leaderboard
         </h1>
         <p className="mt-2 text-lg text-muted-foreground">
-          Startups ranked by on-chain sustainability score — transparency meets impact.
+          Startups ranked by verified on-chain metrics — transparency meets impact.
         </p>
       </motion.div>
 
@@ -104,6 +110,15 @@ export default function Leaderboard() {
             {BLOCKCHAINS.map(b => (<SelectItem key={b} value={b}>{b}</SelectItem>))}
           </SelectContent>
         </Select>
+        <Select value={rankBy} onValueChange={v => { setRankBy(v as any); setPage(0); }}>
+          <SelectTrigger className="w-full sm:w-48 bg-card border-border"><SelectValue placeholder="Rank by" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="sustainability_score">Sustainability Score</SelectItem>
+            <SelectItem value="trust_score">Trust Score</SelectItem>
+            <SelectItem value="mrr">MRR (Revenue)</SelectItem>
+            <SelectItem value="growth_rate">Growth Rate</SelectItem>
+          </SelectContent>
+        </Select>
       </motion.div>
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="rounded-xl glass-card overflow-hidden">
@@ -120,12 +135,14 @@ export default function Leaderboard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {ranked.map((s, i) => (
-              <TableRow key={s.id} className={`transition-colors border-border ${podiumStyles[i] ?? 'hover:bg-muted/50'}`}>
+            {pagedRanked.map((s, i) => {
+              const globalIdx = page * PAGE_SIZE + i;
+              return (
+              <TableRow key={s.id} className={`transition-colors border-border ${podiumStyles[globalIdx] ?? 'hover:bg-muted/50'}`}>
                 <TableCell className="text-center font-mono font-bold text-foreground">
                   <div className="flex items-center justify-center gap-1">
-                    {i < 3 && <Trophy className={`h-4 w-4 ${podiumIcons[i]}`} />}
-                    <span>{i + 1}</span>
+                    {globalIdx < 3 && <Trophy className={`h-4 w-4 ${podiumIcons[globalIdx]}`} />}
+                    <span>{globalIdx + 1}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -148,7 +165,8 @@ export default function Leaderboard() {
                 <TableCell className="text-right font-mono font-medium text-foreground">{formatCurrency(s.mrr)}</TableCell>
                 <TableCell className="text-center">{trendIcon(Number(s.growth_rate))}</TableCell>
               </TableRow>
-            ))}
+              );
+            })}
             {ranked.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">No startups match your filters.</TableCell>
@@ -157,6 +175,40 @@ export default function Leaderboard() {
           </TableBody>
         </Table>
       </motion.div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">
+            Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, ranked.length)} of {ranked.length}
+          </span>
+          <div className="flex gap-1">
+            <button
+              disabled={page === 0}
+              onClick={() => setPage(p => p - 1)}
+              className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:text-foreground disabled:opacity-40"
+            >
+              Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i)}
+                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${page === i ? 'bg-primary text-primary-foreground' : 'border border-border text-muted-foreground hover:text-foreground'}`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              disabled={page >= totalPages - 1}
+              onClick={() => setPage(p => p + 1)}
+              className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:text-foreground disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
 
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mt-10">
         <h2 className="mb-4 font-display text-2xl font-bold text-foreground">Platform Impact Summary</h2>

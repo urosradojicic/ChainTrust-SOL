@@ -134,15 +134,15 @@ export default function Screener() {
               <input type="number" value={filters.maxMrr} onChange={e => u('maxMrr', e.target.value)} className={inputCls} placeholder="No limit" />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">Min Trust Score</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground" title="0-100 score based on on-chain verification, metrics accuracy, and governance participation">Min Trust Score (0-100)</label>
               <input type="number" value={filters.minTrust} onChange={e => u('minTrust', e.target.value)} className={inputCls} placeholder="0" min={0} max={100} />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">Min Sustainability</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground" title="0-100 score based on energy usage, carbon offsets, tokenomics fairness, and governance pledges">Min Sustainability (0-100)</label>
               <input type="number" value={filters.minSustainability} onChange={e => u('minSustainability', e.target.value)} className={inputCls} placeholder="0" min={0} max={100} />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">Max Whale Concentration (%)</label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground" title="Percentage of tokens held by the top wallet holders. Lower = more distributed = less risk of market manipulation">Max Whale Concentration (%)</label>
               <input type="number" value={filters.maxWhaleConcentration} onChange={e => u('maxWhaleConcentration', e.target.value)} className={inputCls} placeholder="100" max={100} />
             </div>
             <div>

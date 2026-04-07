@@ -40,7 +40,7 @@ export const PAGE_ACCESS: Record<string, Access> = {
 
 /** Check if a given role can access a route */
 export function canAccess(role: AppRole | null, path: string): boolean {
-  const access = PAGE_ACCESS[path] ?? 'auth';
+  const access = PAGE_ACCESS[path] ?? 'admin'; // deny by default for unknown routes
 
   if (access === 'public') return true;
   if (!role) return false;

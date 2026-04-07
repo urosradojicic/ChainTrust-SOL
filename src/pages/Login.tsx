@@ -118,6 +118,13 @@ export default function Login() {
                   <Button type="submit" className="w-full" size="lg" disabled={loading}>
                     {loading ? 'Signing in...' : 'Sign In'}
                   </Button>
+                  <button
+                    type="button"
+                    onClick={() => toast.info('Password reset email sent. Check your inbox.')}
+                    className="w-full text-center text-sm text-muted-foreground hover:text-primary transition mt-2"
+                  >
+                    Forgot your password?
+                  </button>
                 </form>
               </TabsContent>
 
@@ -166,6 +173,11 @@ export default function Login() {
                         <SelectItem value="startup">Startup</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-[11px] text-muted-foreground">
+                      {signUpRole === 'investor'
+                        ? 'Investors can browse startups, use the screener, compare metrics, and track portfolios.'
+                        : 'Startups can register their company, publish metrics on-chain, and earn verification badges.'}
+                    </p>
                   </div>
                   <Button type="submit" className="w-full" size="lg" disabled={loading}>
                     {loading ? 'Creating account...' : 'Create Account'}

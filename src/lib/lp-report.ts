@@ -8,6 +8,16 @@ import type { DbStartup, DbMetricsHistory } from '@/types/database';
 import { formatCurrency, formatNumber } from '@/lib/format';
 import { generateDueDiligenceReport } from '@/lib/ai-due-diligence';
 
+/** Escape HTML entities to prevent XSS in generated reports */
+function escHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export interface LPReportData {
   generatedAt: string;
   quarter: string;
@@ -55,14 +65,14 @@ export function generateLPReportHTML(data: LPReportData): string {
 
       <!-- Startup Overview -->
       <div style="margin-bottom: 30px;">
-        <h2 style="font-size: 22px; margin: 0 0 8px;">${startup.name}</h2>
+        <h2 style="font-size: 22px; margin: 0 0 8px;">${escHtml(startup.name)}</h2>
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
           <span style="background: #534AB710; color: #534AB7; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${startup.category}</span>
           <span style="background: ${startup.verified ? '#10B98110' : '#F59E0B10'}; color: ${startup.verified ? '#10B981' : '#F59E0B'}; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${startup.verified ? 'Verified' : 'Unverified'}</span>
           <span style="background: #3B82F610; color: #3B82F6; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${startup.blockchain}</span>
           <span style="background: ${report.overallRisk === 'low' ? '#10B981' : report.overallRisk === 'medium' ? '#F59E0B' : '#EF4444'}10; color: ${report.overallRisk === 'low' ? '#10B981' : report.overallRisk === 'medium' ? '#F59E0B' : '#EF4444'}; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">Grade: ${report.investmentGrade}</span>
         </div>
-        <p style="margin: 12px 0 0; font-size: 13px; color: #6b7280; line-height: 1.6;">${startup.description || 'No description available.'}</p>
+        <p style="margin: 12px 0 0; font-size: 13px; color: #6b7280; line-height: 1.6;">${escHtml(startup.description || 'No description available.')}</p>
       </div>
 
       <!-- KPI Cards -->
@@ -210,7 +220,7 @@ export async function exportLPReport(data: LPReportData) {
     // Fallback: open in new window for print
     const w = window.open('', '_blank');
     if (w) {
-      w.document.write(`<html><head><title>LP Report - ${data.startup.name}</title></head><body>${html}</body></html>`);
+      w.document.write(`<html><head><title>LP Report - ${escHtml(data.startup.name)}</title></head><body>${html}</body></html>`);
       w.document.close();
       w.print();
     }

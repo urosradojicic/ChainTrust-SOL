@@ -71,6 +71,7 @@ export default function Dashboard() {
   }, [startups, category, sortKey, sortAsc, search]);
 
   const trustColor = (s: number) => s > 70 ? 'bg-emerald-500' : s > 40 ? 'bg-amber-500' : 'bg-red-500';
+  const trustLabel = (s: number) => s > 70 ? 'High trust' : s > 40 ? 'Medium trust' : 'Low trust';
 
   const totalMrr = startups?.reduce((s, x) => s + x.mrr, 0) ?? 0;
   const totalUsers = startups?.reduce((s, x) => s + x.users, 0) ?? 0;
@@ -123,6 +124,33 @@ export default function Dashboard() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <LiveFeed />
       <BlockchainStatus />
+
+      {/* Role-specific onboarding banner — shown once */}
+      {!localStorage.getItem('chaintrust_onboarded') && role && (
+        <div className="mt-6 mb-4 rounded-xl border border-primary/20 bg-primary/5 p-5 flex items-start gap-4">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shrink-0">
+            <span className="text-lg">👋</span>
+          </div>
+          <div className="flex-1">
+            <h3 className="font-bold text-foreground">
+              {role === 'investor' ? 'Welcome, Investor!' : role === 'startup' ? 'Welcome, Startup Founder!' : 'Welcome, Admin!'}
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              {role === 'investor'
+                ? 'Use the Screener to filter startups, Compare to analyze side-by-side, and Portfolio to track your watchlist. Every metric is verified on Solana.'
+                : role === 'startup'
+                ? 'Head to My Startup to set up your profile, publish metrics on-chain, and upload your Business Model Canvas. Earn a verification badge to attract investors.'
+                : 'You have full access to all features. Use Analytics for platform KPIs and Governance for proposal management.'}
+            </p>
+          </div>
+          <button
+            onClick={() => { localStorage.setItem('chaintrust_onboarded', 'true'); window.location.reload(); }}
+            className="text-xs text-muted-foreground hover:text-foreground transition shrink-0 mt-1"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
 
       <div className="mb-8 mt-6">
         <h1 className="text-2xl font-bold text-foreground">{institutionalMode ? 'Enterprise Dashboard' : 'Dashboard'}</h1>
@@ -239,12 +267,14 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2">
                       <Badge variant={categoryColors[s.category] || 'neutral'}>{s.category}</Badge>
                       {s.verified && (
-                        <Badge variant="success">
-                          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                          Verified
-                        </Badge>
+                        <span title="This startup's metrics have been independently verified by oracle attestation on Solana.">
+                          <Badge variant="success">
+                            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Verified
+                          </Badge>
+                        </span>
                       )}
                     </div>
                     <h3 className="mt-3 text-lg font-bold text-foreground">{s.name}</h3>
@@ -265,9 +295,10 @@ export default function Dashboard() {
                       </div>
                     </div>
                     <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5" title={`Trust Score: ${s.trust_score}/100 — ${trustLabel(s.trust_score)}. Based on on-chain verification, metrics accuracy, and governance participation.`}>
                         <span className={`h-2 w-2 rounded-full ${trustColor(s.trust_score)}`} />
                         <span className="text-sm font-mono font-medium text-foreground">{s.trust_score}</span>
+                        <span className="text-[10px] text-muted-foreground">{trustLabel(s.trust_score)}</span>
                       </div>
                     </div>
                   </Link>
