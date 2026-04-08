@@ -299,6 +299,7 @@ export default function StartupDetail() {
           <OnChainVerification
             walletAddress={startup.solana_address || startup.wallet_address}
             startupName={startup.name}
+            startupCategory={startup.category}
             claimedTreasuryUsd={startup.treasury}
           />
           <ProofChainVisualizer startup={startup} />

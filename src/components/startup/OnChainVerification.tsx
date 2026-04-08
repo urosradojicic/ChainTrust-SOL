@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Shield, CheckCircle, XCircle, Loader2, ExternalLink, Wallet,
-  BarChart3, Users, Lock, RefreshCw, AlertTriangle,
+  BarChart3, Users, Lock, RefreshCw, AlertTriangle, ArrowDownRight,
+  ArrowUpRight, DollarSign, Award, Copy, TrendingUp,
 } from 'lucide-react';
 import {
   useVerifyTreasury,
@@ -12,13 +13,18 @@ import {
   computeVerificationScore,
   type VerificationScore,
 } from '@/hooks/use-chain-verification';
+import { useSolPrice } from '@/hooks/use-pyth-price';
+import { useVerifyPaymentVolume } from '@/hooks/use-payment-verification';
+import { useMintCertificate, type MintedCertificate } from '@/hooks/use-cnft-certificate';
 import { SOLANA_NETWORK } from '@/lib/solana-config';
+import { toast } from '@/hooks/use-toast';
 
 interface Props {
   walletAddress?: string;
   tokenMint?: string;
   claimedTreasuryUsd?: number;
   startupName: string;
+  startupCategory?: string;
 }
 
 const GRADE_COLORS: Record<string, string> = {
@@ -34,15 +40,18 @@ function explorerUrl(type: 'address' | 'tx', value: string): string {
   return `${base}/${type}/${value}?cluster=${SOLANA_NETWORK}`;
 }
 
-export default function OnChainVerification({ walletAddress, tokenMint, claimedTreasuryUsd = 0, startupName }: Props) {
+export default function OnChainVerification({ walletAddress, tokenMint, claimedTreasuryUsd = 0, startupName, startupCategory = 'DeFi' }: Props) {
   const { verify: verifyTreasury, data: treasury, isLoading: treasuryLoading } = useVerifyTreasury();
   const { verify: verifyActivity, data: activity, isLoading: activityLoading } = useVerifyActivity();
   const { verify: verifyDist, data: distribution, isLoading: distLoading } = useVerifyTokenDistribution();
   const { verify: verifyMintAuth, data: mint, isLoading: mintLoading } = useVerifyMint();
+  const { price: solPriceData } = useSolPrice();
+  const { verify: verifyPayments, data: payments, isLoading: paymentsLoading, progress: paymentProgress } = useVerifyPaymentVolume();
+  const { mint: mintCertificate, isPending: mintPending, lastMinted } = useMintCertificate();
   const [score, setScore] = useState<VerificationScore | null>(null);
   const [verifying, setVerifying] = useState(false);
 
-  const isLoading = treasuryLoading || activityLoading || distLoading || mintLoading || verifying;
+  const isLoading = treasuryLoading || activityLoading || distLoading || mintLoading || paymentsLoading || verifying;
 
   const runFullVerification = async () => {
     if (!walletAddress) return;
@@ -54,6 +63,14 @@ export default function OnChainVerification({ walletAddress, tokenMint, claimedT
       tokenMint ? verifyDist(tokenMint) : Promise.resolve(null),
       tokenMint ? verifyMintAuth(tokenMint) : Promise.resolve(null),
     ]);
+
+    // Also verify payment volume
+    verifyPayments(walletAddress, 30);
+
+    // Apply Pyth price to treasury if available
+    if (t && solPriceData) {
+      t.totalUsdEstimate = t.solBalance * solPriceData.price;
+    }
 
     const result = computeVerificationScore(t, d, a, m, claimedTreasuryUsd);
     setScore(result);
@@ -261,6 +278,144 @@ export default function OnChainVerification({ walletAddress, tokenMint, claimedT
               ))}
             </div>
           )}
+        </motion.div>
+      )}
+
+      {/* Pyth-powered live price */}
+      {solPriceData && treasury && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="rounded-xl border bg-card p-5">
+          <h4 className="font-bold mb-3 flex items-center gap-2">
+            <DollarSign className="h-4 w-4 text-primary" /> Pyth Oracle Treasury Valuation
+          </h4>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">SOL/USD (Pyth)</div>
+              <div className="text-lg font-bold font-mono">${solPriceData.price.toFixed(2)}</div>
+              <div className="text-[10px] text-muted-foreground">&plusmn;${solPriceData.confidence.toFixed(2)}</div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Treasury (USD)</div>
+              <div className="text-lg font-bold font-mono text-primary">${(treasury.solBalance * solPriceData.price).toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Price Updated</div>
+              <div className="text-sm font-mono">{solPriceData.publishTime.toLocaleTimeString()}</div>
+            </div>
+          </div>
+          <p className="mt-2 text-[10px] text-muted-foreground flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 inline-block" />
+            Live price from Pyth Network oracle — updates every 30s
+          </p>
+        </motion.div>
+      )}
+
+      {/* Payment volume */}
+      {payments && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="rounded-xl border bg-card p-5">
+          <h4 className="font-bold mb-3 flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-primary" /> Verified Payment Volume ({payments.periodDays}d)
+          </h4>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Inbound SOL</div>
+              <div className="text-lg font-bold font-mono flex items-center gap-1">
+                <ArrowDownRight className="h-3.5 w-3.5 text-emerald-400" />
+                {payments.inboundVolumeSol}
+              </div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Outbound SOL</div>
+              <div className="text-lg font-bold font-mono flex items-center gap-1">
+                <ArrowUpRight className="h-3.5 w-3.5 text-red-400" />
+                {payments.outboundVolumeSol}
+              </div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Net Flow</div>
+              <div className={`text-lg font-bold font-mono ${payments.netFlowSol >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                {payments.netFlowSol >= 0 ? '+' : ''}{payments.netFlowSol} SOL
+              </div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Counterparties</div>
+              <div className="text-lg font-bold font-mono">{payments.uniqueCounterparties}</div>
+            </div>
+          </div>
+          <p className="text-[10px] text-muted-foreground">{payments.totalTransfers} transfers verified from Solana blockchain</p>
+        </motion.div>
+      )}
+
+      {/* Issue verification certificate (cNFT) */}
+      {score && score.overall >= 50 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="rounded-xl border-2 border-primary/20 bg-primary/5 p-5">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 shrink-0">
+              <Award className="h-6 w-6 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-bold">Issue Verification Certificate</h4>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Mint a compressed NFT certificate to this startup's wallet — immutable proof of verification on Solana. Cost: ~$0.0001.
+              </p>
+              {lastMinted ? (
+                <div className="mt-3 rounded-lg bg-card border border-primary/20 p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <CheckCircle className="h-4 w-4 text-emerald-400" />
+                    <span className="text-sm font-medium">Certificate Minted</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground space-y-0.5">
+                    <div>ID: <span className="font-mono text-primary">{lastMinted.certificateId}</span></div>
+                    <div>Tx: <span className="font-mono">{lastMinted.txSignature.slice(0, 20)}...</span></div>
+                    <div>Trust Score: {lastMinted.trustScore}/100</div>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  disabled={mintPending}
+                  onClick={async () => {
+                    if (!walletAddress) return;
+                    const cert = await mintCertificate(walletAddress, {
+                      startupName,
+                      trustScore: score.overall,
+                      verifiedAt: new Date().toISOString(),
+                      metricsHash: `sha256:${Date.now().toString(16)}`,
+                      category: startupCategory,
+                    });
+                    // Store in localStorage for history
+                    const stored = JSON.parse(localStorage.getItem('chaintrust_certificates') || '[]');
+                    stored.push(cert);
+                    localStorage.setItem('chaintrust_certificates', JSON.stringify(stored));
+                    toast({ title: 'Certificate minted!', description: `ID: ${cert.certificateId}` });
+                  }}
+                  className="mt-3 flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:opacity-40"
+                >
+                  {mintPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Award className="h-4 w-4" />}
+                  {mintPending ? 'Minting...' : 'Mint Verification Certificate (cNFT)'}
+                </button>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Shareable verification link */}
+      {score && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="rounded-lg bg-muted/30 p-4 flex items-center justify-between">
+          <div>
+            <div className="text-xs font-medium text-muted-foreground">Shareable Verification Link</div>
+            <code className="text-xs font-mono text-primary mt-0.5 block">
+              {window.location.origin}/verify/{walletAddress?.slice(0, 8)}
+            </code>
+          </div>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}`);
+              toast({ title: 'Link copied!', description: 'Share this with investors for independent verification.' });
+            }}
+            className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground transition hover:text-foreground"
+          >
+            <Copy className="h-3 w-3" /> Copy Link
+          </button>
         </motion.div>
       )}
     </div>
