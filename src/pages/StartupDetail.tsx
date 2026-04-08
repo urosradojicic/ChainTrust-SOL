@@ -20,6 +20,7 @@ import FundingRounds from '@/components/startup/FundingRounds';
 import SoulboundBadge from '@/components/startup/SoulboundBadge';
 import TransactionHistory from '@/components/startup/TransactionHistory';
 import ProofChainVisualizer from '@/components/startup/ProofChainVisualizer';
+import OnChainVerification from '@/components/startup/OnChainVerification';
 import TrustScoreBreakdown from '@/components/startup/TrustScoreBreakdown';
 import ValuationMetrics from '@/components/startup/ValuationMetrics';
 import TokenUnlockCalendar from '@/components/startup/TokenUnlockCalendar';
@@ -293,8 +294,13 @@ export default function StartupDetail() {
           <ComplianceDashboard startup={startup} />
         </TabsContent>
 
-        {/* Verification — Proof Chain */}
+        {/* Verification — On-Chain + Proof Chain */}
         <TabsContent value="verification" className="mt-6 space-y-6">
+          <OnChainVerification
+            walletAddress={startup.solana_address || startup.wallet_address}
+            startupName={startup.name}
+            claimedTreasuryUsd={startup.treasury}
+          />
           <ProofChainVisualizer startup={startup} />
           <TrustScoreBreakdown startup={startup} />
         </TabsContent>
