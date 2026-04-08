@@ -5,6 +5,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+/**
+ * Risk Analysis Edge Function
+ *
+ * Generates a deterministic risk analysis from startup metrics.
+ * No external API calls required — all computation is local.
+ */
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -16,62 +22,30 @@ serve(async (req) => {
       });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    // Deterministic risk analysis based on metrics
+    const mrr = startup.mrr ?? 0;
+    const growth = startup.growth_rate ?? 0;
+    const sustainability = startup.sustainability_score ?? 0;
+    const concentration = startup.token_concentration_pct ?? 0;
+    const treasury = startup.treasury ?? 0;
+    const users = startup.users ?? 0;
 
-    const userPrompt = `Startup: ${startup.name}
-Category: ${startup.category} | Blockchain: ${startup.blockchain}
-MRR: $${startup.mrr?.toLocaleString()} | Users: ${startup.users?.toLocaleString()} | Growth: ${startup.growth_rate}%
-Sustainability Score: ${startup.sustainability_score}/100
-Carbon Offsets: ${startup.carbon_offset_tonnes}t CO2 | Energy/tx: ${startup.energy_per_transaction}
-Token Concentration (top 10): ${startup.token_concentration_pct}% | Inflation: ${startup.inflation_rate}%
-Treasury: $${startup.treasury?.toLocaleString()} | Team Size: ${startup.team_size}`;
+    const runway = treasury > 0 && mrr > 0 ? Math.round(treasury / (mrr * 0.7)) : 0;
+    const burnRisk = runway < 6 ? 'high' : runway < 12 ? 'moderate' : 'low';
+    const growthSignal = growth > 15 ? 'strong' : growth > 5 ? 'moderate' : growth > 0 ? 'modest' : 'declining';
+    const concentrationRisk = concentration > 50 ? 'critical' : concentration > 30 ? 'elevated' : 'acceptable';
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-lite",
-        messages: [
-          {
-            role: "system",
-            content: "You are a blockchain startup analyst. Given the following on-chain metrics for a startup, provide a brief risk analysis covering: 1) Financial sustainability risk, 2) Environmental impact assessment, 3) Tokenomics red flags, 4) Overall investment recommendation. Be specific and reference the actual numbers. Keep it under 200 words. Format as exactly 4 sections with headers: **Financial Risk**, **Environmental Impact**, **Tokenomics Flags**, **Recommendation**. Each section should be 1-3 sentences.",
-          },
-          { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+    const sections = [
+      `**Financial Risk**\n${startup.name} has ${burnRisk} burn risk with ~${runway} months runway at current spending. MRR of $${mrr.toLocaleString()} with ${growthSignal} growth at ${growth}%. ${runway < 6 ? 'Immediate fundraising recommended.' : 'Financial position is stable.'}`,
+      `**Environmental Impact**\nSustainability score of ${sustainability}/100. ${startup.carbon_offset_tonnes > 0 ? `Offset ${startup.carbon_offset_tonnes}t CO2 — ${sustainability > 70 ? 'strong ESG positioning' : 'improvement needed'}.` : 'No carbon offset data reported — consider adding environmental metrics.'}`,
+      `**Tokenomics Flags**\nTop wallet concentration at ${concentration}% is ${concentrationRisk}. ${concentration > 40 ? 'High concentration creates sell pressure risk and governance centralization concerns.' : 'Distribution is healthy for a project at this stage.'}`,
+      `**Recommendation**\n${sustainability > 60 && growth > 5 && concentration < 40 ? 'Positive outlook. Strong fundamentals with sustainable growth trajectory. Suitable for further due diligence.' : sustainability > 40 ? 'Mixed signals. Some metrics are promising but key areas need improvement before institutional investment.' : 'Caution advised. Multiple risk factors present. Recommend monitoring for 1-2 quarters before commitment.'}`,
+    ];
 
-    if (!response.ok) {
-      const status = response.status;
-      if (status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limited. Please try again shortly." }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      if (status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      const t = await response.text();
-      console.error("AI gateway error:", status, t);
-      return new Response(JSON.stringify({ error: "AI analysis failed" }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || "No analysis generated.";
-
-    return new Response(JSON.stringify({ analysis: content }), {
+    return new Response(JSON.stringify({ analysis: sections.join('\n\n') }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
-    console.error("risk-analysis error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

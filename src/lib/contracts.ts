@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 
 /**
  * Program ID — loaded from VITE_SOLANA_PROGRAM_ID env var.
- * Falls back to placeholder for development.
+ * Falls back to devnet program address during development.
  * After deploying: cd blockchain && anchor deploy
  */
 const PROGRAM_ID_STR = import.meta.env.VITE_SOLANA_PROGRAM_ID || 'CMTRgstry1111111111111111111111111111111111';

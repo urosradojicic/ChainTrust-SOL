@@ -147,7 +147,7 @@ export default function Landing() {
                   <span className="text-xs font-medium uppercase tracking-wider">Analytics</span>
                 </div>
                 <h3 className="font-display text-xl font-semibold text-foreground">AI due diligence engine</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">Algorithmic risk analysis, investment grading, percentile rankings, and LP-ready quarterly reports. Zero API cost.</p>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">Algorithmic risk analysis, investment grading, percentile rankings, and LP-ready quarterly reports.</p>
               </div>
             </motion.div>
 

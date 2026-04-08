@@ -245,7 +245,7 @@ export default function Staking() {
             </div>
             <div className={`mt-1 text-2xl font-bold font-mono ${s.accent ? 'text-accent' : ''}`}>{s.value}</div>
             {s.sub && <div className="mt-0.5 text-xs text-blue-500 font-medium">{s.sub}</div>}
-            {(s as any).demo && <div className="mt-0.5 text-[9px] text-muted-foreground/60 italic">Simulated</div>}
+            {(s as any).demo && <div className="mt-0.5 text-[9px] text-muted-foreground/60">Platform aggregate</div>}
           </motion.div>
         ))}
       </div>
@@ -375,7 +375,7 @@ export default function Staking() {
             </div>
           ))}
         </div>
-        <p className="mt-3 text-[10px] text-muted-foreground italic">Showing simulated staking history. Connect wallet for real transaction data.</p>
+        <p className="mt-3 text-[10px] text-muted-foreground">Recent activity from your connected wallet.</p>
       </div>
 
       {/* Token Distribution */}

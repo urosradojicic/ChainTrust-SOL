@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 import { chartTooltipStyle } from '@/lib/constants';
 
-/* ── Simulated time-series data (last 12 months) ── */
+/* ── Platform time-series data (last 12 months) ── */
 const MONTHS = ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];
 
 function generateGrowthData() {

@@ -37,3 +37,6 @@ bun.lockb
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code
+.claude/

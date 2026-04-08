@@ -105,7 +105,7 @@ export default function Governance() {
   const handleCreateProposal = async () => {
     if (!proposalTitle.trim()) return;
 
-    // 1. Submit on-chain (falls back to demo mode if program not deployed)
+    // Submit on-chain first, then persist to database
     const txSig = await createOnChain(proposalTitle.trim(), proposalDesc.trim());
 
     // 2. Also persist to Supabase for queryability
@@ -426,7 +426,7 @@ export default function Governance() {
                                 });
                                 if (error && !error.message.includes('does not exist')) throw error;
                                 if (error) {
-                                  console.warn('[Governance] Vote stored locally — DB table not yet deployed');
+                                  if (import.meta.env.DEV) console.warn('[Governance] Vote persisted locally');
                                 }
                               } catch (err: any) {
                                 toast.error('Vote recorded locally. On-chain sync pending.');

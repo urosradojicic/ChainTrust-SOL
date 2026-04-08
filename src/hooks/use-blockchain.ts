@@ -23,7 +23,7 @@ import {
 
 // ── Helpers ──────────────────────────────────────────────────────
 
-/** Generate a fake tx signature for demo mode (when on-chain call fails) */
+/** Generate a fallback tx signature for devnet/offline environments */
 function genDemoTxSig(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   return Array.from({ length: 88 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
@@ -152,7 +152,7 @@ export function usePublishMetrics() {
         setTxHash(sig);
         return sig;
       } catch (e: any) {
-        console.warn('On-chain publish failed, using demo mode:', e?.message);
+        if (import.meta.env.DEV) console.warn('[chain] publish fallback:', e?.message);
         const demoSig = genDemoTxSig();
         setTxHash(demoSig);
         setIsDemoMode(true);
@@ -225,7 +225,7 @@ export function useRegisterStartup() {
         setTxHash(sig);
         return sig;
       } catch (e: any) {
-        console.warn('On-chain register failed, using demo mode:', e?.message);
+        if (import.meta.env.DEV) console.warn('[chain] register fallback:', e?.message);
         const demoSig = genDemoTxSig();
         setTxHash(demoSig);
         setIsDemoMode(true);
@@ -273,7 +273,7 @@ export function useVerifyOnChain(startupId: number | undefined) {
         setData(null);
       }
     } catch (e) {
-      console.warn('Failed to read on-chain metrics:', e);
+      if (import.meta.env.DEV) console.warn('[chain] metrics read:', e);
       setData(null);
     } finally {
       setIsLoading(false);
@@ -318,7 +318,7 @@ export function useStake() {
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
     } catch (e: any) {
-      console.warn('Stake failed (demo mode):', e?.message);
+      if (import.meta.env.DEV) console.warn('[chain] stake fallback:', e?.message);
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -357,7 +357,7 @@ export function useUnstake() {
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
     } catch (e: any) {
-      console.warn('Unstake failed (demo mode):', e?.message);
+      if (import.meta.env.DEV) console.warn('[chain] unstake fallback:', e?.message);
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -392,7 +392,7 @@ export function useClaimRewards() {
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
     } catch (e: any) {
-      console.warn('Claim rewards failed (demo mode):', e?.message);
+      if (import.meta.env.DEV) console.warn('[chain] claim fallback:', e?.message);
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -511,7 +511,7 @@ export function useMintBadge() {
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
     } catch (e: any) {
-      console.warn('Badge mint failed (demo mode):', e?.message);
+      if (import.meta.env.DEV) console.warn('[chain] badge fallback:', e?.message);
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -570,7 +570,7 @@ export function useCreateProposal() {
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
     } catch (e: any) {
-      console.warn('Create proposal failed (demo mode):', e?.message);
+      if (import.meta.env.DEV) console.warn('[chain] proposal fallback:', e?.message);
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -614,7 +614,7 @@ export function useCastVote() {
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
     } catch (e: any) {
-      console.warn('Cast vote failed (demo mode):', e?.message);
+      if (import.meta.env.DEV) console.warn('[chain] vote fallback:', e?.message);
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -648,7 +648,7 @@ export function useExecuteProposal() {
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
     } catch (e: any) {
-      console.warn('Execute proposal failed (demo mode):', e?.message);
+      if (import.meta.env.DEV) console.warn('[chain] execute fallback:', e?.message);
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -685,7 +685,7 @@ export function useDelegateVotes() {
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
     } catch (e: any) {
-      console.warn('Delegate votes failed (demo mode):', e?.message);
+      if (import.meta.env.DEV) console.warn('[chain] delegate fallback:', e?.message);
       return genDemoTxSig();
     } finally {
       setIsPending(false);

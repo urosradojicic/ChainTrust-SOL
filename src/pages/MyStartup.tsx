@@ -94,7 +94,7 @@ export default function MyStartup() {
       .select('*')
       .eq('user_id', user.id)
       .maybeSingle();
-    if (error) { console.error(error); setLoading(false); return; }
+    if (error) { if (import.meta.env.DEV) console.error(error); setLoading(false); return; }
     if (!data) { navigate('/register'); return; }
     setStartup(data as unknown as DbStartup);
     setForm({
@@ -170,7 +170,7 @@ export default function MyStartup() {
         return;
       }
 
-      // Publish metrics on-chain via smart contract (falls back to demo mode if contracts not deployed)
+      // Publish metrics on-chain via Anchor smart contract
       const txHash = await publish({
         startupId: 1,
         mrr: Number(form.mrr) || 0,

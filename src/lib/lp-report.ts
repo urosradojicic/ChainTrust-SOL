@@ -1,7 +1,7 @@
 /**
  * LP (Limited Partner) Quarterly Report Generator
  * Generates institutional-grade PDF reports using html2canvas + jsPDF.
- * Zero API cost — all data computed client-side.
+ * All data computed client-side.
  */
 
 import type { DbStartup, DbMetricsHistory } from '@/types/database';

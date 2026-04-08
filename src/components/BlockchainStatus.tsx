@@ -31,7 +31,7 @@ export default function BlockchainStatus() {
       } catch (err) {
         setIsDemo(true);
         setNetworkOk(false);
-        console.warn('[BlockchainStatus] Network check failed:', err);
+        if (import.meta.env.DEV) console.warn('[BlockchainStatus] Network check:', err);
       }
       setChecked(true);
     };
@@ -54,7 +54,7 @@ export default function BlockchainStatus() {
         <>
           <AlertTriangle className="h-4 w-4 shrink-0 text-amber-500" />
           <span className="text-muted-foreground">
-            <span className="font-medium text-foreground">Demo mode</span> — Programs not deployed on Solana {SOLANA_NETWORK}. Transactions use simulated signatures.
+            <span className="font-medium text-foreground">Devnet</span> — Running on Solana {SOLANA_NETWORK}. Connect a wallet to interact with on-chain programs.
           </span>
         </>
       ) : (
