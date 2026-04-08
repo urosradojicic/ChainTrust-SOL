@@ -1,8 +1,3 @@
-/**
- * On-chain verification hooks.
- * Reads live Solana blockchain data to verify startup claims.
- * Zero cost — all operations are RPC reads.
- */
 import { useConnection } from '@solana/wallet-adapter-react';
 import { useState, useCallback } from 'react';
 import { PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
@@ -67,12 +62,9 @@ export function useVerifyTreasury() {
     setError(null);
     try {
       const pubkey = new PublicKey(walletAddress);
-
-      // Get SOL balance
       const lamports = await connection.getBalance(pubkey);
       const solBalance = lamports / LAMPORTS_PER_SOL;
 
-      // Get all SPL token accounts
       const tokenAccounts = await connection.getParsedTokenAccountsByOwner(pubkey, {
         programId: TOKEN_PROGRAM_ID,
       });
@@ -90,9 +82,8 @@ export function useVerifyTreasury() {
         .filter(t => t.balance > 0)
         .sort((a, b) => b.balance - a.balance);
 
-      // Estimate USD (SOL price approximation — in production use Pyth)
-      const solPrice = 140; // Approximate; replace with Pyth feed for real-time
-      const totalUsdEstimate = solBalance * solPrice;
+      // USD estimate set to 0 here — caller applies Pyth oracle price
+      const totalUsdEstimate = 0;
 
       const result: TreasuryVerification = {
         solBalance,
@@ -198,7 +189,7 @@ export function useVerifyActivity() {
 
       const now = Date.now() / 1000;
       const last30 = signatures.filter(s => (s.blockTime ?? 0) >= now - 30 * 86400);
-      const last7 = signatures.filter(s => (s.blockTime ?? 0) >= now - 7 * 86400);
+      const last7 = last30.filter(s => (s.blockTime ?? 0) >= now - 7 * 86400);
 
       const result: ActivityVerification = {
         totalTransactions: signatures.length,

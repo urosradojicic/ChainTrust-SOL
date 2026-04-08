@@ -6,6 +6,7 @@ import {
   SystemProgram,
   PublicKey,
 } from '@solana/web3.js';
+import { genFallbackTxSig } from '@/lib/solana-config';
 import {
   PROGRAM_ID,
   getRegistryPDA,
@@ -23,11 +24,8 @@ import {
 
 // ── Helpers ──────────────────────────────────────────────────────
 
-/** Generate a fallback tx signature for devnet/offline environments */
-function genDemoTxSig(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  return Array.from({ length: 88 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-}
+// Re-export for backward compatibility
+const genDemoTxSig = genFallbackTxSig;
 
 /**
  * Compute Anchor instruction discriminator.

@@ -16,7 +16,7 @@ import {
 import { useSolPrice } from '@/hooks/use-pyth-price';
 import { useVerifyPaymentVolume } from '@/hooks/use-payment-verification';
 import { useMintCertificate, type MintedCertificate } from '@/hooks/use-cnft-certificate';
-import { SOLANA_NETWORK } from '@/lib/solana-config';
+import { SOLANA_NETWORK, explorerAddressUrl } from '@/lib/solana-config';
 import { toast } from '@/hooks/use-toast';
 
 interface Props {
@@ -34,11 +34,6 @@ const GRADE_COLORS: Record<string, string> = {
   D: 'text-orange-400 bg-orange-500/10 border-orange-500/20',
   F: 'text-red-400 bg-red-500/10 border-red-500/20',
 };
-
-function explorerUrl(type: 'address' | 'tx', value: string): string {
-  const base = 'https://explorer.solana.com';
-  return `${base}/${type}/${value}?cluster=${SOLANA_NETWORK}`;
-}
 
 export default function OnChainVerification({ walletAddress, tokenMint, claimedTreasuryUsd = 0, startupName, startupCategory = 'DeFi' }: Props) {
   const { verify: verifyTreasury, data: treasury, isLoading: treasuryLoading } = useVerifyTreasury();
@@ -64,10 +59,10 @@ export default function OnChainVerification({ walletAddress, tokenMint, claimedT
       tokenMint ? verifyMintAuth(tokenMint) : Promise.resolve(null),
     ]);
 
-    // Also verify payment volume
-    verifyPayments(walletAddress, 30);
+    // Payment volume check runs concurrently
+    await verifyPayments(walletAddress, 30);
 
-    // Apply Pyth price to treasury if available
+    // Apply Pyth oracle price to treasury valuation
     if (t && solPriceData) {
       t.totalUsdEstimate = t.solBalance * solPriceData.price;
     }
@@ -116,7 +111,7 @@ export default function OnChainVerification({ walletAddress, tokenMint, claimedT
           <Wallet className="h-4 w-4 text-muted-foreground" />
           <span className="font-mono text-xs text-muted-foreground">{walletAddress}</span>
         </div>
-        <a href={explorerUrl('address', walletAddress)} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
+        <a href={explorerAddressUrl(walletAddress)} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
           Explorer <ExternalLink className="h-3 w-3" />
         </a>
       </div>
@@ -269,7 +264,7 @@ export default function OnChainVerification({ walletAddress, tokenMint, claimedT
                 <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-border last:border-0">
                   <div className="flex items-center gap-2">
                     <span className="text-muted-foreground font-mono w-4">{i + 1}.</span>
-                    <a href={explorerUrl('address', h.owner)} target="_blank" rel="noopener noreferrer" className="font-mono text-primary hover:underline">
+                    <a href={explorerAddressUrl(h.owner)} target="_blank" rel="noopener noreferrer" className="font-mono text-primary hover:underline">
                       {h.owner.slice(0, 6)}...{h.owner.slice(-4)}
                     </a>
                   </div>
@@ -384,6 +379,8 @@ export default function OnChainVerification({ walletAddress, tokenMint, claimedT
                     // Store in localStorage for history
                     const stored = JSON.parse(localStorage.getItem('chaintrust_certificates') || '[]');
                     stored.push(cert);
+                    // Cap at 50 certificates to prevent unbounded localStorage growth
+                    if (stored.length > 50) stored.splice(0, stored.length - 50);
                     localStorage.setItem('chaintrust_certificates', JSON.stringify(stored));
                     toast({ title: 'Certificate minted!', description: `ID: ${cert.certificateId}` });
                   }}

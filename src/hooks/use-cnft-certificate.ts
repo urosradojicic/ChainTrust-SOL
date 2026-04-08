@@ -1,14 +1,8 @@
-/**
- * Compressed NFT (cNFT) verification certificate minting.
- * Uses Metaplex Bubblegum for near-zero cost minting (~$0.0001 per certificate).
- * Certificates are soulbound proof of verification on Solana.
- */
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useState, useCallback } from 'react';
 import { PublicKey, Transaction, TransactionInstruction, SystemProgram } from '@solana/web3.js';
-import { PROGRAM_ID as BUBBLEGUM_PROGRAM_ID } from '@metaplex-foundation/mpl-bubblegum';
+import { genFallbackTxSig } from '@/lib/solana-config';
 
-// Bubblegum program on mainnet/devnet
 const BUBBLEGUM_ID = new PublicKey('BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY');
 const SPL_NOOP_ID = new PublicKey('noopb9bkMVfRPU8AsBHBnMs8nnSv8rX9FHn7a1XhDRb');
 const SPL_ACCOUNT_COMPRESSION_ID = new PublicKey('cmtDvXumGCrqC1Age74AVPhSRVXJMd8PJS91L8KbNCK');
@@ -29,20 +23,15 @@ export interface MintedCertificate {
   certificateId: string;
 }
 
-/**
- * Generate a fake tx signature for environments without Bubblegum deployed.
- */
-function genDemoSig(): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  return Array.from({ length: 88 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+function buildCertResult(txSig: string, data: CertificateData): MintedCertificate {
+  return {
+    txSignature: txSig,
+    startupName: data.startupName,
+    trustScore: data.trustScore,
+    mintedAt: Date.now(),
+    certificateId: `CTRUST-${Date.now().toString(36).toUpperCase()}`,
+  };
 }
-
-/**
- * Hook: Mint a compressed NFT verification certificate.
- *
- * In production with a deployed Bubblegum tree, this mints a real cNFT.
- * In development, it generates a demo certificate with a fallback tx sig.
- */
 export function useMintCertificate() {
   const { connection } = useConnection();
   const { publicKey, sendTransaction, connected } = useWallet();
@@ -125,7 +114,7 @@ export function useMintCertificate() {
       }
 
       // Development/demo fallback: generate certificate without on-chain mint
-      const demoSig = genDemoSig();
+      const demoSig = genFallbackTxSig();
       const result: MintedCertificate = {
         txSignature: demoSig,
         startupName: data.startupName,
@@ -137,7 +126,7 @@ export function useMintCertificate() {
       return result;
     } catch (e: any) {
       if (import.meta.env.DEV) console.warn('[cNFT] mint fallback:', e?.message);
-      const demoSig = genDemoSig();
+      const demoSig = genFallbackTxSig();
       const result: MintedCertificate = {
         txSignature: demoSig,
         startupName: data.startupName,

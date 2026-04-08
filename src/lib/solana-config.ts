@@ -19,3 +19,9 @@ export function explorerTxUrl(signature: string): string {
 export function explorerAddressUrl(address: string): string {
   return `${SOLANA_EXPLORER_URL}/address/${address}?cluster=${SOLANA_NETWORK}`;
 }
+
+/** Generate a fallback tx signature for devnet/offline environments */
+export function genFallbackTxSig(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  return Array.from({ length: 88 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+}

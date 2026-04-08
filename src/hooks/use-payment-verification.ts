@@ -1,8 +1,3 @@
-/**
- * On-chain payment volume verification.
- * Reads actual token transfers from a startup's wallet to verify
- * transaction volume claims — zero cost, direct blockchain reads.
- */
 import { useConnection } from '@solana/wallet-adapter-react';
 import { useState, useCallback } from 'react';
 import { PublicKey, ParsedTransactionWithMeta } from '@solana/web3.js';

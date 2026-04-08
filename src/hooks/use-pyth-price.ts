@@ -1,8 +1,3 @@
-/**
- * Pyth Network price feed hook.
- * Reads real-time SOL/USD and other prices from Pyth's Hermes endpoint.
- * Zero cost — Hermes is a free public endpoint, no API key required.
- */
 import { useState, useCallback, useEffect, useRef } from 'react';
 
 // Pyth Hermes endpoint (public, no key required)
@@ -35,9 +30,6 @@ export interface TreasuryValuation {
   lastUpdated: number;
 }
 
-/**
- * Fetch a price from Pyth Hermes (free, no API key).
- */
 async function fetchPythPrice(feedId: string): Promise<PythPrice | null> {
   try {
     const res = await fetch(
@@ -65,10 +57,7 @@ async function fetchPythPrice(feedId: string): Promise<PythPrice | null> {
   }
 }
 
-/**
- * Hook: get live SOL/USD price from Pyth Network.
- * Auto-refreshes every 30 seconds.
- */
+/** Live SOL/USD price from Pyth Network. Auto-refreshes every 30 seconds. */
 export function useSolPrice(refreshIntervalMs = 30_000) {
   const [price, setPrice] = useState<PythPrice | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +66,10 @@ export function useSolPrice(refreshIntervalMs = 30_000) {
   const refresh = useCallback(async () => {
     setIsLoading(true);
     const p = await fetchPythPrice(PYTH_FEEDS.SOL_USD);
-    if (p) setPrice(p);
+    if (p) {
+      // Only update state if price actually changed (avoids unnecessary re-renders)
+      setPrice(prev => (prev && Math.abs(prev.price - p.price) < 0.001) ? prev : p);
+    }
     setIsLoading(false);
   }, []);
 
@@ -90,9 +82,7 @@ export function useSolPrice(refreshIntervalMs = 30_000) {
   return { price, isLoading, refresh };
 }
 
-/**
- * Hook: compute live treasury USD valuation using Pyth.
- */
+/** Compute live treasury USD valuation using Pyth oracle price. */
 export function useTreasuryValuation(solBalance: number | null) {
   const { price: solPrice, isLoading } = useSolPrice();
   const [valuation, setValuation] = useState<TreasuryValuation | null>(null);
