@@ -6,6 +6,7 @@ import Badge from '@/components/common/Badge';
 import { Leaf, Plus, X, Shield, CheckCircle2, Loader2 } from 'lucide-react';
 import { useCreateProposal as useCreateProposalOnChain, useCastVote as useCastVoteOnChain, useDelegateVotes, useExecuteProposal as useExecuteOnChain } from '@/hooks/use-blockchain';
 import { PublicKey } from '@solana/web3.js';
+import { sanitizeText, isValidSolanaAddress } from '@/lib/sanitize';
 import { Progress } from '@/components/ui/progress';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose,
@@ -103,17 +104,19 @@ export default function Governance() {
   };
 
   const handleCreateProposal = async () => {
-    if (!proposalTitle.trim()) return;
+    const safeTitle = sanitizeText(proposalTitle, 200);
+    const safeDesc = sanitizeText(proposalDesc, 1000);
+    if (!safeTitle) return;
 
     // Submit on-chain first, then persist to database
-    const txSig = await createOnChain(proposalTitle.trim(), proposalDesc.trim());
+    const txSig = await createOnChain(safeTitle, safeDesc);
 
     // 2. Also persist to Supabase for queryability
     const endsAt = new Date();
     endsAt.setDate(endsAt.getDate() + 7);
     const { error } = await supabase.from('proposals').insert({
-      title: proposalTitle.trim(),
-      description: proposalDesc.trim() || null,
+      title: safeTitle,
+      description: safeDesc || null,
       proposer: user?.email || 'anon...wallet',
       status: 'Active',
       votes_for: 0,
@@ -465,9 +468,10 @@ export default function Governance() {
           />
           <div className="relative group">
             <button
-              disabled={delegateAddr.length < 32 || delegating || delegateOnChainPending}
+              disabled={!isValidSolanaAddress(delegateAddr) || delegating || delegateOnChainPending}
               onClick={async () => {
                 if (!user) { toast.error('Sign in to delegate'); return; }
+                if (!isValidSolanaAddress(delegateAddr)) { toast.error('Invalid Solana address format'); return; }
                 setDelegating(true);
                 try {
                   const delegateeKey = new PublicKey(delegateAddr);

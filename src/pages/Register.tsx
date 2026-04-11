@@ -10,6 +10,7 @@ import {
   CheckCircle2, ChevronLeft, ChevronRight, Loader2, ExternalLink, AlertTriangle,
 } from 'lucide-react';
 import { explorerTxUrl } from '@/lib/solana-config';
+import { sanitizeText, sanitizeUrl, sanitizeNumber } from '@/lib/sanitize';
 import { Progress } from '@/components/ui/progress';
 import Toggle from '@/components/form/Toggle';
 import DistSlider from '@/components/form/DistSlider';
@@ -123,17 +124,17 @@ export default function Register() {
       }
 
       const { data, error } = await supabase.from('startups').insert({
-        name: form.name.trim().slice(0, 100),
+        name: sanitizeText(form.name, 100),
         user_id: currentUser.id,
-        description: form.description.trim().slice(0, 500),
-        category: form.category,
-        blockchain: form.blockchain,
-        website: form.website.trim().slice(0, 255) || null,
+        description: sanitizeText(form.description, 500),
+        category: sanitizeText(form.category, 50),
+        blockchain: sanitizeText(form.blockchain, 50),
+        website: sanitizeUrl(form.website) || null,
         founded_date: form.foundedDate || null,
-        mrr: Number(form.mrr) || 0,
-        users: Number(form.mau) || 0,
-        growth_rate: Number(form.growthRate) || 0,
-        treasury: Number(form.treasury) || 0,
+        mrr: sanitizeNumber(form.mrr, 0, 1_000_000_000),
+        users: sanitizeNumber(form.mau, 0, 1_000_000_000),
+        growth_rate: sanitizeNumber(form.growthRate, -100, 10000),
+        treasury: sanitizeNumber(form.treasury, 0, 100_000_000_000),
         chain_type: form.chainType,
         energy_per_transaction: `${form.energyPerTx} kWh`,
         carbon_offset_tonnes: carbonVal,
@@ -156,7 +157,7 @@ export default function Register() {
 
       // Insert pledges
       const pledgeTexts = PRESET_PLEDGES.filter(p => form.pledges[p.key]).map(p => p.label);
-      if (form.customPledge.trim()) pledgeTexts.push(form.customPledge.trim().slice(0, 255));
+      if (form.customPledge.trim()) pledgeTexts.push(sanitizeText(form.customPledge, 255));
       if (pledgeTexts.length > 0) {
         await supabase.from('pledges').insert(
           pledgeTexts.map(t => ({ startup_id: startupId, pledge_text: t, status: 'active' }))

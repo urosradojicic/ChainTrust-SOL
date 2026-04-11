@@ -104,6 +104,21 @@ export function usePublishMetrics() {
       carbonOffset: number;
     }) => {
       if (!connected || !publicKey) throw new Error('Wallet not connected');
+      // Validate all parameters are safe integers before building transaction
+      const safeInt = (v: number, name: string) => {
+        if (!Number.isFinite(v) || v < 0 || v > Number.MAX_SAFE_INTEGER) throw new Error(`Invalid ${name}: ${v}`);
+        return Math.floor(v);
+      };
+      const validatedParams = {
+        startupId: safeInt(params.startupId, 'startupId'),
+        mrr: safeInt(params.mrr, 'mrr'),
+        totalUsers: safeInt(params.totalUsers, 'totalUsers'),
+        activeUsers: safeInt(Math.min(params.activeUsers, params.totalUsers), 'activeUsers'),
+        burnRate: safeInt(params.burnRate, 'burnRate'),
+        runway: safeInt(params.runway, 'runway'),
+        growthRate: params.growthRate,
+        carbonOffset: safeInt(params.carbonOffset, 'carbonOffset'),
+      };
       setIsPending(true);
       setError(null);
       setTxHash(null);
@@ -111,17 +126,17 @@ export function usePublishMetrics() {
 
       try {
         const proofHash = await computeProofHash({
-          mrr: params.mrr,
-          users: params.totalUsers,
-          activeUsers: params.activeUsers,
-          burnRate: params.burnRate,
-          runway: params.runway,
-          growthRate: params.growthRate,
-          carbonOffset: params.carbonOffset,
+          mrr: validatedParams.mrr,
+          users: validatedParams.totalUsers,
+          activeUsers: validatedParams.activeUsers,
+          burnRate: validatedParams.burnRate,
+          runway: validatedParams.runway,
+          growthRate: validatedParams.growthRate,
+          carbonOffset: validatedParams.carbonOffset,
         });
 
-        const [startupPDA] = getStartupPDA(params.startupId);
-        const [metricsPDA] = getMetricsPDA(params.startupId);
+        const [startupPDA] = getStartupPDA(validatedParams.startupId);
+        const [metricsPDA] = getMetricsPDA(validatedParams.startupId);
 
         // Build publish_metrics instruction data: 7 u64 + 1 i64 + 32 bytes hash
         const dataBuffer = Buffer.alloc(8 * 7 + 8 + 32);

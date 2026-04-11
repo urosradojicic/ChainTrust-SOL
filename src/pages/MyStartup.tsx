@@ -39,25 +39,40 @@ export default function MyStartup() {
   const [bmcDragOver, setBmcDragOver] = useState(false);
 
   const handleBmcUpload = (file: File) => {
+    // Validate MIME type
     if (file.type !== 'application/pdf') {
       toast({ title: 'Invalid file', description: 'Please upload a PDF file.', variant: 'destructive' });
       return;
     }
-    if (file.size > 10 * 1024 * 1024) {
-      toast({ title: 'File too large', description: 'Maximum file size is 10MB.', variant: 'destructive' });
+    // Validate file extension (defense in depth — MIME can be spoofed)
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      toast({ title: 'Invalid file', description: 'File must have a .pdf extension.', variant: 'destructive' });
       return;
     }
+    // Limit size to 5MB for localStorage safety
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: 'File too large', description: 'Maximum file size is 5MB.', variant: 'destructive' });
+      return;
+    }
+    // Sanitize filename (remove path traversal, special chars)
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 100);
     const reader = new FileReader();
     reader.onload = () => {
+      const result = reader.result as string;
+      // Verify it's actually a data URL starting with the PDF MIME
+      if (!result.startsWith('data:application/pdf;')) {
+        toast({ title: 'Invalid file content', description: 'File does not appear to be a valid PDF.', variant: 'destructive' });
+        return;
+      }
       const entry = {
-        name: file.name,
+        name: safeName,
         size: file.size,
         uploadedAt: new Date().toISOString(),
-        dataUrl: reader.result as string,
+        dataUrl: result,
       };
       setBmcFile(entry);
       localStorage.setItem('chaintrust_bmc', JSON.stringify(entry));
-      toast({ title: 'BMC uploaded', description: `${file.name} saved successfully.` });
+      toast({ title: 'BMC uploaded', description: `${safeName} saved successfully.` });
     };
     reader.readAsDataURL(file);
   };

@@ -69,18 +69,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem(DEMO_STORAGE_KEY);
     if (saved) {
       try {
-        const { email, role: savedRole } = JSON.parse(saved);
-        const account = DEMO_ACCOUNTS[email];
-        if (account) {
-          const demoUser = createDemoUser(email, account);
-          setUser(demoUser);
-          setSession(createDemoSession(demoUser));
-          setRole(savedRole as AppRole);
-          setIsDemo(true);
-          setLoading(false);
-          return;
+        const parsed = JSON.parse(saved);
+        // Validate stored data structure before trusting it
+        if (typeof parsed?.email === 'string' && typeof parsed?.role === 'string') {
+          const account = DEMO_ACCOUNTS[parsed.email];
+          // Only restore if email matches a known demo account AND role matches
+          if (account && account.role === parsed.role) {
+            const demoUser = createDemoUser(parsed.email, account);
+            setUser(demoUser);
+            setSession(createDemoSession(demoUser));
+            setRole(account.role); // Use account.role, not user-supplied role
+            setIsDemo(true);
+            setLoading(false);
+            return;
+          }
         }
-      } catch { /* invalid stored data, continue to supabase */ }
+        // Invalid data — clear it
+        localStorage.removeItem(DEMO_STORAGE_KEY);
+      } catch {
+        localStorage.removeItem(DEMO_STORAGE_KEY);
+      }
     }
 
     // Try real Supabase auth

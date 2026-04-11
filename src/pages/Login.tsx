@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Eye, EyeOff, Mail, Lock, Copy } from 'lucide-react';
 import { toast } from 'sonner';
+import { rateLimit } from '@/lib/sanitize';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -30,6 +31,10 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!rateLimit('login', 5, 60000)) {
+      toast.error('Too many login attempts. Wait 60 seconds.');
+      return;
+    }
     setLoading(true);
     const { error } = await signIn(email, password);
     setLoading(false);
