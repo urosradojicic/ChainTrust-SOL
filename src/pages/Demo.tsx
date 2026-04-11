@@ -434,6 +434,7 @@ export default function Demo() {
 
             <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3">
               <Link to="/register"><Button size="lg" className="gap-2"><Rocket className="h-4 w-4" /> Register Your Startup</Button></Link>
+              <Link to="/verify"><Button size="lg" variant="outline" className="gap-2"><Shield className="h-4 w-4" /> Verify On-Chain</Button></Link>
               <Link to="/dashboard"><Button size="lg" variant="outline">Explore Dashboard</Button></Link>
             </div>
           </motion.div>

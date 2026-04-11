@@ -11,6 +11,7 @@ import {
   Scale, ChevronRight,
 } from 'lucide-react';
 import SearchModal from '@/components/SearchModal';
+import ChainStatus from '@/components/common/ChainStatus';
 import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
 import { canAccess } from '@/lib/role-access';
 
@@ -75,6 +76,7 @@ const SIDEBAR_SECTIONS: { title: string; links: SidebarLink[] }[] = [
     links: [
       { path: '/api', label: 'API & Integrations', icon: Code, desc: 'REST API, webhooks, SDKs' },
       { path: '/demo', label: 'Interactive Demo', icon: Eye, desc: 'Try the full workflow' },
+      { path: '/verify', label: 'Verify On-Chain', icon: Shield, desc: 'Public proof verification' },
     ],
   },
 ];
@@ -273,6 +275,7 @@ export default function Navbar() {
               <Building2 className="h-3.5 w-3.5" />
               {institutionalMode ? 'Institutional' : 'Standard'}
             </button>
+            <ChainStatus compact />
             <ThemeToggle />
             <NotificationBell />
             {user ? (

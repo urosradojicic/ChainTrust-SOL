@@ -476,6 +476,53 @@ Frontend (React + TypeScript)
 
 ---
 
+### Step 23 - Hackathon Competitive Edge Implementation (April 11, 2026)
+**Commit:** `pending` | **Date:** 2026-04-11
+
+**What was done:**
+- Deep audit revealed blockchain hooks silently fake transactions when they fail — judges clicking Explorer links would see 404s
+- Implemented 3 major differentiators no other hackathon project will have:
+
+1. **Honest Demo Mode** — Fake transaction signatures now prefixed with `DEMO_` so they're clearly identifiable. No more pretending simulated transactions are real.
+
+2. **Live Chain Status Indicator** — Real-time component in the navbar showing:
+   - Whether the Anchor program is deployed on devnet
+   - Wallet connection status
+   - Current Solana slot number
+   - Number of registered startups on-chain
+   - Clear "Demo Mode" vs "Live on Devnet" labeling
+
+3. **Public Proof Verifier Page** (`/verify`) — The killer feature:
+   - Anyone can enter a startup ID and independently verify its on-chain data
+   - No wallet required, no account needed — pure read from Solana RPC
+   - Reads StartupAccount, MetricsAccount, and VerificationBadge PDAs
+   - Recomputes SHA-256 proof hash from raw metrics and compares with on-chain hash
+   - Shows match/mismatch result with full hash display
+   - Links to Solana Explorer for each PDA
+   - Includes CLI command to verify outside ChainTrust
+   - Side-by-side cost comparison ($0 vs $50,000 traditional)
+
+4. **Deployment Guide** (`DEPLOY.md`) — Step-by-step instructions to go from demo to live devnet
+
+**How it was implemented:**
+- `src/lib/solana-config.ts` — `genFallbackTxSig()` now generates `DEMO_xxx` prefixed signatures. Added `isDemoSignature()` helper.
+- `src/components/common/ChainStatus.tsx` — New component that checks `connection.getAccountInfo(PROGRAM_ID)` to detect if program is deployed. Polls every 30s. Reads registry for startup count.
+- `src/pages/Verify.tsx` — 400+ line public verification page. Fetches 3 PDAs in parallel, parses Borsh-encoded account data, recomputes SHA-256 proof hash, displays results.
+- `src/App.tsx` — Added `/verify` route (public, no auth required)
+- `src/lib/role-access.ts` — Added `/verify` as public route
+- `src/components/layout/Navbar.tsx` — Added compact chain status + verify link in nav
+- `src/pages/Landing.tsx` — Added "Verify on-chain" CTA button in hero
+- `src/pages/Demo.tsx` — Added "Verify On-Chain" button in completion screen
+- `DEPLOY.md` — Full deployment guide (wallet setup → build → deploy → initialize → verify)
+
+**Why this wins the hackathon:**
+- Judges can independently verify claims by going to `/verify` — no other project offers this
+- Chain Status shows transparency — we're honest about what's real vs simulated
+- The Verify page IS the product demo — it demonstrates the core value proposition live
+- "Verify It Yourself" section with CLI commands shows technical depth
+
+---
+
 ## Current State
 
 **Last updated:** 2026-04-11
@@ -498,6 +545,10 @@ Frontend (React + TypeScript)
 - 92 components (49 shadcn/ui + 43 custom)
 - Hackathon strategy + pitch script + sprint plan
 - Enhanced interactive demo with auto-play and technical context
+- Public proof verifier page (no wallet required)
+- Live chain status indicator (deployed vs demo mode)
+- Honest demo mode labeling (DEMO_ prefixed signatures)
+- Deployment guide for Solana devnet
 
 ### Key Files
 | File | Purpose |
@@ -518,6 +569,9 @@ Frontend (React + TypeScript)
 | `blockchain/programs/chainmetrics/src/state.rs` | 12 account struct definitions |
 | `HACKATHON_STRATEGY.md` | Colosseum hackathon competitive strategy |
 | `PITCH.md` | 3-minute pitch script with timing |
+| `DEPLOY.md` | Devnet deployment guide |
+| `src/pages/Verify.tsx` | Public on-chain proof verifier |
+| `src/components/common/ChainStatus.tsx` | Live chain status indicator |
 
 ---
 

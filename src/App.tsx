@@ -39,6 +39,7 @@ const API = lazy(() => import("./pages/API"));
 const Provenance = lazy(() => import("./pages/Provenance"));
 const Investors = lazy(() => import("./pages/Investors"));
 const Tokenomics = lazy(() => import("./pages/Tokenomics"));
+const Verify = lazy(() => import("./pages/Verify"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageLoader() {
@@ -74,6 +75,7 @@ const AnimatedRoutes = () => {
           <Route path="/" element={<PageTransition><Landing /></PageTransition>} />
           <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
           <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
+          <Route path="/verify" element={<PageTransition><Verify /></PageTransition>} />
 
           {/* All authenticated users */}
           <Route path="/dashboard" element={<G path="/dashboard"><Dashboard /></G>} />

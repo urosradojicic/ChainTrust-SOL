@@ -20,8 +20,20 @@ export function explorerAddressUrl(address: string): string {
   return `${SOLANA_EXPLORER_URL}/address/${address}?cluster=${SOLANA_NETWORK}`;
 }
 
-/** Generate a fallback tx signature for devnet/offline environments */
+/**
+ * Check if a transaction signature is a demo/simulated one.
+ * Demo signatures are prefixed with "DEMO_" — they will not exist on Explorer.
+ */
+export function isDemoSignature(sig: string): boolean {
+  return sig.startsWith('DEMO_');
+}
+
+/**
+ * Generate a clearly-labeled demo tx signature.
+ * Prefixed with DEMO_ so it's impossible to confuse with a real transaction.
+ */
 export function genFallbackTxSig(): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  return Array.from({ length: 88 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  const random = Array.from({ length: 44 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  return `DEMO_${random}`;
 }

@@ -48,6 +48,10 @@ export default function Landing() {
                 Open Dashboard
                 <ArrowRight className="h-4 w-4" />
               </Link>
+              <Link to="/verify" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
+                Verify on-chain
+                <Shield className="h-3.5 w-3.5" />
+              </Link>
               <Link to="/demo" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
                 Try demo
                 <ArrowUpRight className="h-3.5 w-3.5" />
