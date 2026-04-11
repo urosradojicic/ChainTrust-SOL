@@ -9,6 +9,7 @@ interface AuthContextType {
   session: Session | null;
   role: AppRole | null;
   loading: boolean;
+  isDemo: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, role: AppRole, displayName?: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -16,24 +17,78 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// ── Demo accounts — always available until production ──────────────
+const DEMO_ACCOUNTS: Record<string, { password: string; role: AppRole; name: string }> = {
+  'admin@chainmetrics.io':    { password: 'admin123',   role: 'admin',    name: 'Admin' },
+  'investor@chainmetrics.io': { password: 'investor1',  role: 'investor', name: 'Investor' },
+  'startup@chainmetrics.io':  { password: 'startup1',   role: 'startup',  name: 'Startup' },
+};
+
+const DEMO_STORAGE_KEY = 'chaintrust_demo_user';
+
+function createDemoUser(email: string, account: typeof DEMO_ACCOUNTS[string]): User {
+  return {
+    id: `demo-${account.role}-${Date.now()}`,
+    email,
+    app_metadata: {},
+    user_metadata: { display_name: account.name, role: account.role },
+    aud: 'authenticated',
+    created_at: new Date().toISOString(),
+  } as User;
+}
+
+function createDemoSession(user: User): Session {
+  return {
+    access_token: `demo_token_${user.id}`,
+    refresh_token: `demo_refresh_${user.id}`,
+    expires_in: 3600 * 24 * 365,
+    expires_at: Math.floor(Date.now() / 1000) + 3600 * 24 * 365,
+    token_type: 'bearer',
+    user,
+  } as Session;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
 
   const fetchRole = async (userId: string) => {
-    const { data } = await supabase.rpc('get_user_role', { _user_id: userId });
-    setRole(data as AppRole | null);
+    try {
+      const { data } = await supabase.rpc('get_user_role', { _user_id: userId });
+      if (data) setRole(data as AppRole);
+    } catch {
+      // Supabase not configured — role stays null for real users
+    }
   };
 
+  // Restore demo session from localStorage on mount
   useEffect(() => {
+    const saved = localStorage.getItem(DEMO_STORAGE_KEY);
+    if (saved) {
+      try {
+        const { email, role: savedRole } = JSON.parse(saved);
+        const account = DEMO_ACCOUNTS[email];
+        if (account) {
+          const demoUser = createDemoUser(email, account);
+          setUser(demoUser);
+          setSession(createDemoSession(demoUser));
+          setRole(savedRole as AppRole);
+          setIsDemo(true);
+          setLoading(false);
+          return;
+        }
+      } catch { /* invalid stored data, continue to supabase */ }
+    }
+
+    // Try real Supabase auth
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          // Use setTimeout to avoid Supabase deadlock
           setTimeout(() => fetchRole(session.user.id), 0);
         } else {
           setRole(null);
@@ -55,41 +110,80 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error as Error | null };
+    // Check demo accounts first
+    const demoAccount = DEMO_ACCOUNTS[email.toLowerCase()];
+    if (demoAccount && password === demoAccount.password) {
+      const demoUser = createDemoUser(email.toLowerCase(), demoAccount);
+      const demoSession = createDemoSession(demoUser);
+      setUser(demoUser);
+      setSession(demoSession);
+      setRole(demoAccount.role);
+      setIsDemo(true);
+      localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({
+        email: email.toLowerCase(),
+        role: demoAccount.role,
+      }));
+      return { error: null };
+    }
+
+    // Check if it's a demo email with wrong password
+    if (demoAccount && password !== demoAccount.password) {
+      return { error: new Error('Invalid password for demo account') };
+    }
+
+    // Fall back to real Supabase auth
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      return { error: error as Error | null };
+    } catch {
+      return { error: new Error('Authentication service unavailable. Use a demo account.') };
+    }
   };
 
   const signUp = async (email: string, password: string, selectedRole: AppRole, displayName?: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { display_name: displayName || email.split('@')[0] },
-        emailRedirectTo: window.location.origin,
-      },
-    });
-    if (error) return { error: error as Error };
-
-    // Assign role
-    if (data.user) {
-      const { error: roleError } = await supabase.from('user_roles').insert({
-        user_id: data.user.id,
-        role: selectedRole,
-      });
-      if (roleError) return { error: roleError as unknown as Error };
+    // Block signup with demo emails
+    if (DEMO_ACCOUNTS[email.toLowerCase()]) {
+      return { error: new Error('This email is reserved. Use Sign In instead.') };
     }
-    return { error: null };
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { display_name: displayName || email.split('@')[0] },
+          emailRedirectTo: window.location.origin,
+        },
+      });
+      if (error) return { error: error as Error };
+
+      if (data.user) {
+        const { error: roleError } = await supabase.from('user_roles').insert({
+          user_id: data.user.id,
+          role: selectedRole,
+        });
+        if (roleError) return { error: roleError as unknown as Error };
+      }
+      return { error: null };
+    } catch {
+      return { error: new Error('Sign up service unavailable. Use a demo account to explore.') };
+    }
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (isDemo) {
+      localStorage.removeItem(DEMO_STORAGE_KEY);
+      setIsDemo(false);
+    } else {
+      try { await supabase.auth.signOut(); } catch { /* ignore */ }
+    }
     setUser(null);
     setSession(null);
     setRole(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, role, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, role, loading, isDemo, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

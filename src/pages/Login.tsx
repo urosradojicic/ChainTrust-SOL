@@ -53,10 +53,18 @@ export default function Login() {
     }
   };
 
-  const fillCredentials = (cred: typeof TEST_CREDENTIALS[0]) => {
+  const fillAndLogin = async (cred: typeof TEST_CREDENTIALS[0]) => {
     setEmail(cred.email);
     setPassword(cred.password);
-    toast.success(`Filled ${cred.role} credentials`);
+    setLoading(true);
+    const { error } = await signIn(cred.email, cred.password);
+    setLoading(false);
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success(`Signed in as ${cred.role}`);
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -188,28 +196,24 @@ export default function Login() {
           </CardContent>
         </Card>
 
-        {/* Test Credentials Card — only visible in development */}
-        {import.meta.env.DEV && (
-          <Card className="border border-amber-500/30 bg-amber-500/5">
-            <CardContent className="p-6">
-              <h3 className="font-bold text-lg mb-1">Dev Test Credentials</h3>
-              <p className="text-xs text-muted-foreground mb-3">Only visible in development mode</p>
-              {TEST_CREDENTIALS.map((cred) => (
-                <div key={cred.role} className="flex items-center justify-between py-2">
-                  <div>
-                    <span className="font-semibold text-sm">{cred.role}:</span>
-                    <span className="text-sm text-muted-foreground ml-2">
-                      {cred.email} / <span className="font-bold">{cred.password}</span>
-                    </span>
-                  </div>
-                  <Button variant="ghost" size="sm" onClick={() => fillCredentials(cred)} className="text-primary gap-1">
-                    <Copy className="h-3.5 w-3.5" /> Fill
-                  </Button>
+        {/* Quick Login — Demo Accounts */}
+        <Card className="border border-primary/20 bg-primary/5">
+          <CardContent className="p-6">
+            <h3 className="font-bold text-lg mb-1">Quick Login</h3>
+            <p className="text-xs text-muted-foreground mb-3">Click any role to sign in instantly</p>
+            {TEST_CREDENTIALS.map((cred) => (
+              <div key={cred.role} className="flex items-center justify-between py-2 border-b border-border/40 last:border-0">
+                <div>
+                  <span className="font-semibold text-sm">{cred.role}:</span>
+                  <span className="text-sm text-muted-foreground ml-2">{cred.email}</span>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
-        )}
+                <Button variant="default" size="sm" onClick={() => fillAndLogin(cred)} disabled={loading} className="gap-1">
+                  Sign In
+                </Button>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
