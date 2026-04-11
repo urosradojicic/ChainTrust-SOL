@@ -6,6 +6,7 @@ import { categoryColors } from '@/lib/constants';
 import { formatCurrency, formatNumber } from '@/lib/format';
 import Badge from '@/components/common/Badge';
 import { useStartups } from '@/hooks/use-startups';
+import { useAuth } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
 import LiveFeed from '@/components/LiveFeed';
 import BlockchainStatus from '@/components/BlockchainStatus';
@@ -46,6 +47,7 @@ function exportCSV(data: any[], filename: string) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { role } = useAuth();
   const { data: startups, isLoading, error } = useStartups();
   const { institutionalMode, labels } = useInstitutionalView();
   const [category, setCategory] = useState('All');

@@ -440,7 +440,7 @@ export const PROPOSALS = [
   { id: 6, title: 'Remove Cleantech category', description: 'Proposal to remove the Cleantech category due to low adoption and merge into a broader "Impact" category.', status: 'Defeated' as const, forVotes: 115000, againstVotes: 385000, abstainVotes: 60000, endDate: '2026-03-08', proposer: '4Hs6yR1wK8nT3pV5mX9jL2qB7cF0dS4eG6aU' },
 ];
 
-export const CATEGORIES = ['All', 'Fintech', 'SaaS', 'DeFi', 'Cleantech'];
+export const CATEGORIES = ['All', 'Fintech', 'SaaS', 'DeFi', 'Cleantech', 'Supply Chain', 'Data', 'Infrastructure', 'Identity', 'NFT'];
 
 export const TIERS = [
   { name: 'Free', minStake: 0, color: '#9CA3AF', features: ['View public metrics', 'Basic dashboard'] },
