@@ -523,6 +523,47 @@ Frontend (React + TypeScript)
 
 ---
 
+### Step 24 - One-of-a-Kind Design & Visual Overhaul (April 11, 2026)
+**Commit:** `pending` | **Date:** 2026-04-11
+
+**What was done:**
+- Complete visual overhaul to create a unique, hackathon-winning design identity
+- Built 2 custom animated components that no other project has
+- Rewrote the entire landing page with new sections and visual hierarchy
+- Added brand-defining CSS system
+
+**Design System Additions (`src/index.css`):**
+- **Brand gradient** — Blue → Cyan → Teal gradient used consistently across CTAs, badges, avatars
+- **Gradient text** — `brand-gradient-text` class for headlines (with dark mode variant)
+- **Animated mesh gradient** — Subtle moving background on hero section (20s animation cycle)
+- **Card shine effect** — On hover, a light sweep animation crosses feature cards
+- **Dot grid pattern** — Subtle background texture for visual depth
+- **Proof hash scroll** — Infinite horizontal scroll animation for hash ticker
+- **Glow pulse** — Animated glow for verified badges
+
+**New Components:**
+- `AnimatedCounter` — Numbers count up from 0 when scrolled into view. Uses IntersectionObserver + requestAnimationFrame for smooth 60fps. Ease-out cubic easing.
+- `LiveProofHash` — The visual "aha" moment. Cycles through 3 startups, shows metrics being hashed with SHA-256 in real-time, character by character. Shows "Input → Hashing → Verified" phases. Green border + checkmark on verification.
+
+**Landing Page Overhaul:**
+- **Hero section** — Two-column layout with live proof hash visualization on the right. Animated mesh gradient background with dot pattern. Brand gradient CTA button. "Live on Solana Devnet" badge.
+- **Stats bar** — Animated counters that count up when scrolled into view. Icons added.
+- **How it works** — Redesigned as 4-card horizontal flow with step numbers, gradient icons, and connector arrows between steps.
+- **New section: "Why Blockchain"** — 6 cards explaining why ChainTrust can't exist without crypto. Each card shows the traditional alternative in red for contrast.
+- **Features** — Redesigned with icon badges, colored accents, and shine-on-hover effect.
+- **Tools list** — Added "Verify On-Chain" with "New" badge. Added "Open dashboard" link.
+- **CTA** — Redesigned with brand gradient background tint and 3 action buttons.
+- Removed stock photos from feature cards (replaced with icon-based design)
+
+**How it was implemented:**
+- `src/index.css` — 80+ lines of new CSS: brand-gradient, mesh-gradient animation, card-shine, dot-pattern, hash-scroll, glow-pulse
+- `src/components/common/AnimatedCounter.tsx` — IntersectionObserver-triggered counter with rAF animation loop
+- `src/components/common/LiveProofHash.tsx` — State machine component (3 phases) cycling through startup proof hashes with character-by-character reveal animation
+- `src/pages/Landing.tsx` — Complete rewrite (520→500 lines) with new sections, animated counters, proof hash visualization
+- `src/components/layout/Footer.tsx` — Added Verify On-Chain link
+
+---
+
 ## Current State
 
 **Last updated:** 2026-04-11
@@ -549,6 +590,12 @@ Frontend (React + TypeScript)
 - Live chain status indicator (deployed vs demo mode)
 - Honest demo mode labeling (DEMO_ prefixed signatures)
 - Deployment guide for Solana devnet
+- Brand gradient design system (blue→cyan→teal)
+- Animated mesh gradient hero background
+- Live proof hash visualization component
+- Animated number counters (scroll-triggered)
+- Card shine hover effects
+- "Why Blockchain" section with traditional comparisons
 
 ### Key Files
 | File | Purpose |
@@ -572,6 +619,8 @@ Frontend (React + TypeScript)
 | `DEPLOY.md` | Devnet deployment guide |
 | `src/pages/Verify.tsx` | Public on-chain proof verifier |
 | `src/components/common/ChainStatus.tsx` | Live chain status indicator |
+| `src/components/common/AnimatedCounter.tsx` | Scroll-triggered animated number counter |
+| `src/components/common/LiveProofHash.tsx` | Animated proof hash visualization |
 
 ---
 

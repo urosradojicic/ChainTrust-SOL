@@ -44,6 +44,7 @@ export default function Footer() {
               <Link to="/investors" className="text-xs text-muted-foreground transition hover:text-foreground">Investors</Link>
               <Link to="/analytics" className="text-xs text-muted-foreground transition hover:text-foreground">Analytics</Link>
               <Link to="/demo" className="text-xs text-muted-foreground transition hover:text-foreground">Demo</Link>
+              <Link to="/verify" className="text-xs text-muted-foreground transition hover:text-foreground">Verify On-Chain</Link>
             </div>
           </div>
 
