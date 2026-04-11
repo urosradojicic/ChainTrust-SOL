@@ -40,7 +40,7 @@ export default function StepVerify({ playing, onComplete }: StepProps) {
       <Card className="border-border/60">
         <CardContent className="p-5">
           <h4 className="font-semibold mb-4 flex items-center gap-2">
-            <Globe className="h-4 w-4" style={{ color: 'hsl(36, 78%, 41%)' }} /> Chainlink Oracle Network
+            <Globe className="h-4 w-4" style={{ color: 'hsl(36, 78%, 41%)' }} /> Pyth Oracle Network
           </h4>
           <div className="space-y-3">
             {checks.map((check, i) => {
