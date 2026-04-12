@@ -110,7 +110,7 @@ export default function MyStartup() {
       .eq('user_id', user.id)
       .maybeSingle();
     if (error) { if (import.meta.env.DEV) console.error(error); setLoading(false); return; }
-    if (!data) { navigate('/register'); return; }
+    if (!data) { setLoading(false); return; }
     setStartup(data as unknown as DbStartup);
     setForm({
       name: data.name, description: data.description || '', category: data.category,
@@ -283,7 +283,24 @@ export default function MyStartup() {
     return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
 
-  if (!startup) return null;
+  if (!startup) return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+      <div className="rounded-2xl border border-border bg-card p-10 max-w-md w-full shadow-sm">
+        <Building2 className="h-14 w-14 text-primary mx-auto mb-4" />
+        <h1 className="text-2xl font-bold text-foreground mb-2">No Startup Registered</h1>
+        <p className="text-muted-foreground mb-6">
+          You need to register a startup before you can manage your profile and metrics here.
+        </p>
+        <button
+          onClick={() => navigate('/register')}
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          <Plus className="h-4 w-4" />
+          Register Your Startup
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">

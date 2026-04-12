@@ -562,11 +562,22 @@ Frontend (React + TypeScript)
 - `src/pages/Landing.tsx` — Complete rewrite (520→500 lines) with new sections, animated counters, proof hash visualization
 - `src/components/layout/Footer.tsx` — Added Verify On-Chain link
 
+### Step 25 - MyStartup Empty State UX (April 12, 2026)
+**Commit:** `pending` | **Date:** 2026-04-12
+
+**What was done:**
+- Replaced blank page on `/my-startup` when user has no registered startup
+- Added informative empty state with icon, explanation, and CTA to register
+- Removed silent redirect to `/register` — users now see why the page is empty
+
+**Files changed:**
+- `src/pages/MyStartup.tsx` — Replaced `return null` with a styled empty state card (Building2 icon, message, "Register Your Startup" button). Changed `fetchStartup` to stop loading instead of auto-redirecting when no startup found.
+
 ---
 
 ## Current State
 
-**Last updated:** 2026-04-11
+**Last updated:** 2026-04-12
 
 ### Completed Features
 - 23 pages with lazy-loading and role-based access (admin/investor/startup)
