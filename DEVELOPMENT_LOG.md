@@ -1367,4 +1367,37 @@ Built world-class algorithms: proper ML (Isolation Forest, Gradient Boosting), B
 
 ---
 
+## Step 36 — Phase 11: Investor-First Experience (April 13, 2026)
+
+### What was done
+
+Built the investor retention layer — the systems that make investors open ChainTrust every morning. Personalized briefings, engagement hooks, gamification, onboarding tutorials, and a dedicated Investor Hub page.
+
+### New Engines (2 files)
+
+| Engine | What It Does |
+|--------|---|
+| `investor-engagement.ts` | Daily briefing generator, login streak tracking, achievement badges (20 badges across 4 categories), weekly digest generator, 10-step onboarding checklist with progress tracking, all persisted in localStorage |
+| `investor-preferences.ts` | 8 investor type presets (angel through retail), personalized screener defaults, NL query suggestions by type, notification preferences, dashboard layout preferences, threshold configuration |
+
+### New Page
+
+| Page | What It Does |
+|------|---|
+| `InvestorHub.tsx` (/investor-hub) | **The page investors open every morning.** Personalized greeting + daily briefing, portfolio value with day change, recommended actions with priority, market pulse indicators, events/alerts feed, new opportunities matched to thesis, engagement streak tracker, achievement badges grid, onboarding checklist, quick action buttons, portfolio stats |
+
+### Key Features for Investor Retention
+
+1. **Daily Briefing** — personalized morning summary with portfolio changes, alerts, and recommended actions
+2. **Login Streaks** — consecutive day tracking with milestone rewards (7-day, 30-day, 100-day)
+3. **20 Achievement Badges** — gamification across engagement, analysis, portfolio, and community categories
+4. **10-Step Onboarding** — guided tour from first login to first governance vote, with progress bar
+5. **Weekly Digest** — auto-generated weekly summary with performance, red flags, and recommendations
+6. **8 Investor Presets** — angel, seed VC, Series A, growth, crypto fund, family office, DAO, retail — each with tailored thresholds, tools, and notifications
+7. **Personalized NL Queries** — query suggestions change based on investor type
+
+### Total Engine Count: **59 libraries** | **24 pages**
+
+---
+
 *This log is updated with every change pushed to GitHub.*

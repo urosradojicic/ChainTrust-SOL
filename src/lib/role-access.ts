@@ -26,6 +26,7 @@ export const PAGE_ACCESS: Record<string, Access> = {
   '/provenance':      'auth',
 
   // Investor-specific
+  '/investor-hub':    'investor',
   '/portfolio':       'investor',
   '/screener':        'investor',
   '/compare':         'investor',

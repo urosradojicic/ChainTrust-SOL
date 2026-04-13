@@ -40,6 +40,7 @@ const Provenance = lazy(() => import("./pages/Provenance"));
 const Investors = lazy(() => import("./pages/Investors"));
 const Tokenomics = lazy(() => import("./pages/Tokenomics"));
 const Verify = lazy(() => import("./pages/Verify"));
+const InvestorHub = lazy(() => import("./pages/InvestorHub"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageLoader() {
@@ -89,6 +90,7 @@ const AnimatedRoutes = () => {
           <Route path="/provenance" element={<G path="/provenance"><Provenance /></G>} />
 
           {/* Investor-only */}
+          <Route path="/investor-hub" element={<G path="/portfolio"><InvestorHub /></G>} />
           <Route path="/portfolio" element={<G path="/portfolio"><Portfolio /></G>} />
           <Route path="/screener" element={<G path="/screener"><Screener /></G>} />
           <Route path="/compare" element={<G path="/compare"><Compare /></G>} />
