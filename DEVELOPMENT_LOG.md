@@ -1459,4 +1459,21 @@ Built the deep intelligence engines that separate alpha from noise. Startup DNA 
 
 ---
 
+## Step 39 — Phase 14: Alpha Extraction Layer (April 13, 2026)
+
+### New Engines (6 files)
+
+| Engine | What It Does |
+|--------|---|
+| `liquidity-analysis.ts` | DEX liquidity depth modeling, constant product AMM slippage simulation, exit time estimation, liquidity concentration risk, fragility detection |
+| `smart-money.ts` | Whale wallet intelligence: accumulation/distribution detection, wallet type classification (whale/institutional/team/retail), smart money flow direction, concentration trends, insider activity signals |
+| `protocol-revenue.ts` | Real yield vs inflationary yield decomposition. Separates genuine protocol fees from token emission subsidies. Protocol P/E ratio. Sustainability analysis: can the startup survive without emissions? |
+| `conviction-tracker.ts` | Investment decision journal: log thesis, assumptions, kill criteria, metrics snapshot. Review outcomes. Bias detection (action bias, overconfidence, conviction inflation). Hit rate tracking. |
+| `deal-scoring.ts` | 14-criteria weighted scoring matrix across 6 categories (market, product, team, financials, tokenomics, trust). Auto-scored from ChainTrust data. Category breakdowns. Deal comparison. |
+| `lifecycle-detector.ts` | 7-stage lifecycle detection (Ideation → MVP → Traction → Growth → Scale → Maturity → Decline). Stage transition signals. Investment timing assessment (ideal → too_early). Stage maturity percentage. |
+
+### FINAL COUNT: **73 engine libraries** | **24 pages** | **~28,000 lines added today**
+
+---
+
 *This log is updated with every change pushed to GitHub.*
