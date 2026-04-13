@@ -39,6 +39,7 @@ import ClaimVerificationMatrix from '@/components/startup/ClaimVerificationMatri
 import MilestoneEscrowPanel from '@/components/startup/MilestoneEscrowPanel';
 import CapTableView from '@/components/startup/CapTableView';
 import PredictionMarkets from '@/components/startup/PredictionMarkets';
+import ZKProofPanel from '@/components/startup/ZKProofPanel';
 import { exportElementAsPDF } from '@/lib/export-pdf';
 import { exportLPReport } from '@/lib/lp-report';
 import {
@@ -228,6 +229,9 @@ export default function StartupDetail() {
           </TabsTrigger>
           {/* Compliance & Trust */}
           <span className="mx-1 h-4 w-px bg-border" />
+          <TabsTrigger value="zk-proofs" className="flex items-center gap-1">
+            <Lock className="h-3 w-3" /> ZK Proofs
+          </TabsTrigger>
           <TabsTrigger value="compliance">Compliance</TabsTrigger>
           <TabsTrigger value="sustainability">Sustainability</TabsTrigger>
           <TabsTrigger value="impact-pl">Impact P&L</TabsTrigger>
@@ -353,6 +357,11 @@ export default function StartupDetail() {
         {/* Milestone Escrow */}
         <TabsContent value="escrow" className="mt-6 space-y-6">
           <MilestoneEscrowPanel startup={startup} />
+        </TabsContent>
+
+        {/* ZK Proofs */}
+        <TabsContent value="zk-proofs" className="mt-6 space-y-6">
+          <ZKProofPanel startup={startup} />
         </TabsContent>
 
         {/* Compliance */}

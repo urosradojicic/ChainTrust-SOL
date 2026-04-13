@@ -1019,4 +1019,103 @@ The portfolio optimizer and benchmarking engines provide the data structures nee
 
 ---
 
+## Step 30 — Phase 5: ZK Proofs, 3D Visualization, Knowledge Graph (April 13, 2026)
+
+### What was done
+
+Built the frontier technology layer — zero-knowledge proofs, 3D portfolio visualization with React Three Fiber, and knowledge graph relationship mapping. This is the "2050 tech" that makes ChainTrust best-in-world.
+
+### New Engines (3 files)
+
+#### 1. Zero-Knowledge Range Proof Library (`src/lib/zk-range-proof.ts`)
+Client-side ZK proof generation and verification:
+- **Pedersen commitment scheme**: C = SHA256(value || blindingFactor)
+- **Range proof protocol**: proves value ∈ [min, max] without revealing v
+  - Commits to value, delta_low (v - min), delta_high (max - v)
+  - Fiat-Shamir heuristic for non-interactive challenge
+  - Response binding all commitment openings
+- **Metric-specific range configs**: MRR, growth rate, burn rate, runway, users
+  - Each metric has labeled ranges (e.g., MRR: Pre-Revenue, Early Traction, Product-Market Fit, Growth, Scale)
+- **Full publish workflow**: `generateZKMetricsPublish()` generates proofs for all metrics
+  - Lists what's public vs private for each privacy level
+  - Computes combined proof hash for on-chain storage
+  - Estimates Solana verification cost (~$0.00025/proof)
+- **Tier-based access model**: maps ZK visibility to Free/Basic/Pro/Whale tiers
+  - Public sees broad ranges, Whale sees exact values
+- Web Crypto API for all cryptographic operations (SHA-256, random bytes)
+
+#### 2. Knowledge Graph Engine (`src/lib/knowledge-graph.ts`)
+Relationship mapping between all ecosystem entities:
+- **Node types**: Startup, Investor, Category, Market Segment, Proposal
+- **Edge types**: IN_CATEGORY, COMPETES_WITH, SIMILAR_TO, CORRELATED_WITH, VOTED_ON, SAME_STAGE
+- **Similarity scoring**: multi-dimensional (MRR, growth, trust, sustainability)
+- **Community detection**: connected-component clustering with cohesion metrics
+- **BFS path finding**: shortest path between any two nodes
+- **Influence scoring**: degree centrality, betweenness centrality, PageRank-style influence
+- **Recommendation engine**: graph-proximity-based startup recommendations
+- **Graph statistics**: density, average degree, cluster count
+
+#### 3. 3D Portfolio Scene (installed `three`, `@react-three/fiber`, `@react-three/drei`)
+New dependencies for production-grade 3D rendering in React.
+
+### New UI Components (3 files)
+
+#### 4. 3D Portfolio Visualization (`src/components/Portfolio3D.tsx`)
+**THE MOST VISUALLY IMPRESSIVE COMPONENT IN THE PLATFORM.**
+Built with React Three Fiber:
+- **Central sun**: ChainTrust core with pulsing purple glow (3 concentric glow layers)
+- **Startup planets**: each startup orbits the center
+  - Size = MRR (normalized), Color = Category, Glow intensity = Trust Score
+  - Verified startups have a green ring
+  - Orbital speed inversely proportional to distance
+  - Smooth vertical wobble for depth
+  - Planet axis rotation
+- **Interactive**: hover shows startup info popup (via drei Html), click selects
+- **Selected panel**: overlay card with MRR, growth, trust score, "View Detail" link
+- **Particle field**: 200 ambient particles for space atmosphere
+- **Camera**: OrbitControls with auto-rotate, drag to rotate, scroll to zoom
+- **Background**: dark gradient (space theme)
+- **Legend**: category color mapping
+
+#### 5. ZK Proof Panel (`src/components/startup/ZKProofPanel.tsx`)
+Interactive ZK demonstration:
+- **Before/After comparison**: plaintext vs ZK-protected metrics side-by-side
+- **Live proof generation**: click to generate real range proofs (Web Crypto API)
+- **Individual proof cards**: expandable with commitment hash, proof hash, size, timing
+- **One-click verification**: verify each proof independently
+- **Public vs Private split**: shows exactly what's visible vs hidden
+- **Programmable Privacy Tiers**: expandable section showing what each tier sees
+- **On-chain cost estimate**: per-proof Solana verification cost
+
+### Page Integrations
+
+- **Dashboard**: Added 3D Portfolio Universe visualization below NL Query bar
+- **StartupDetail**: Added "ZK Proofs" tab with full ZK demonstration panel
+
+### New files
+| File | Purpose |
+|------|---------|
+| `src/lib/zk-range-proof.ts` | Zero-knowledge range proof library |
+| `src/lib/knowledge-graph.ts` | Knowledge graph engine |
+| `src/components/Portfolio3D.tsx` | 3D portfolio visualization (Three.js) |
+| `src/components/startup/ZKProofPanel.tsx` | ZK proof demonstration panel |
+
+### Dependencies Added
+| Package | Version | Purpose |
+|---------|---------|---------|
+| `three` | Latest | 3D rendering engine |
+| `@react-three/fiber` | Latest | React renderer for Three.js |
+| `@react-three/drei` | Latest | Three.js helpers (OrbitControls, Html, etc.) |
+
+### Total Platform Stats After Phase 5
+- **22 tabs** on StartupDetail page
+- **25 engine libraries** in `src/lib/`
+- **56 custom components** (+ 49 shadcn/ui = 105 total)
+- **23 pages** with lazy-loading
+- **3D visualization** with real-time WebGL rendering
+- **ZK proofs** with client-side cryptographic proof generation
+- **Knowledge graph** with path finding and influence scoring
+
+---
+
 *This log is updated with every change pushed to GitHub.*

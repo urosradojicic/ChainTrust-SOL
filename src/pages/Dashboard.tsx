@@ -13,6 +13,7 @@ import BlockchainStatus from '@/components/BlockchainStatus';
 import NetworkPulse from '@/components/NetworkPulse';
 import EcosystemHeatmap from '@/components/EcosystemHeatmap';
 import NLQueryBar from '@/components/NLQueryBar';
+import Portfolio3D from '@/components/Portfolio3D';
 import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
 
 type SortKey = 'mrr' | 'growth_rate' | 'trust_score' | 'users';
@@ -396,6 +397,13 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* 3D Portfolio Universe */}
+      {startups && startups.length > 0 && (
+        <div className="mt-8">
+          <Portfolio3D startups={startups} />
+        </div>
+      )}
 
       {/* Ecosystem Heatmap */}
       <div className="mt-8">
