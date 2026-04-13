@@ -1,0 +1,99 @@
+ChainTrust-SOL Proprietary License
+====================================
+
+Copyright (c) 2026 ChainTrust / Uros Radojicic. All rights reserved.
+
+NOTICE: This software and its source code are the proprietary and
+confidential property of ChainTrust and its founders. Unauthorized
+copying, modification, distribution, or use of this software, via
+any medium, is strictly prohibited without prior written consent
+from the copyright holders.
+
+1. GRANT OF LICENSE
+   This software is licensed, not sold. ChainTrust grants you a
+   non-exclusive, non-transferable, revocable license to use this
+   software ONLY under the terms of a valid ChainTrust License Key
+   issued specifically to you or your organization.
+
+2. RESTRICTIONS
+   You may NOT:
+   (a) Copy, reproduce, or duplicate the software or any substantial
+       portion of its code, algorithms, or architecture.
+   (b) Modify, adapt, translate, reverse engineer, decompile, or
+       disassemble the software.
+   (c) Create derivative works based on the software.
+   (d) Distribute, sublicense, lease, rent, or lend the software to
+       any third party.
+   (e) Remove, alter, or obscure any proprietary notices, labels, or
+       marks on the software.
+   (f) Use the software to build a competing product or service.
+   (g) Deploy the software on unauthorized domains without a valid
+       license key.
+
+3. INTELLECTUAL PROPERTY
+   The software, including but not limited to its source code,
+   algorithms (73 engine libraries), architecture (SDK, event bus,
+   registry), design patterns, and documentation, are the intellectual
+   property of ChainTrust and its founders.
+
+   The following are specifically protected:
+   - 73 engine libraries in src/lib/
+   - SDK architecture in src/sdk/
+   - 3D portfolio visualization
+   - Zero-knowledge range proof implementation
+   - AI/ML engines (isolation forest, gradient boosting, Bayesian inference)
+   - Investment memo generation system
+   - Milestone escrow (programmable money) system
+   - Quantitative risk analytics (VaR, Sharpe, factor decomposition)
+   - Narrative engine
+   - All UI components and design system
+
+4. ENFORCEMENT
+   Unauthorized use of this software will be subject to:
+   (a) Immediate termination of any license granted.
+   (b) Civil action for damages, including but not limited to lost
+       revenue, legal fees, and punitive damages.
+   (c) Criminal prosecution under applicable intellectual property
+       laws, including the Computer Fraud and Abuse Act (CFAA),
+       DMCA, and equivalent international laws.
+
+5. LICENSE TIERS
+   Community:    Free — limited to 10 engines, basic analytics
+   Startup:      $99/mo — 25 engines, includes Monte Carlo, DD scoring
+   Professional: $499/mo — 50 engines, includes VaR, memos, portfolio optimizer
+   Enterprise:   Custom pricing — all 73 engines, SDK access, plugins
+   Unlimited:    Founders only — full source code access
+
+6. TERMINATION
+   This license terminates automatically if you violate any of its
+   terms. Upon termination, you must cease all use of the software
+   and destroy all copies in your possession.
+
+7. WARRANTY DISCLAIMER
+   THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED. CHAINTRUST DOES NOT WARRANT THAT THE SOFTWARE
+   WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE OF HARMFUL COMPONENTS.
+
+8. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL CHAINTRUST BE LIABLE FOR ANY INDIRECT, INCIDENTAL,
+   SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR
+   RELATED TO YOUR USE OF THE SOFTWARE.
+
+9. GOVERNING LAW
+   This license shall be governed by and construed in accordance with
+   the laws of the jurisdiction where ChainTrust is incorporated.
+
+10. CONTACT
+    For licensing inquiries, authorized deployments, or to report
+    unauthorized use:
+    - GitHub: https://github.com/urosradojicic/ChainTrust-SOL
+    - Email: [licensing contact TBD]
+
+---
+
+BY USING THIS SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE READ THIS
+LICENSE, UNDERSTAND IT, AND AGREE TO BE BOUND BY ITS TERMS.
+
+ChainTrust-SOL v1.0.0
+73 Engine Libraries | Enterprise SDK | Solana Blockchain
+Built with Claude Opus 4.6

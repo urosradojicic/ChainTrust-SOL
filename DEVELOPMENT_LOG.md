@@ -1488,4 +1488,10 @@ NO new features. Pure architecture. Made 73 engines into ONE enterprise-ready SD
 
 ---
 
+## Step 41 — Phase 16: Fortress Mode — IP Protection (April 13, 2026)
+
+License Guard (HMAC-SHA256 key verification, 5 tiers, domain lock, engine gating), Integrity Guard (deployment fingerprinting, anti-tampering checksums, usage audit trail, domain authorization), Proprietary LICENSE.
+
+---
+
 *This log is updated with every change pushed to GitHub.*
