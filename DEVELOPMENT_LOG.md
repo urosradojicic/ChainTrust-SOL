@@ -815,4 +815,115 @@ Natural language search interface for the Dashboard:
 
 ---
 
+## Step 28 — Phase 2-3: End-to-End Investment Infrastructure (April 13, 2026)
+
+### What was done
+
+Built the complete investment infrastructure layer — claim verification, deal rooms, term sheets, cap tables, milestone escrow, and investment pipeline management.
+
+### New Engines (6 files)
+
+#### 1. AI Claim Verification Engine (`src/lib/claim-verification.ts`)
+Cross-references 7 categories of startup claims against verified data:
+- Revenue claims (MRR, ARR) vs on-chain verified or computed values
+- Growth claims vs actual computed growth from time-series
+- Runway claims vs computed burn rate and treasury
+- Token claims (decentralization, inflation) vs on-chain data
+- Team claims vs peer benchmarks (revenue per employee)
+- Trajectory claims vs detected growth acceleration/deceleration
+- Sustainability claims vs composite ESG scores
+- Outputs: credibility score (0-100), claim status matrix, material discrepancy count
+
+#### 2. Deal Room System (`src/lib/deal-room.ts`)
+Full data room management for investment due diligence:
+- 8 document categories (financials, legal, technical, market, team, product, compliance, other)
+- Required documents checklist per category with completion tracking
+- SHA-256 document hashing (Web Crypto API) for on-chain provenance
+- Access level tiers (public/basic/pro/whale/lead_investor)
+- Activity logging (views, uploads, downloads)
+- Demo room generator with sample documents
+
+#### 3. Term Sheet Builder (`src/lib/term-sheet.ts`)
+Investment instrument generation and analysis:
+- 3 instrument types: SAFE, Convertible Note, Series Preferred
+- Market benchmark comparison (founder-friendly / market-standard / investor-friendly / aggressive)
+- Dilution impact calculator (ownership before/after, post-money valuation)
+- Market-standard templates with YC-standard SAFE defaults
+- Full term sheet field coverage (liq pref, anti-dilution, board seats, no-shop, option pool)
+
+#### 4. Cap Table Engine (`src/lib/cap-table.ts`)
+Complete shareholder registry and equity modeling:
+- Shareholder types: founders, investors, employees, advisors, option pools, SAFEs, notes
+- Priced round modeling with SAFE auto-conversion, option pool expansion
+- Waterfall analysis at any exit valuation (liquidation preferences, participating preferred)
+- Ownership recalculation after each event
+- Demo cap table generator (3 founders + angels + pre-seed + seed round)
+
+#### 5. Milestone Escrow Engine (`src/lib/milestone-escrow.ts`)
+THE KILLER APP — programmable investment terms:
+- 6 milestone metrics: MRR, users, growth rate, trust score, burn rate, runway
+- Configurable operators (>=, <=, >, <, ==) and deadlines
+- Auto-check: compares current MetricsAccount values against targets
+- Status tracking: pending → in_progress → met/failed/expired
+- Tranche-based fund release (each milestone releases a percentage)
+- Refund logic for expired milestones
+- Dispute resolution via DAO governance vote
+- Progress computation with next-deadline countdown
+
+#### 6. Investment Flow Engine (`src/lib/investment-flow.ts`)
+9-stage investment pipeline management:
+- Pipeline stages: Discovered → Screening → DD → Valuation → Terms → Legal → Deploy → Monitor → Exit
+- 24-item DD checklist template across 5 categories
+- Deal tracking with source, priority, conviction score, red flag count
+- Stage-specific action lists and prerequisite tracking
+- Pipeline statistics (conversion rate, avg time, total invested)
+- Deal operations: create, advance, pass, toggle DD items
+
+### New UI Components (3 files)
+
+#### 7. Claim Verification Matrix (`src/components/startup/ClaimVerificationMatrix.tsx`)
+- Credibility score header with assessment badge
+- Expandable claim rows with claimed vs verified values
+- Status-coded icons (verified/plausible/unverified/contradicted)
+- Discrepancy percentage display
+- Evidence source and confidence indicators
+- Filterable by claim status
+
+#### 8. Milestone Escrow Panel (`src/components/startup/MilestoneEscrowPanel.tsx`)
+- Animated progress bar showing funds released vs locked
+- Individual milestone cards with condition, status, deadline countdown
+- Current vs target metric display
+- 3-column stats (released, locked, days to next deadline)
+- Escrow terms and dispute resolution info
+
+#### 9. Cap Table Viewer (`src/components/startup/CapTableView.tsx`)
+- Ownership distribution pie chart
+- Exit waterfall bar chart with interactive valuation slider ($1M-$500M)
+- Quick stats (founder %, investor %, total shares)
+- Full shareholder table (name, type, shares, ownership, invested, price/share)
+- Real-time waterfall recalculation on slider change
+
+### StartupDetail Page Updates
+Added 3 new tabs:
+- **Claims** — Claim Verification Matrix
+- **Cap Table** — Interactive cap table with waterfall analysis
+- **Escrow** — Milestone-based escrow visualization
+
+**Total tabs on StartupDetail: 20** (from original 12 to 20 across all updates)
+
+### New files
+| File | Purpose |
+|------|---------|
+| `src/lib/claim-verification.ts` | AI claim cross-referencing engine |
+| `src/lib/deal-room.ts` | Deal room / data room management |
+| `src/lib/term-sheet.ts` | Term sheet builder with market benchmarks |
+| `src/lib/cap-table.ts` | Cap table with waterfall analysis |
+| `src/lib/milestone-escrow.ts` | Programmable milestone escrow |
+| `src/lib/investment-flow.ts` | 9-stage investment pipeline |
+| `src/components/startup/ClaimVerificationMatrix.tsx` | Claim verification UI |
+| `src/components/startup/MilestoneEscrowPanel.tsx` | Milestone escrow UI |
+| `src/components/startup/CapTableView.tsx` | Cap table & waterfall UI |
+
+---
+
 *This log is updated with every change pushed to GitHub.*

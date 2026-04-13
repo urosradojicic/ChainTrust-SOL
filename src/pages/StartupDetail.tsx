@@ -35,12 +35,15 @@ import RedFlagPanel from '@/components/startup/RedFlagPanel';
 import ReputationScoreCard from '@/components/startup/ReputationScoreCard';
 import DigitalTwin from '@/components/startup/DigitalTwin';
 import PredictionBadges from '@/components/startup/PredictionBadges';
+import ClaimVerificationMatrix from '@/components/startup/ClaimVerificationMatrix';
+import MilestoneEscrowPanel from '@/components/startup/MilestoneEscrowPanel';
+import CapTableView from '@/components/startup/CapTableView';
 import { exportElementAsPDF } from '@/lib/export-pdf';
 import { exportLPReport } from '@/lib/lp-report';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar, Clock,
   Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Loader2, Download, FileText, Brain, BarChart3,
-  ShieldAlert, Award, Activity, Target,
+  ShieldAlert, Award, Activity, Target, Search, Lock, Layers,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useStartup, useMetricsHistory, useStartupPledges, useStartups } from '@/hooks/use-startups';
@@ -211,8 +214,17 @@ export default function StartupDetail() {
           <TabsTrigger value="predictions" className="flex items-center gap-1">
             <Target className="h-3 w-3" /> Predictions
           </TabsTrigger>
+          <TabsTrigger value="claims" className="flex items-center gap-1">
+            <Search className="h-3 w-3" /> Claims
+          </TabsTrigger>
           <TabsTrigger value="financials">Financials</TabsTrigger>
           <TabsTrigger value="valuation">Valuation</TabsTrigger>
+          <TabsTrigger value="cap-table" className="flex items-center gap-1">
+            <Layers className="h-3 w-3" /> Cap Table
+          </TabsTrigger>
+          <TabsTrigger value="escrow" className="flex items-center gap-1">
+            <Lock className="h-3 w-3" /> Escrow
+          </TabsTrigger>
           {/* Compliance & Trust */}
           <span className="mx-1 h-4 w-px bg-border" />
           <TabsTrigger value="compliance">Compliance</TabsTrigger>
@@ -324,6 +336,21 @@ export default function StartupDetail() {
         {/* Survival Predictions */}
         <TabsContent value="predictions" className="mt-6 space-y-6">
           <PredictionBadges startup={startup} metrics={metrics} />
+        </TabsContent>
+
+        {/* Claim Verification Matrix */}
+        <TabsContent value="claims" className="mt-6 space-y-6">
+          <ClaimVerificationMatrix startup={startup} metrics={metrics} allStartups={allStartups || []} />
+        </TabsContent>
+
+        {/* Cap Table */}
+        <TabsContent value="cap-table" className="mt-6 space-y-6">
+          <CapTableView companyName={startup.name} />
+        </TabsContent>
+
+        {/* Milestone Escrow */}
+        <TabsContent value="escrow" className="mt-6 space-y-6">
+          <MilestoneEscrowPanel startup={startup} />
         </TabsContent>
 
         {/* Compliance */}
