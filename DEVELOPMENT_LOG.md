@@ -718,4 +718,101 @@ Added 2 new tabs to the startup detail page:
 
 ---
 
+## Step 27 — Phase 1-2: Monte Carlo, NL Query, Predictions, Blinks (April 13, 2026)
+
+### What was done
+
+Built 4 new engines and 3 new UI components, pushing into Phase 2 territory.
+
+### New Engines
+
+#### 1. Monte Carlo Simulation Engine (`src/lib/monte-carlo.ts`)
+Full Digital Twin system that runs thousands of stochastic simulations:
+- Estimates parameters from historical metrics (growth rate, volatility, cost growth)
+- Box-Muller normal distribution for realistic random sampling
+- Per-month percentile bands (5th, 25th, 50th, 75th, 95th)
+- Outputs: revenue fan chart, cash trajectory, profitability probability curve
+- Computes: milestone probability, cash-out risk, break-even distribution, median runway
+- Configurable: growth rate, volatility, horizon (6-36 months), funding events
+- 3,000-5,000 iterations, runs entirely client-side
+
+#### 2. Natural Language Query Engine (`src/lib/nl-query.ts`)
+Pattern-matching NLP system that translates English queries to structured database filters:
+- Supports metric filters: "MRR over 100k", "growth above 20%", "trust score above 80"
+- Category filters: "SaaS startups", "DeFi projects"
+- Boolean filters: "verified", "unverified"
+- Sorting: "top 5 by growth rate", "highest trust score"
+- Aggregates: "average MRR", "how many startups are verified?", "total treasury"
+- Comparisons: "compare PayFlow and DeFiYield"
+- 10 example queries for user guidance
+- Zero API calls — pure pattern matching
+
+#### 3. Startup Survival Predictor (`src/lib/survival-predictor.ts`)
+Heuristic-based probability estimation for key startup outcomes:
+- Next round probability (12 months) with stage-specific adjustments
+- 10x return probability using sigmoid-weighted factor scoring
+- 12-month and 24-month survival estimates
+- Investability score (0-100)
+- Stage classification (Pre-Seed through Growth)
+- 10 weighted factors: growth, revenue, trajectory, runway, verification, trust, tokens, team, ESG, reporting
+- Key factor badges showing positive/negative drivers
+
+#### 4. Solana Actions & Blinks (`src/lib/solana-actions.ts`)
+Shareable verification link system for social media distribution:
+- Blink metadata generators for verify, vote, and stake actions
+- Twitter share URL generator with pre-formatted text
+- Embeddable HTML and Markdown badge generators
+- Open Graph meta tag generator for rich link previews
+- Actions.json manifest for Solana Actions standard compliance
+
+### New UI Components
+
+#### 5. Digital Twin Visualizer (`src/components/startup/DigitalTwin.tsx`)
+Interactive Monte Carlo visualization with:
+- Fan chart (5-95 percentile bands) using Recharts AreaChart
+- Revenue vs Cash toggle views
+- 4 stat cards: milestone probability, median revenue, cash-out risk, solvency
+- Profitability probability mini-chart
+- 3 interactive sliders: growth rate, volatility, horizon
+- Reset button to restore auto-estimated defaults
+- Milestone reference line and cash-out danger line
+
+#### 6. Prediction Badges (`src/components/startup/PredictionBadges.tsx`)
+Survival prediction card with:
+- 4 probability badges: next round, 10x return, 12mo survival, 24mo survival
+- Color-coded by probability (green/blue/amber/red)
+- Confidence intervals displayed
+- Stage classification badge
+- Investability score
+- Key factor tags (positive/negative/neutral)
+- Compact mode for embedding in startup cards
+
+#### 7. NL Query Bar (`src/components/NLQueryBar.tsx`)
+Natural language search interface for the Dashboard:
+- Chat-like input with sparkle icon
+- Real-time query execution on Enter
+- Results dropdown with filter/sort badges
+- Startup result rows with inline metrics
+- Aggregate value display for statistical queries
+- Example query chips for user guidance
+- History tracking (last 10 queries)
+
+### Page Integrations
+
+- **StartupDetail**: Added 4 new tabs (Digital Twin, Predictions) + 2 previous (Red Flags, CTS Score)
+- **Dashboard**: Added NLQueryBar above the startup grid for instant querying
+
+### New files
+| File | Purpose |
+|------|---------|
+| `src/lib/monte-carlo.ts` | Monte Carlo simulation engine |
+| `src/lib/nl-query.ts` | Natural language query engine |
+| `src/lib/survival-predictor.ts` | Startup survival predictor |
+| `src/lib/solana-actions.ts` | Solana Blinks & Actions metadata |
+| `src/components/startup/DigitalTwin.tsx` | Monte Carlo fan chart visualizer |
+| `src/components/startup/PredictionBadges.tsx` | Survival prediction badges |
+| `src/components/NLQueryBar.tsx` | Natural language query interface |
+
+---
+
 *This log is updated with every change pushed to GitHub.*

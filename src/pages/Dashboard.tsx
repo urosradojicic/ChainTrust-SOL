@@ -12,6 +12,7 @@ import LiveFeed from '@/components/LiveFeed';
 import BlockchainStatus from '@/components/BlockchainStatus';
 import NetworkPulse from '@/components/NetworkPulse';
 import EcosystemHeatmap from '@/components/EcosystemHeatmap';
+import NLQueryBar from '@/components/NLQueryBar';
 import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
 
 type SortKey = 'mrr' | 'growth_rate' | 'trust_score' | 'users';
@@ -178,6 +179,13 @@ export default function Dashboard() {
           </motion.div>
         ))}
       </div>
+
+      {/* Natural Language Query Bar */}
+      {startups && startups.length > 0 && (
+        <div className="mb-8">
+          <NLQueryBar startups={startups} />
+        </div>
+      )}
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="flex-1">

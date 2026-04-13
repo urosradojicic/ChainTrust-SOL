@@ -33,12 +33,14 @@ import MultiSigTreasury from '@/components/startup/MultiSigTreasury';
 import PercentileRank from '@/components/startup/PercentileRank';
 import RedFlagPanel from '@/components/startup/RedFlagPanel';
 import ReputationScoreCard from '@/components/startup/ReputationScoreCard';
+import DigitalTwin from '@/components/startup/DigitalTwin';
+import PredictionBadges from '@/components/startup/PredictionBadges';
 import { exportElementAsPDF } from '@/lib/export-pdf';
 import { exportLPReport } from '@/lib/lp-report';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar, Clock,
   Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Loader2, Download, FileText, Brain, BarChart3,
-  ShieldAlert, Award,
+  ShieldAlert, Award, Activity, Target,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useStartup, useMetricsHistory, useStartupPledges, useStartups } from '@/hooks/use-startups';
@@ -203,6 +205,12 @@ export default function StartupDetail() {
           <TabsTrigger value="reputation" className="flex items-center gap-1">
             <Award className="h-3 w-3" /> CTS Score
           </TabsTrigger>
+          <TabsTrigger value="digital-twin" className="flex items-center gap-1">
+            <Activity className="h-3 w-3" /> Digital Twin
+          </TabsTrigger>
+          <TabsTrigger value="predictions" className="flex items-center gap-1">
+            <Target className="h-3 w-3" /> Predictions
+          </TabsTrigger>
           <TabsTrigger value="financials">Financials</TabsTrigger>
           <TabsTrigger value="valuation">Valuation</TabsTrigger>
           {/* Compliance & Trust */}
@@ -306,6 +314,16 @@ export default function StartupDetail() {
         {/* ChainTrust Score (CTS) */}
         <TabsContent value="reputation" className="mt-6 space-y-6">
           <ReputationScoreCard startup={startup} metrics={metrics} allStartups={allStartups || []} />
+        </TabsContent>
+
+        {/* Digital Twin — Monte Carlo Simulation */}
+        <TabsContent value="digital-twin" className="mt-6 space-y-6">
+          <DigitalTwin startup={startup} metrics={metrics} />
+        </TabsContent>
+
+        {/* Survival Predictions */}
+        <TabsContent value="predictions" className="mt-6 space-y-6">
+          <PredictionBadges startup={startup} metrics={metrics} />
         </TabsContent>
 
         {/* Compliance */}
