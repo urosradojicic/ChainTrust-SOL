@@ -31,11 +31,14 @@ import FundFlowSankey from '@/components/startup/FundFlowSankey';
 import ComplianceDashboard from '@/components/startup/ComplianceDashboard';
 import MultiSigTreasury from '@/components/startup/MultiSigTreasury';
 import PercentileRank from '@/components/startup/PercentileRank';
+import RedFlagPanel from '@/components/startup/RedFlagPanel';
+import ReputationScoreCard from '@/components/startup/ReputationScoreCard';
 import { exportElementAsPDF } from '@/lib/export-pdf';
 import { exportLPReport } from '@/lib/lp-report';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar, Clock,
   Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Loader2, Download, FileText, Brain, BarChart3,
+  ShieldAlert, Award,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useStartup, useMetricsHistory, useStartupPledges, useStartups } from '@/hooks/use-startups';
@@ -194,6 +197,12 @@ export default function StartupDetail() {
           <TabsTrigger value="due-diligence" className="flex items-center gap-1">
             <Brain className="h-3 w-3" /> AI Due Diligence
           </TabsTrigger>
+          <TabsTrigger value="red-flags" className="flex items-center gap-1">
+            <ShieldAlert className="h-3 w-3" /> Red Flags
+          </TabsTrigger>
+          <TabsTrigger value="reputation" className="flex items-center gap-1">
+            <Award className="h-3 w-3" /> CTS Score
+          </TabsTrigger>
           <TabsTrigger value="financials">Financials</TabsTrigger>
           <TabsTrigger value="valuation">Valuation</TabsTrigger>
           {/* Compliance & Trust */}
@@ -287,6 +296,16 @@ export default function StartupDetail() {
             <MultiSigTreasury startup={startup} />
           </div>
           <FundFlowSankey startup={startup} metrics={metrics} />
+        </TabsContent>
+
+        {/* Red Flag Detection */}
+        <TabsContent value="red-flags" className="mt-6 space-y-6">
+          <RedFlagPanel startup={startup} metrics={metrics} allStartups={allStartups || []} />
+        </TabsContent>
+
+        {/* ChainTrust Score (CTS) */}
+        <TabsContent value="reputation" className="mt-6 space-y-6">
+          <ReputationScoreCard startup={startup} metrics={metrics} allStartups={allStartups || []} />
         </TabsContent>
 
         {/* Compliance */}
