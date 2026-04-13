@@ -1400,4 +1400,43 @@ Built the investor retention layer — the systems that make investors open Chai
 
 ---
 
+## Step 37 — Phase 12: Experience Layer (April 13, 2026)
+
+### What was done
+
+Built the experience layer that makes 62 engines feel like ONE simple app. Command palette for instant navigation, narrative engine that turns numbers into stories, contextual feature discovery that teaches without overwhelming.
+
+### New Engines (3 files)
+
+| Engine | What It Does |
+|--------|---|
+| `command-palette.ts` | Cmd+K universal search across pages, startups, actions, and shortcuts. Fuzzy matching, recent pages tracking, keyboard navigation. 12 page commands, 3 action commands, 6 shortcut references. |
+| `narrative-engine.ts` | Transforms raw metrics into compelling human stories. Company narrative, growth narrative, financial narrative, trust narrative. Elevator pitch generator. Card insight generator for startup cards. Comparison narratives. Contextual tone (exciting/positive/neutral/cautious/concerning). |
+| `feature-discovery.ts` | Contextual feature hints that appear at the RIGHT time. 10 hints across dashboard/startup/screener/staking/portfolio. Cooldown system (30s between hints), dismiss permanently, minimum page visit thresholds. Never shows more than one hint. |
+
+### New UI Component
+
+| Component | What It Does |
+|-----------|---|
+| `CommandPalette.tsx` | Global Cmd+K overlay: fuzzy search bar, categorized results (Recent/Pages/Startups/Actions/Shortcuts), keyboard navigation (↑↓ Enter Esc), shortcut hints, smooth animations. Mounted globally in App.tsx — available on every page. |
+
+### Why This Phase Matters
+
+**The problem:** 62 engine libraries, 24 pages, 23 StartupDetail tabs — users could easily feel overwhelmed.
+
+**The solution:**
+1. **Command Palette (Cmd+K)** — one shortcut to find ANYTHING. Never lost.
+2. **Narrative Engine** — numbers become stories. "$142K MRR" becomes "PayFlow is on a tear — outpacing 85% of peers"
+3. **Feature Discovery** — gentle nudges at the right moment, never a tutorial wall
+4. **Card Insights** — every startup card has a one-line story, not just numbers
+
+### Architecture Principle
+> 62 engines under the hood. One simple, clean interface on the surface.
+> Power users discover depth. New users feel clarity.
+> Every boring number tells a story. Every screen has a purpose.
+
+### Total: **62 engine libraries** | **24 pages** | **Cmd+K global navigation**
+
+---
+
 *This log is updated with every change pushed to GitHub.*

@@ -13,6 +13,7 @@ import Footer from "./components/layout/Footer";
 import PageTransition from "./components/layout/PageTransition";
 import RoleGuard from "./components/RoleGuard";
 import { useRealtimeSync } from "./hooks/use-realtime";
+import CommandPalette from "./components/CommandPalette";
 import { Loader2 } from "lucide-react";
 
 import { InstitutionalViewProvider } from "./contexts/InstitutionalViewContext";
@@ -121,6 +122,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <RealtimeProvider>
+              <CommandPalette />
               <div className="flex min-h-screen flex-col">
                 <Navbar />
                 <main className="flex-1">
