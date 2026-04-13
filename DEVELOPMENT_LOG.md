@@ -1291,4 +1291,59 @@ Portfolio3D (React Three Fiber)
 
 ---
 
+## Step 34 — Phase 9: Quant Risk, ESG Taxonomy, Geopolitical, Signals, APAC (April 13, 2026)
+
+### What was done
+
+Built the global institutional layer — the systems that Goldman Sachs quants, London ESG funds, Hong Kong family offices, Singapore sovereign wealth funds, and Tokyo corporates need.
+
+### New Engines (8 files)
+
+| Engine | Lines | Who Needs It | What It Does |
+|--------|-------|---|---|
+| `quant-risk.ts` | 380 | **Wall Street / Quant Funds** | VaR (95/99%), CVaR, Sharpe/Sortino/Calmar ratios, max drawdown, Beta/Alpha, Information Ratio, skewness, kurtosis, 7-factor decomposition (Growth, Quality, Size, Volatility, Verification, ESG, Concentration), return distribution histogram, rolling metrics |
+| `esg-taxonomy.ts` | 380 | **European Pension/Sovereign Funds** | EU SFDR classification (Article 6/8/9), EU Taxonomy alignment, 3-pillar ESG scoring (E/S/G with sub-indicators), 7 PAI indicators, carbon footprint (Scope 1/2/3), 10 UN SDG alignments, investment suitability matrix (pension/sovereign/impact/green bond) |
+| `geopolitical-risk.ts` | 300 | **International Family Offices** | 8 jurisdiction profiles (US, EU, UK, Singapore, HK, UAE, Switzerland, Japan), 6 risk factors per startup, sanctions screening, investor accessibility by region, cross-border considerations, data sovereignty assessment |
+| `time-series.ts` | 350 | **Quant Analysts** | Moving average decomposition (trend/seasonal/noise), linear regression with R², changepoint detection, signal-to-noise ratio (dB), autocorrelation, stationarity assessment, 6-month forecast with 95% CI, predictability scoring |
+| `signal-engine.ts` | 310 | **Systematic Investors** | 4 signal types: Momentum (growth acceleration), Mean Reversion (z-score deviation), Cross-Sectional (peer outperformance), Quality (fundamental scoring). Composite signal (Strong Buy through Strong Sell), regime detection, signal history |
+| `fx-engine.ts` | 260 | **Hong Kong / Multi-Currency** | 14 currencies (7 fiat + 3 stablecoin + 3 crypto + BTC), FX VaR calculation, hedging cost estimation, stablecoin/fiat/crypto split analysis, settlement optimization (USDC vs SWIFT), diversification benefit |
+| `macro-indicators.ts` | 290 | **Institutional Allocators** | 12 macro indicators (Fed rate, M2, BTC dominance, market cap, VC pace, regulatory sentiment, TVL, dev count, stablecoin supply, protocol revenue), cycle phase detection, asset allocation advice, startup-macro correlations, regional outlook |
+| `apac-regulatory.ts` | 350 | **Asian Investors** | 6 APAC jurisdictions (Hong Kong SFC, Singapore MAS, Japan JFSA, Australia ASIC, South Korea FSC, India SEBI/RBI), licensing requirements, compliance costs, cross-border feasibility matrix, regional trends |
+
+### What Each Investor Type Gets
+
+| Investor Type | Region | Key Engines They Use |
+|---|---|---|
+| **Quant Fund** | New York / London | quant-risk, signal-engine, time-series, portfolio-optimizer |
+| **ESG/Impact Fund** | Amsterdam / Stockholm | esg-taxonomy, revenue-quality, cohort-analysis |
+| **Pension Fund** | London / Zurich | esg-taxonomy, quant-risk, return-calculator, macro-indicators |
+| **Sovereign Wealth** | Singapore / Abu Dhabi | geopolitical-risk, macro-indicators, apac-regulatory, esg-taxonomy |
+| **Family Office** | Hong Kong / Geneva | fx-engine, geopolitical-risk, quant-risk, investment-memo |
+| **Crypto Fund** | Global | signal-engine, prediction-market, portfolio-optimizer, streaming-rewards |
+| **VC Fund** | San Francisco / Berlin | investment-memo, competitive-intel, cap-table, dd-workflow |
+| **Corporate VC** | Tokyo / Seoul | apac-regulatory, valuation-suite, deal-flow-analytics |
+| **Angel Investor** | Anywhere | survival-predictor, nl-query, red-flag-detection |
+| **DAO** | On-chain | governance-analytics, milestone-escrow, prediction-market |
+
+### Platform Final Stats After Phase 9
+
+| Category | Count |
+|----------|-------|
+| **Engine Libraries** | **51** |
+| **Total Lines Added Today** | **~24,000+** |
+| **Git Commits Today** | **9** |
+| **Pages** | 23 |
+| **StartupDetail Tabs** | 23 |
+| **Custom Components** | 60+ |
+| **Total Components** | 110+ |
+| **3D Visualization** | React Three Fiber WebGL |
+| **ZK Cryptography** | Web Crypto API |
+| **Blockchains Supported** | 8 (Solana, ETH, Base, Arbitrum, Polygon, Optimism, Avalanche, BSC) |
+| **Jurisdictions Mapped** | 14 (US, EU, UK, SG, HK, JP, AU, KR, IN, UAE, CH + Global) |
+| **Currencies Supported** | 14 (7 fiat + 3 stablecoin + 4 crypto) |
+| **UN SDGs Mapped** | 10 of 17 |
+| **Investment Exemptions** | 7 (Reg D/CF/A+/S, MiCA, VARA) |
+
+---
+
 *This log is updated with every change pushed to GitHub.*
