@@ -40,6 +40,7 @@ import MilestoneEscrowPanel from '@/components/startup/MilestoneEscrowPanel';
 import CapTableView from '@/components/startup/CapTableView';
 import PredictionMarkets from '@/components/startup/PredictionMarkets';
 import ZKProofPanel from '@/components/startup/ZKProofPanel';
+import InvestmentMemoPanel from '@/components/startup/InvestmentMemoPanel';
 import { exportElementAsPDF } from '@/lib/export-pdf';
 import { exportLPReport } from '@/lib/lp-report';
 import {
@@ -204,6 +205,9 @@ export default function StartupDetail() {
           <TabsTrigger value="due-diligence" className="flex items-center gap-1">
             <Brain className="h-3 w-3" /> AI Due Diligence
           </TabsTrigger>
+          <TabsTrigger value="memo" className="flex items-center gap-1">
+            <FileText className="h-3 w-3" /> Memo
+          </TabsTrigger>
           <TabsTrigger value="red-flags" className="flex items-center gap-1">
             <ShieldAlert className="h-3 w-3" /> Red Flags
           </TabsTrigger>
@@ -321,6 +325,11 @@ export default function StartupDetail() {
             <MultiSigTreasury startup={startup} />
           </div>
           <FundFlowSankey startup={startup} metrics={metrics} />
+        </TabsContent>
+
+        {/* Investment Memo */}
+        <TabsContent value="memo" className="mt-6 space-y-6">
+          <InvestmentMemoPanel startup={startup} metrics={metrics} allStartups={allStartups || []} />
         </TabsContent>
 
         {/* Red Flag Detection */}

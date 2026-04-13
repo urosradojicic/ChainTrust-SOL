@@ -1118,4 +1118,65 @@ Interactive ZK demonstration:
 
 ---
 
+## Step 31 — Phase 6: Investment Memos, Competitive Intel, Scenario Planning (April 13, 2026)
+
+### What was done
+
+Built the final intelligence layer — the engines that make VCs obsolete. Investment memo generation, competitive landscape analysis, scenario planning, smart alerts, cohort analysis, governance analytics, and revenue quality scoring.
+
+### New Engines (7 files)
+
+| Engine | Lines | What It Does |
+|--------|-------|---|
+| `investment-memo.ts` | 350 | Generates institutional-grade 2-page investment memos (exec summary, bull/bear case, key metrics, recommended terms, conviction scoring) |
+| `competitive-intel.ts` | 310 | Maps competitive landscape: direct/indirect competitors, moat identification (network effects, data, tech, scale), BCG market positioning, battle cards |
+| `scenario-planning.ts` | 290 | What-if analysis: fundraise, growth change, hiring, burn cut, competitor entry, PMF achievement, market downturn — 12-month projections for each |
+| `smart-alerts.ts` | 260 | Configurable alert system: threshold breach, trend change, anomaly, milestone, verification, peer divergence — with cooldowns and priority |
+| `cohort-analysis.ts` | 330 | Deep retention analysis: cohort matrix, retention curves, unit economics (CAC, LTV, LTV/CAC, payback, ARPU, NRR, churn), PMF indicators |
+| `governance-analytics.ts` | 270 | DAO governance health: participation rate, pass rate, voter profiles, power concentration (Gini), controversy scoring, recommendations |
+| `revenue-quality.ts` | 310 | Revenue quality scoring across 7 dimensions: recurrence, concentration, growth quality, retention, consistency, margin, verification — with ARR multiple suggestions |
+
+### New UI Component
+
+| Component | What It Does |
+|-----------|---|
+| `InvestmentMemoPanel.tsx` | Full memo display with recommendation badge (STRONG INVEST through PASS), conviction bar (1-10), executive summary, bull/bear case columns, key metrics table with benchmarks, expandable sections, suggested terms, PDF export |
+
+### Key Innovations
+
+**Investment Memo Generator** — generates what Goldman Sachs charges $500K for:
+- 10-section institutional memo structure
+- Auto-generated executive summary with data-driven narratives
+- Bull/bear case from verified data (not opinions)
+- Suggested investment terms calibrated to stage
+- Conviction level from CTS score + red flags + growth + verification
+
+**Revenue Quality Scorer** — not all revenue is equal:
+- 7-dimension scoring: recurrence, concentration, growth quality, retention, consistency, margin, verification
+- Quality tiers: Institutional / Investment / Speculative / Distressed
+- ARR multiple suggestion based on quality score (e.g., "12-20x ARR for Investment-grade revenue")
+
+**Cohort Analysis** — the metric VCs care about most:
+- Synthetic cohort generation from MAU growth patterns
+- Retention curve modeling with trust-score-adjusted decay
+- Full unit economics: CAC, LTV, LTV/CAC, payback, ARPU, NRR
+- Product-market fit detection (5 indicators)
+
+### Page Updates
+- **StartupDetail**: Added "Memo" tab with full investment memo (now 23 tabs total)
+
+### New files
+| File | Purpose |
+|------|---------|
+| `src/lib/investment-memo.ts` | AI investment memo generator |
+| `src/lib/competitive-intel.ts` | Competitive landscape analysis |
+| `src/lib/scenario-planning.ts` | What-if scenario engine |
+| `src/lib/smart-alerts.ts` | Configurable alert system |
+| `src/lib/cohort-analysis.ts` | Cohort retention + unit economics |
+| `src/lib/governance-analytics.ts` | DAO governance analytics |
+| `src/lib/revenue-quality.ts` | Revenue quality scorer |
+| `src/components/startup/InvestmentMemoPanel.tsx` | Investment memo UI |
+
+---
+
 *This log is updated with every change pushed to GitHub.*
