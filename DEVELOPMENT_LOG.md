@@ -926,4 +926,97 @@ Added 3 new tabs:
 
 ---
 
+## Step 29 — Phase 4: Portfolio Optimizer, Prediction Markets, Streaming Rewards (April 13, 2026)
+
+### What was done
+
+Built 6 frontier-tech engines and integrated new UI components across the platform.
+
+### New Engines (6 files)
+
+#### 1. Portfolio Optimizer (`src/lib/portfolio-optimizer.ts`)
+Modern Portfolio Theory (Markowitz) adapted for startup investing:
+- Uses MoM growth rate as return proxy, volatility as risk
+- Computes Pearson correlation matrix between all startups
+- 4 portfolio strategies: risk-parity, quality-weighted, equal-weight, return-weighted
+- Efficient frontier generation (25-point curve blending all strategies)
+- Sharpe ratio analogues, diversification scores, verified coverage metrics
+- Category-based diversification analysis (HHI)
+
+#### 2. Prediction Market Engine (`src/lib/prediction-market.ts`)
+Binary outcome markets resolved by ChainTrust oracle data:
+- LMSR (Logarithmic Market Scoring Rule) pricing
+- Cost function: C(q) = b * ln(e^(q_yes/b) + e^(q_no/b))
+- Trade execution with price impact calculation
+- Oracle-resolved markets (MetricsAccount PDA → auto-resolve)
+- 4 market types: revenue milestones, growth sustainability, survival, funding rounds
+- Price history tracking for charting
+- Demo market generator calibrated to startup metrics
+
+#### 3. Investor Thesis Matching (`src/lib/investor-matching.ts`)
+AI-powered deal matching across 8 dimensions:
+- Stage fit, sector fit, metric thresholds, risk tolerance, ESG alignment
+- Verification requirements, token health, growth profile
+- Priority-weighted scoring (investor defines what matters most)
+- Hard filter vs soft filter distinction (deal-breakers vs preferences)
+- 5 thesis templates: crypto_seed, defi_whale, impact_investor, conservative_angel, aggressive_growth
+- Match grades (A+ through F), strengths, concerns, deal-breakers
+
+#### 4. Advanced Benchmarking (`src/lib/benchmarking.ts`)
+Institutional-grade percentile ranking across 12 metrics:
+- Global, category-specific, and stage-adjusted percentiles
+- Composite benchmark score (weighted average of all percentiles)
+- Quartile classification (Q1-Q4), performance classification
+- Best-in-class identification per metric
+- Revenue/employee efficiency metric (derived)
+- Strengths/weaknesses analysis (top/bottom performers)
+
+#### 5. Streaming Rewards (`src/lib/streaming-rewards.ts`)
+Per-second staking reward calculation:
+- Continuous accrual: rate = (principal × APY) / seconds_per_year
+- Compound interest projections (continuous compounding: A = P × e^(r×t))
+- Multiple reward streams (staking, governance bonus)
+- Tier configuration with perks (Free/Basic/Pro/Whale)
+- Next-tier upgrade calculator
+- requestAnimationFrame-ready tick function
+- Duration and CMT formatting utilities
+
+#### 6. 3D Scene Preparation (via benchmarking and portfolio engines)
+The portfolio optimizer and benchmarking engines provide the data structures needed for React Three Fiber 3D visualization (portfolio solar system, startup node graphs).
+
+### New UI Components (2 files)
+
+#### 7. Prediction Markets Panel (`src/components/startup/PredictionMarkets.tsx`)
+- Market cards with probability bars (YES/NO)
+- Mini price history charts per market
+- Volume, traders, and oracle-resolution badges
+- Color-coded by category (revenue, growth, survival, funding)
+- Days-remaining countdown
+
+#### 8. Streaming Rewards Display (`src/components/startup/StreamingRewardsDisplay.tsx`)
+- **Real-time ticking counter** — rewards tick up at 60fps via requestAnimationFrame
+- Per-digit animation (last digits flash in primary color)
+- Rate-per-second indicator with live pulse dot
+- Reward stream breakdown (staking, governance)
+- Projection grid (daily, weekly, monthly, yearly)
+- Next-tier upgrade prompt with APY gain
+
+### Page Integrations
+
+- **StartupDetail → Predictions tab**: Added PredictionMarkets panel below PredictionBadges
+- **Staking page**: Added StreamingRewardsDisplay at the top with live per-second counter
+
+### New files
+| File | Purpose |
+|------|---------|
+| `src/lib/portfolio-optimizer.ts` | Markowitz portfolio optimization |
+| `src/lib/prediction-market.ts` | LMSR prediction market engine |
+| `src/lib/investor-matching.ts` | Investor thesis matching |
+| `src/lib/benchmarking.ts` | Percentile ranking benchmarking |
+| `src/lib/streaming-rewards.ts` | Per-second streaming rewards |
+| `src/components/startup/PredictionMarkets.tsx` | Prediction markets UI |
+| `src/components/startup/StreamingRewardsDisplay.tsx` | Streaming rewards UI |
+
+---
+
 *This log is updated with every change pushed to GitHub.*

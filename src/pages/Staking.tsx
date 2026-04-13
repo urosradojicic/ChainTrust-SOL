@@ -9,6 +9,7 @@ import { formatCMT } from '@/lib/format';
 import { explorerTxUrl } from '@/lib/solana-config';
 import { toast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
+import StreamingRewardsDisplay from '@/components/startup/StreamingRewardsDisplay';
 import {
   Loader2, ExternalLink, Gift, AlertTriangle, Coins, TrendingUp, Users, Shield,
   Calculator, History, ChevronRight,
@@ -228,6 +229,11 @@ export default function Staking() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold">Staking</h1>
       <p className="mt-1 text-muted-foreground">Stake CMT tokens to unlock premium analytics and earn rewards</p>
+
+      {/* Streaming Rewards (live per-second counter) */}
+      <div className="mt-8">
+        <StreamingRewardsDisplay stakedAmount={stakedAmount / 1000000} />
+      </div>
 
       {/* Stats */}
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

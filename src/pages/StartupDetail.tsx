@@ -38,6 +38,7 @@ import PredictionBadges from '@/components/startup/PredictionBadges';
 import ClaimVerificationMatrix from '@/components/startup/ClaimVerificationMatrix';
 import MilestoneEscrowPanel from '@/components/startup/MilestoneEscrowPanel';
 import CapTableView from '@/components/startup/CapTableView';
+import PredictionMarkets from '@/components/startup/PredictionMarkets';
 import { exportElementAsPDF } from '@/lib/export-pdf';
 import { exportLPReport } from '@/lib/lp-report';
 import {
@@ -336,6 +337,7 @@ export default function StartupDetail() {
         {/* Survival Predictions */}
         <TabsContent value="predictions" className="mt-6 space-y-6">
           <PredictionBadges startup={startup} metrics={metrics} />
+          <PredictionMarkets startup={startup} />
         </TabsContent>
 
         {/* Claim Verification Matrix */}
