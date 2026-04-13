@@ -1179,4 +1179,60 @@ Built the final intelligence layer — the engines that make VCs obsolete. Inves
 
 ---
 
+## Step 32 — Phase 7: DD Workflows, Returns, Founder Scoring, Market Timing (April 13, 2026)
+
+### What was done
+
+Built the final infrastructure layer — the systems that complete the end-to-end investment platform. Interactive DD workflows, professional return calculations, founder assessment, market regime detection, token-gated access, and audit trail intelligence.
+
+### New Engines (8 files)
+
+| Engine | Lines | What It Does |
+|--------|-------|---|
+| `dd-workflow.ts` | 380 | Interactive 7-phase DD workflow: Initial Screen → Financial DD → Technical DD → Market DD → Team DD → Legal DD → Final Review. 39 checklist items with auto-checks from ChainTrust data. Status tracking, scoring, evidence collection, time tracking, phase verdicts. |
+| `return-calculator.ts` | 280 | Professional return metrics: IRR (Newton-Raphson), TVPI, DPI, RVPI, MOIC, annualized return, cash-on-cash. Portfolio-level aggregation with vintage year analysis, loss ratio, home run ratio. |
+| `founder-score.ts` | 310 | Founder/team assessment across 6 dimensions: Execution Track Record, Capital Efficiency, Team Building, Communication Quality, Governance Maturity, Crisis Resilience. Archetypes: Elite Operator → Unproven. |
+| `market-timing.ts` | 280 | Cross-startup market regime detection: 7 indicators (aggregate growth, revenue health, verification rate, trust environment, token health, ESG, diversity). Category momentum analysis. Timing signals: Strong Buy → Sell. |
+| `token-gating.ts` | 250 | Complete token-gated feature registry: 37 features across 5 categories (data, analysis, tools, export, API), each mapped to a minimum CMT staking tier. Access check, upgrade paths, tier comparison. |
+| `audit-intelligence.ts` | 280 | Data manipulation detection from audit trails: downward revision patterns, burst editing detection, suspicious round numbers, unrealistically consistent growth, constant cost/revenue ratios. Integrity scoring with manipulation risk levels. |
+| `competitive-intel.ts` | (Step 31) | Already built — competitive landscape mapping |
+| `scenario-planning.ts` | (Step 31) | Already built — what-if analysis |
+
+### Platform Totals After Phase 7
+
+| Category | Count |
+|----------|-------|
+| **Pages** | 23 |
+| **StartupDetail Tabs** | 23 |
+| **Engine Libraries** | 35 |
+| **Custom Components** | 60+ |
+| **Total Components** (incl. shadcn) | 110+ |
+| **Lines of New Code Today** | ~19,000+ |
+| **Git Commits Today** | 7 |
+
+### Complete Engine Registry (35 libraries)
+
+**AI & Analytics (10):**
+red-flag-detection, reputation-score, claim-verification, investment-memo, competitive-intel, cohort-analysis, governance-analytics, revenue-quality, founder-score, audit-intelligence
+
+**Financial Instruments (7):**
+term-sheet, cap-table, milestone-escrow, prediction-market, portfolio-optimizer, return-calculator, streaming-rewards
+
+**Simulation & Prediction (4):**
+monte-carlo, survival-predictor, scenario-planning, market-timing
+
+**Infrastructure (8):**
+wallet-abstraction, solana-actions, deal-room, investment-flow, dd-workflow, smart-alerts, token-gating, nl-query
+
+**Cryptography & Privacy (2):**
+zk-range-proof, knowledge-graph
+
+**Visualization (1):**
+benchmarking (data for 3D viz)
+
+**3D (1):**
+Portfolio3D component (React Three Fiber)
+
+---
+
 *This log is updated with every change pushed to GitHub.*
