@@ -112,9 +112,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         fetchRole(session.user.id);
       }
       setLoading(false);
+    }).catch(() => {
+      // Supabase unreachable — stop loading so pages render
+      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    // Safety timeout — never stay loading forever
+    const timeout = setTimeout(() => setLoading(false), 3000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {

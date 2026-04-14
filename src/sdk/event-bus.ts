@@ -99,7 +99,7 @@ class TypedEventBus {
         try {
           handler(data);
         } catch (error) {
-          console.error(`[EventBus] Error in handler for ${event}:`, error);
+          if (import.meta.env.DEV) console.error(`[EventBus] ${event}:`, error);
         }
       }
     }

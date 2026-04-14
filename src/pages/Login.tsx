@@ -202,23 +202,39 @@ export default function Login() {
         </Card>
 
         {/* Quick Login — Demo Accounts */}
-        <Card className="border border-primary/20 bg-primary/5">
+        <Card className="border border-border/60">
           <CardContent className="p-6">
-            <h3 className="font-bold text-lg mb-1">Quick Login</h3>
-            <p className="text-xs text-muted-foreground mb-3">Click any role to sign in instantly</p>
-            {TEST_CREDENTIALS.map((cred) => (
-              <div key={cred.role} className="flex items-center justify-between py-2 border-b border-border/40 last:border-0">
-                <div>
-                  <span className="font-semibold text-sm">{cred.role}:</span>
-                  <span className="text-sm text-muted-foreground ml-2">{cred.email}</span>
-                </div>
-                <Button variant="default" size="sm" onClick={() => fillAndLogin(cred)} disabled={loading} className="gap-1">
-                  Sign In
+            <h3 className="font-bold text-lg mb-1">Try ChainTrust</h3>
+            <p className="text-xs text-muted-foreground mb-3">Experience the platform as any role</p>
+            <div className="grid grid-cols-3 gap-2">
+              {TEST_CREDENTIALS.map((cred) => (
+                <Button
+                  key={cred.role}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fillAndLogin(cred)}
+                  disabled={loading}
+                  className="flex flex-col items-center gap-0.5 h-auto py-3"
+                >
+                  <span className="text-xs font-bold">{cred.role}</span>
+                  <span className="text-[10px] text-muted-foreground">Sign in</span>
                 </Button>
-              </div>
-            ))}
+              ))}
+            </div>
           </CardContent>
         </Card>
+
+        {/* Dev details — only in development */}
+        {import.meta.env.DEV && (
+          <Card className="border border-amber-500/30 bg-amber-500/5">
+            <CardContent className="p-4">
+              <p className="text-[10px] text-muted-foreground mb-2">Dev credentials (DEV only):</p>
+              {TEST_CREDENTIALS.map((cred) => (
+                <p key={cred.role} className="text-[10px] text-muted-foreground font-mono">{cred.email} / {cred.password}</p>
+              ))}
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

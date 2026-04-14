@@ -178,7 +178,7 @@ export default function ZKProofPanel({ startup }: ZKProofPanelProps) {
       const result = await generateZKMetricsPublish(startup.id, metrics);
       setPublish(result);
     } catch (e) {
-      console.error('ZK proof generation failed:', e);
+      if (import.meta.env.DEV) console.error('[ZK] proof generation:', e);
     } finally {
       setGenerating(false);
     }
