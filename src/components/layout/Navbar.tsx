@@ -20,7 +20,7 @@ interface HeaderLink { path: string; label: string; live?: boolean; roles: ('inv
 
 const HEADER_LINKS_ALL: HeaderLink[] = [
   { path: '/dashboard', label: 'Dashboard', live: true, roles: ['investor', 'startup', 'admin', null] },
-  { path: '/portfolio', label: 'Portfolio', roles: ['investor', 'admin'] },
+  { path: '/investor-hub', label: 'Investor Hub', roles: ['investor', 'admin'] },
   { path: '/screener', label: 'Screener', roles: ['investor', 'admin'] },
   { path: '/my-startup', label: 'My Startup', roles: ['startup', 'admin'] },
   { path: '/staking', label: 'Staking', roles: ['investor', 'startup', 'admin'] },
@@ -66,6 +66,7 @@ const SIDEBAR_SECTIONS: { title: string; links: SidebarLink[] }[] = [
   {
     title: 'Intelligence',
     links: [
+      { path: '/investor-hub', label: 'Investor Hub', icon: BarChart3, desc: 'AI briefings & deal flow' },
       { path: '/analytics', label: 'Platform Analytics', icon: BarChart3, desc: 'KPIs & growth metrics' },
       { path: '/cost-calculator', label: 'Cost Calculator', icon: Calculator, desc: 'Savings vs. traditional' },
       { path: '/investors', label: 'Investor Relations', icon: Users, desc: 'Traction & case studies' },
