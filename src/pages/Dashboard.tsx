@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CATEGORIES, ACTIVITY_FEED } from '@/lib/mock-data';
@@ -12,9 +12,11 @@ import LiveFeed from '@/components/LiveFeed';
 import BlockchainStatus from '@/components/BlockchainStatus';
 import NetworkPulse from '@/components/NetworkPulse';
 import EcosystemHeatmap from '@/components/EcosystemHeatmap';
-import NLQueryBar from '@/components/NLQueryBar';
-import Portfolio3D from '@/components/Portfolio3D';
 import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
+
+// Lazy-load heavy components to prevent Dashboard chunk from failing
+const NLQueryBar = lazy(() => import('@/components/NLQueryBar').catch(() => ({ default: () => null })));
+const Portfolio3D = lazy(() => import('@/components/Portfolio3D').catch(() => ({ default: () => null })));
 
 type SortKey = 'mrr' | 'growth_rate' | 'trust_score' | 'users';
 
@@ -184,7 +186,7 @@ export default function Dashboard() {
       {/* Natural Language Query Bar */}
       {startups && startups.length > 0 && (
         <div className="mb-8">
-          <NLQueryBar startups={startups} />
+          <Suspense fallback={null}><NLQueryBar startups={startups} /></Suspense>
         </div>
       )}
 
@@ -401,7 +403,7 @@ export default function Dashboard() {
       {/* 3D Portfolio Universe — desktop only (heavy WebGL canvas) */}
       {startups && startups.length > 0 && (
         <div className="mt-8 hidden lg:block">
-          <Portfolio3D startups={startups} />
+          <Suspense fallback={null}><Portfolio3D startups={startups} /></Suspense>
         </div>
       )}
 
