@@ -398,9 +398,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 3D Portfolio Universe */}
+      {/* 3D Portfolio Universe — desktop only (heavy WebGL canvas) */}
       {startups && startups.length > 0 && (
-        <div className="mt-8">
+        <div className="mt-8 hidden lg:block">
           <Portfolio3D startups={startups} />
         </div>
       )}

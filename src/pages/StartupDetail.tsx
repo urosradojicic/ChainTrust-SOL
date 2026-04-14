@@ -197,9 +197,48 @@ export default function StartupDetail() {
         </div>
       )}
 
-      {/* Tabs */}
+      {/* Tabs — scrollable on mobile, grouped sections */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-        <TabsList className="w-full justify-start overflow-x-auto">
+        {/* Mobile: dropdown selector */}
+        <div className="sm:hidden mb-3">
+          <select
+            value={activeTab}
+            onChange={e => setActiveTab(e.target.value)}
+            className="w-full rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground"
+          >
+            <optgroup label="Analysis">
+              <option value="overview">Overview</option>
+              <option value="due-diligence">AI Due Diligence</option>
+              <option value="memo">Investment Memo</option>
+              <option value="red-flags">Red Flags</option>
+              <option value="reputation">CTS Score</option>
+              <option value="digital-twin">Digital Twin</option>
+              <option value="predictions">Predictions</option>
+              <option value="claims">Claims</option>
+            </optgroup>
+            <optgroup label="Financials">
+              <option value="financials">Financials</option>
+              <option value="valuation">Valuation</option>
+              <option value="cap-table">Cap Table</option>
+              <option value="escrow">Escrow</option>
+            </optgroup>
+            <optgroup label="Compliance">
+              <option value="zk-proofs">ZK Proofs</option>
+              <option value="compliance">Compliance</option>
+              <option value="sustainability">Sustainability</option>
+              <option value="impact-pl">Impact P&L</option>
+              <option value="pledges">Pledges</option>
+            </optgroup>
+            <optgroup label="On-Chain">
+              <option value="verification">Verification</option>
+              <option value="tokenomics">Tokenomics</option>
+              <option value="funding">Funding</option>
+              <option value="audit">Audit Trail</option>
+            </optgroup>
+          </select>
+        </div>
+        {/* Desktop: horizontal scrollable tabs */}
+        <TabsList className="hidden sm:flex w-full justify-start overflow-x-auto">
           {/* Core */}
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="due-diligence" className="flex items-center gap-1">
