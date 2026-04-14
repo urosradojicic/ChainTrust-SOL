@@ -22,6 +22,7 @@ import { scoreDeal, type DealScore } from '@/lib/deal-scoring';
 import { optimizePortfolio } from '@/lib/portfolio-optimizer';
 import { analyzeCompetitiveLandscape } from '@/lib/competitive-intel';
 import { generateComplianceReport } from '@/lib/regulatory-compliance';
+import { useSmartAlerts } from '@/hooks/use-smart-monitoring';
 import {
   generateDailyBriefing,
   recordLogin,
@@ -315,6 +316,11 @@ export default function InvestorHub() {
     return startups.slice(0, 3); // Demo fallback
   }, [startups, bookmarkedStartups]);
 
+  // Smart monitoring alerts
+  const metricsMap = useMemo(() => new Map<string, any[]>(), []);
+  const portfolioIds = useMemo(() => portfolio.map(s => s.id), [portfolio]);
+  const { alerts: smartAlerts, criticalCount, warningCount } = useSmartAlerts(startups, metricsMap, portfolioIds);
+
   const briefing = useMemo(
     () => generateDailyBriefing(portfolio, startups),
     [portfolio, startups],
@@ -336,6 +342,42 @@ export default function InvestorHub() {
 
           {/* New Opportunities */}
           <OpportunitiesCard opportunities={briefing.newOpportunities} />
+
+          {/* Smart Monitoring Alerts */}
+          {smartAlerts.length > 0 && (
+            <div className="rounded-xl border bg-card overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-3 border-b border-border">
+                <h3 className="font-bold text-sm flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-primary" /> Smart Monitoring
+                </h3>
+                <div className="flex gap-2">
+                  {criticalCount > 0 && (
+                    <span className="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-bold text-red-500">{criticalCount} critical</span>
+                  )}
+                  {warningCount > 0 && (
+                    <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-500">{warningCount} warnings</span>
+                  )}
+                </div>
+              </div>
+              <div className="divide-y divide-border max-h-80 overflow-y-auto">
+                {smartAlerts.slice(0, 8).map(alert => (
+                  <Link key={alert.id} to={alert.actionUrl} className="flex items-start gap-3 px-5 py-3 transition hover:bg-muted/50">
+                    <div className={`mt-0.5 h-2 w-2 rounded-full shrink-0 ${
+                      alert.severity === 'critical' ? 'bg-red-500' :
+                      alert.severity === 'warning' ? 'bg-amber-500' :
+                      alert.severity === 'positive' ? 'bg-emerald-500' :
+                      'bg-blue-400'
+                    }`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground">{alert.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate">{alert.detail}</p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Side Column (1/3) */}
