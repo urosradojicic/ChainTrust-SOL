@@ -283,6 +283,38 @@ export default function Compliance() {
         </div>
       </motion.div>
 
+      {/* SEC 2026 Token Taxonomy */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-8 rounded-xl border bg-card p-6">
+        <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Scale className="h-5 w-5 text-primary" /> SEC-CFTC 2026 Token Taxonomy
+        </h2>
+        <p className="text-xs text-muted-foreground mb-4">
+          March 17, 2026 joint ruling — 5-part classification framework for digital assets.
+          ChainTrust classifies all tokens according to this taxonomy.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {[
+            { class: 'Security Token', desc: 'Investment contracts, equity tokens, debt tokens', status: 'SEC jurisdiction', color: 'border-blue-500/20 bg-blue-500/5' },
+            { class: 'Commodity Token', desc: 'Bitcoin, Ether, and 14 other classified digital commodities', status: 'CFTC jurisdiction', color: 'border-amber-500/20 bg-amber-500/5' },
+            { class: 'Payment Stablecoin', desc: 'USDC, USDT — backed 1:1 by reserves, proof-of-reserves required', status: 'Dual oversight', color: 'border-emerald-500/20 bg-emerald-500/5' },
+            { class: 'Utility Token', desc: 'Platform access, governance rights, staking — functional use required', status: 'Function-dependent', color: 'border-purple-500/20 bg-purple-500/5' },
+            { class: 'Hybrid Token', desc: 'Tokens with mixed characteristics — evaluated case-by-case', status: 'Joint review', color: 'border-orange-500/20 bg-orange-500/5' },
+          ].map((t, i) => (
+            <div key={t.class} className={`rounded-lg border p-3 ${t.color}`}>
+              <h4 className="text-xs font-bold">{t.class}</h4>
+              <p className="text-[10px] text-muted-foreground mt-1">{t.desc}</p>
+              <div className="mt-2 text-[10px] font-mono text-muted-foreground">{t.status}</div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 rounded-lg bg-muted/30 p-3 flex items-start gap-2">
+          <Shield className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+          <p className="text-xs text-muted-foreground">
+            <strong className="text-foreground">CMT Token Classification:</strong> Utility Token — provides platform access (staking tiers), governance rights (DAO voting), and verification services. No investment return expectations. Compliant with SEC Utility Token safe harbor criteria.
+          </p>
+        </div>
+      </motion.div>
+
       {/* Score + Timeline */}
       <div className="grid gap-6 lg:grid-cols-2 mb-8">
         <ComplianceScore />
