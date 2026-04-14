@@ -16,6 +16,7 @@ import {
 import { useSolPrice } from '@/hooks/use-pyth-price';
 import { useVerifyPaymentVolume } from '@/hooks/use-payment-verification';
 import { useMintCertificate, type MintedCertificate } from '@/hooks/use-cnft-certificate';
+import { useWalletIntelligence, useVolumeFilter } from '@/hooks/use-wallet-intelligence';
 import { SOLANA_NETWORK, explorerAddressUrl } from '@/lib/solana-config';
 import { toast } from '@/hooks/use-toast';
 
@@ -43,6 +44,8 @@ export default function OnChainVerification({ walletAddress, tokenMint, claimedT
   const { price: solPriceData } = useSolPrice();
   const { verify: verifyPayments, data: payments, isLoading: paymentsLoading, progress: paymentProgress } = useVerifyPaymentVolume();
   const { mint: mintCertificate, isPending: mintPending, lastMinted } = useMintCertificate();
+  const { analyze: analyzeWallet, data: walletIntel } = useWalletIntelligence();
+  const { filter: filterVolume, data: volumeFilter } = useVolumeFilter();
   const [score, setScore] = useState<VerificationScore | null>(null);
   const [verifying, setVerifying] = useState(false);
 
@@ -59,8 +62,12 @@ export default function OnChainVerification({ walletAddress, tokenMint, claimedT
       tokenMint ? verifyMintAuth(tokenMint) : Promise.resolve(null),
     ]);
 
-    // Payment volume check runs concurrently
-    await verifyPayments(walletAddress, 30);
+    // Additional checks run concurrently
+    await Promise.all([
+      verifyPayments(walletAddress, 30),
+      analyzeWallet(walletAddress),
+      filterVolume(walletAddress, 30),
+    ]);
 
     // Apply Pyth oracle price to treasury valuation
     if (t && solPriceData) {
@@ -337,6 +344,78 @@ export default function OnChainVerification({ walletAddress, tokenMint, claimedT
             </div>
           </div>
           <p className="text-[10px] text-muted-foreground">{payments.totalTransfers} transfers verified from Solana blockchain</p>
+        </motion.div>
+      )}
+
+      {/* Wallet Intelligence */}
+      {walletIntel && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="rounded-xl border bg-card p-5">
+          <h4 className="font-bold mb-3 flex items-center gap-2">
+            <Shield className="h-4 w-4 text-primary" /> Wallet Intelligence
+          </h4>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Classification</div>
+              <div className="text-sm font-bold capitalize">{walletIntel.tag.type}</div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Balance</div>
+              <div className="text-sm font-bold font-mono">{walletIntel.balanceSol.toFixed(2)} SOL</div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Total Txs</div>
+              <div className="text-sm font-bold font-mono">{walletIntel.transactionCount}</div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">First Seen</div>
+              <div className="text-xs font-mono">{walletIntel.firstSeen ? new Date(walletIntel.firstSeen).toLocaleDateString() : 'N/A'}</div>
+            </div>
+          </div>
+          {walletIntel.suspiciousPatterns.length > 0 && (
+            <div className="rounded-lg bg-amber-500/5 border border-amber-500/20 p-2.5">
+              <div className="flex items-center gap-1.5 text-xs text-amber-400 font-medium mb-1">
+                <AlertTriangle className="h-3.5 w-3.5" /> Suspicious Patterns Detected
+              </div>
+              {walletIntel.suspiciousPatterns.map((p, i) => (
+                <p key={i} className="text-[10px] text-amber-400/80">{p}</p>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      )}
+
+      {/* Volume Filter — Wash Trading Detection */}
+      {volumeFilter && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.48 }} className="rounded-xl border bg-card p-5">
+          <h4 className="font-bold mb-3 flex items-center gap-2">
+            <BarChart3 className="h-4 w-4 text-primary" /> Real Volume Filter
+          </h4>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Total Volume</div>
+              <div className="text-sm font-bold font-mono">{volumeFilter.totalVolume} SOL</div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Real Volume</div>
+              <div className="text-sm font-bold font-mono text-emerald-400">{volumeFilter.realVolume} SOL</div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Wash Trading</div>
+              <div className={`text-sm font-bold font-mono ${volumeFilter.washTradingPct > 20 ? 'text-red-400' : volumeFilter.washTradingPct > 5 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                {volumeFilter.washTradingPct}%
+              </div>
+            </div>
+            <div className="rounded-lg bg-muted/30 p-3">
+              <div className="text-xs text-muted-foreground">Unique Parties</div>
+              <div className="text-sm font-bold font-mono">{volumeFilter.uniqueSenders + volumeFilter.uniqueReceivers}</div>
+            </div>
+          </div>
+          {volumeFilter.washTradingPct > 20 && (
+            <div className="mt-3 rounded-lg bg-red-500/5 border border-red-500/20 p-2.5 flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-red-400 shrink-0" />
+              <span className="text-xs text-red-400">High wash trading detected ({volumeFilter.washTradingPct}%). Real volume may be significantly lower than reported.</span>
+            </div>
+          )}
         </motion.div>
       )}
 
