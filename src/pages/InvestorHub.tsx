@@ -16,8 +16,12 @@ import {
   Sparkles, Calendar, Clock, CheckCircle2, ArrowUpRight,
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/format';
-import { useStartups } from '@/hooks/use-startups';
+import { useStartups, useMetricsHistory } from '@/hooks/use-startups';
 import { useWallet } from '@/contexts/WalletContext';
+import { scoreDeal, type DealScore } from '@/lib/deal-scoring';
+import { optimizePortfolio } from '@/lib/portfolio-optimizer';
+import { analyzeCompetitiveLandscape } from '@/lib/competitive-intel';
+import { generateComplianceReport } from '@/lib/regulatory-compliance';
 import {
   generateDailyBriefing,
   recordLogin,
@@ -344,6 +348,50 @@ export default function InvestorHub() {
 
           {/* Achievements */}
           <AchievementsCard badges={achievements} />
+
+          {/* Deal Scores */}
+          <div className="rounded-xl border bg-card p-4">
+            <h3 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+              <Target className="h-3 w-3" /> Top Deal Scores
+            </h3>
+            <div className="space-y-2">
+              {startups.slice(0, 5).map(s => {
+                const ds = scoreDeal(s, [], startups);
+                return (
+                  <Link key={s.id} to={`/startup/${s.id}`} className="flex justify-between text-xs hover:text-primary transition">
+                    <span className="truncate flex-1">{s.name}</span>
+                    <span className={`font-mono font-bold ${ds.totalScore >= 70 ? 'text-emerald-500' : ds.totalScore >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
+                      {ds.totalScore}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Compliance status */}
+          <div className="rounded-xl border bg-card p-4">
+            <h3 className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+              <Shield className="h-3 w-3" /> Compliance Status
+            </h3>
+            {(() => {
+              const report = generateComplianceReport();
+              return (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Overall</span>
+                    <span className={`font-mono font-bold ${report.overallStatus === 'compliant' ? 'text-emerald-500' : 'text-amber-500'}`}>
+                      {report.overallStatus === 'compliant' ? 'Compliant' : 'Pending'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Risk Level</span>
+                    <span className="font-mono font-bold text-foreground">{report.riskLevel}</span>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
 
           {/* Quick stats */}
           <div className="rounded-xl border bg-card p-4">
