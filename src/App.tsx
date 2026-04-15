@@ -41,6 +41,7 @@ const Provenance = lazy(() => import("./pages/Provenance"));
 const Investors = lazy(() => import("./pages/Investors"));
 const Tokenomics = lazy(() => import("./pages/Tokenomics"));
 const Verify = lazy(() => import("./pages/Verify"));
+const Hackathon = lazy(() => import("./pages/Hackathon"));
 const InvestorHub = lazy(() => import("./pages/InvestorHub"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -78,6 +79,7 @@ const AnimatedRoutes = () => {
           <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
           <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
           <Route path="/verify" element={<PageTransition><Verify /></PageTransition>} />
+          <Route path="/hackathon" element={<PageTransition><Hackathon /></PageTransition>} />
 
           {/* All authenticated users */}
           <Route path="/dashboard" element={<G path="/dashboard"><Dashboard /></G>} />
