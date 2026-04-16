@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import RiskAnalysisButton from '@/components/RiskAnalysisButton';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   AreaChart, Area, LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
@@ -50,7 +50,7 @@ import {
   ShieldAlert, Award, Activity, Target, Search, Lock, Layers,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useStartup, useMetricsHistory, useStartupPledges, useStartups } from '@/hooks/use-startups';
+import { useStartup, useMetricsHistory, useStartupPledges, useStartups, useAllMetricsMap } from '@/hooks/use-startups';
 import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
 import type { SustainabilityData } from '@/components/SustainabilityScore';
 import type { DbStartup } from '@/types/database';
@@ -84,7 +84,9 @@ export default function StartupDetail() {
   const { data: startup, isLoading } = useStartup(id);
   const { data: metrics = [] } = useMetricsHistory(id);
   const { data: pledges = [] } = useStartupPledges(id);
-  const { data: allStartups } = useStartups();
+  const { data: allStartups = [] } = useStartups();
+  const startupIds = useMemo(() => allStartups.map(s => s.id), [allStartups]);
+  const { data: metricsMap } = useAllMetricsMap(startupIds);
   const { institutionalMode } = useInstitutionalView();
   const [activeTab, setActiveTab] = useState('overview');
   const [timeRange, setTimeRange] = useState('6M');
@@ -295,7 +297,7 @@ export default function StartupDetail() {
         {/* Overview */}
         {/* Quant Models */}
         <TabsContent value="quant-models" className="mt-6 space-y-6">
-          <QuantModelsPanel startup={startup} metrics={metrics} allStartups={allStartups} />
+          <QuantModelsPanel startup={startup} metrics={metrics} allStartups={allStartups} metricsMap={metricsMap} />
         </TabsContent>
 
         <TabsContent value="overview" className="mt-6 space-y-6">

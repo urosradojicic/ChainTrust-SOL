@@ -24,6 +24,7 @@ interface Props {
   startup: DbStartup;
   metrics: DbMetricsHistory[];
   allStartups: DbStartup[];
+  metricsMap?: Map<string, DbMetricsHistory[]>;
 }
 
 const SIGNAL_COLORS: Record<string, string> = {
@@ -42,10 +43,10 @@ const SIGNAL_LABELS: Record<string, string> = {
   strong_sell: 'Strong Sell',
 };
 
-export default function QuantModelsPanel({ startup, metrics, allStartups }: Props) {
+export default function QuantModelsPanel({ startup, metrics, allStartups, metricsMap }: Props) {
   const momentum = useMemo(
-    () => computeMomentumSignals(startup, metrics, allStartups),
-    [startup, metrics, allStartups],
+    () => computeMomentumSignals(startup, metrics, allStartups, metricsMap),
+    [startup, metrics, allStartups, metricsMap],
   );
 
   const relativeValue = useMemo(
@@ -54,8 +55,8 @@ export default function QuantModelsPanel({ startup, metrics, allStartups }: Prop
   );
 
   const riskFactors = useMemo(
-    () => decomposeRiskFactors(startup, allStartups),
-    [startup, allStartups],
+    () => decomposeRiskFactors(startup, allStartups, metricsMap),
+    [startup, allStartups, metricsMap],
   );
 
   return (

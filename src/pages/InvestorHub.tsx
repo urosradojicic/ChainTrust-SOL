@@ -16,7 +16,7 @@ import {
   Sparkles, Calendar, Clock, CheckCircle2, ArrowUpRight,
 } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/format';
-import { useStartups, useMetricsHistory } from '@/hooks/use-startups';
+import { useStartups, useAllMetricsMap } from '@/hooks/use-startups';
 import { useWallet } from '@/contexts/WalletContext';
 import { scoreDeal, type DealScore } from '@/lib/deal-scoring';
 import { optimizePortfolio } from '@/lib/portfolio-optimizer';
@@ -317,8 +317,9 @@ export default function InvestorHub() {
     return startups.slice(0, 3); // Demo fallback
   }, [startups, bookmarkedStartups]);
 
-  // Smart monitoring alerts
-  const metricsMap = useMemo(() => new Map<string, any[]>(), []);
+  // Fetch metrics for all startups (for smart alerts + macro regime)
+  const allStartupIds = useMemo(() => startups.map(s => s.id), [startups]);
+  const { data: metricsMap = new Map() } = useAllMetricsMap(allStartupIds);
   const portfolioIds = useMemo(() => portfolio.map(s => s.id), [portfolio]);
   const { alerts: smartAlerts, criticalCount, warningCount } = useSmartAlerts(startups, metricsMap, portfolioIds);
 
@@ -384,7 +385,7 @@ export default function InvestorHub() {
         {/* Side Column (1/3) */}
         <div className="space-y-4">
           {/* Macro Regime */}
-          <MacroRegimePanel />
+          <MacroRegimePanel metricsMap={metricsMap} />
 
           {/* Onboarding (shown until complete) */}
           <OnboardingCard steps={onboardingSteps} />

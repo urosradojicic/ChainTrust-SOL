@@ -28,13 +28,17 @@ const SIGNAL_ICONS: Record<string, any> = {
   bearish: TrendingDown,
 };
 
-export default function MacroRegimePanel() {
+interface MacroProps {
+  metricsMap?: Map<string, any[]>;
+}
+
+export default function MacroRegimePanel({ metricsMap }: MacroProps = {}) {
   const { price: solPrice } = useSolPrice();
   const { data: startups = [] } = useStartups();
 
   const regime = useMemo(
-    () => detectMacroRegime(solPrice?.price ?? null, startups, new Map()),
-    [solPrice, startups],
+    () => detectMacroRegime(solPrice?.price ?? null, startups, metricsMap ?? new Map()),
+    [solPrice, startups, metricsMap],
   );
 
   const cfg = REGIME_CONFIG[regime.regime];

@@ -68,6 +68,42 @@ export function useMetricsHistory(startupId: string | undefined) {
   });
 }
 
+/** Fetch metrics for ALL startups, returned as a Map keyed by startup_id */
+export function useAllMetricsMap(startupIds: string[]) {
+  return useQuery({
+    queryKey: ['all_metrics_map', startupIds.join(',')],
+    queryFn: async () => {
+      const map = new Map<string, DbMetricsHistory[]>();
+      if (startupIds.length === 0) return map;
+
+      try {
+        const { data, error } = await supabase
+          .from('metrics_history')
+          .select('*')
+          .in('startup_id', startupIds)
+          .order('month_date', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          for (const m of data as DbMetricsHistory[]) {
+            const arr = map.get(m.startup_id) ?? [];
+            arr.push(m);
+            map.set(m.startup_id, arr);
+          }
+          return map;
+        }
+      } catch { /* fall through to demo */ }
+
+      // Fallback to demo data
+      for (const id of startupIds) {
+        const demoMetrics = DEMO_METRICS.filter(m => m.startup_id === id);
+        if (demoMetrics.length > 0) map.set(id, demoMetrics);
+      }
+      return map;
+    },
+    enabled: startupIds.length > 0,
+  });
+}
+
 export function useStartupPledges(startupId: string | undefined) {
   return useQuery({
     queryKey: ['pledges', startupId],
