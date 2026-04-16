@@ -2,8 +2,8 @@ import { PublicKey } from '@solana/web3.js';
 
 /**
  * Program ID — loaded from VITE_SOLANA_PROGRAM_ID env var.
- * Falls back to devnet program address during development.
- * After deploying: cd blockchain && anchor deploy
+ * Falls back to devnet placeholder during development (hooks catch failures and use demo mode).
+ * After deploying: set VITE_SOLANA_PROGRAM_ID in .env to the real program address.
  */
 const PROGRAM_ID_STR = import.meta.env.VITE_SOLANA_PROGRAM_ID || 'CMTRgstry1111111111111111111111111111111111';
 export const PROGRAM_ID = new PublicKey(PROGRAM_ID_STR);

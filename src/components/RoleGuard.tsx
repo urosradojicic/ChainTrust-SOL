@@ -15,7 +15,10 @@ interface RoleGuardProps {
 export default function RoleGuard({ path, children }: RoleGuardProps) {
   const { role, loading, user } = useAuth();
 
-  // While auth is loading, show spinner
+  // Public pages render immediately — no spinner needed
+  if (canAccess(null, path)) return <>{children}</>;
+
+  // While auth is loading for protected routes, show spinner
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -23,9 +26,6 @@ export default function RoleGuard({ path, children }: RoleGuardProps) {
       </div>
     );
   }
-
-  // Public pages always pass through
-  if (canAccess(null, path)) return <>{children}</>;
 
   // Not logged in → redirect to login
   if (!user) return <Navigate to="/login" replace />;

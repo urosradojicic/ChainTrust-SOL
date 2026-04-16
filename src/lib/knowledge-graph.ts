@@ -414,11 +414,11 @@ export function calculateInfluence(graph: KnowledgeGraph): NodeInfluence[] {
     if (src) src.total++;
     if (tgt) tgt.total++;
 
-    // Type counting
-    const srcNode = graph.nodes.find(n => n.id === edge.target);
-    const tgtNode = graph.nodes.find(n => n.id === edge.source);
-    if (src && srcNode) src.byType[srcNode.type]++;
-    if (tgt && tgtNode) tgt.byType[tgtNode.type]++;
+    // Type counting — source node counts the type of its target, and vice versa
+    const tgtNode = graph.nodes.find(n => n.id === edge.target);
+    const srcNode = graph.nodes.find(n => n.id === edge.source);
+    if (src && tgtNode) src.byType[tgtNode.type]++;
+    if (tgt && srcNode) tgt.byType[srcNode.type]++;
   }
 
   const maxDegree = Math.max(...Array.from(degreeMap.values()).map(d => d.total), 1);

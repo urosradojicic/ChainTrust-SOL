@@ -71,7 +71,7 @@ export function useMetricsHistory(startupId: string | undefined) {
 /** Fetch metrics for ALL startups, returned as a Map keyed by startup_id */
 export function useAllMetricsMap(startupIds: string[]) {
   return useQuery({
-    queryKey: ['all_metrics_map', startupIds.join(',')],
+    queryKey: ['all_metrics_map', ...startupIds],
     queryFn: async () => {
       const map = new Map<string, DbMetricsHistory[]>();
       if (startupIds.length === 0) return map;

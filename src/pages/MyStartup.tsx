@@ -11,7 +11,7 @@ import {
   Building2, BarChart3, Leaf, FileText, AlertTriangle, Award, Lock, Shield,
   Upload, X, File, Download,
 } from 'lucide-react';
-import { sanitizeText, sanitizeNumber } from '@/lib/sanitize';
+import { sanitizeText, sanitizeNumber, rateLimit } from '@/lib/sanitize';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
 import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
@@ -140,6 +140,10 @@ export default function MyStartup() {
       toast({ title: 'Wallet Required', description: 'Please connect your wallet to publish on-chain.', variant: 'destructive' });
       return;
     }
+    if (!rateLimit('save-profile', 5, 60000)) {
+      toast({ title: 'Too many saves', description: 'Please wait a minute before saving again.', variant: 'destructive' });
+      return;
+    }
     setSaving(true);
     setSaved(false);
     try {
@@ -188,7 +192,7 @@ export default function MyStartup() {
 
       // Publish metrics on-chain via Anchor smart contract
       const txHash = await publish({
-        startupId: 1,
+        startupId: Number(startup.id) || 1,
         mrr: Number(form.mrr) || 0,
         totalUsers: Number(form.users) || 0,
         activeUsers: Math.round((Number(form.users) || 0) * 0.7),
@@ -233,11 +237,15 @@ export default function MyStartup() {
       toast({ title: 'Wallet Required', description: 'Please connect your wallet to publish on-chain.', variant: 'destructive' });
       return;
     }
+    if (!rateLimit('submit-metrics', 5, 60000)) {
+      toast({ title: 'Too many submissions', description: 'Please wait a minute before submitting again.', variant: 'destructive' });
+      return;
+    }
     setSubmittingMonth(true);
     try {
       // Publish on-chain first
       const txHash = await publish({
-        startupId: 1,
+        startupId: Number(startup.id) || 1,
         mrr: Number(monthForm.revenue) || 0,
         totalUsers: Number(monthForm.mau) || 0,
         activeUsers: Math.round((Number(monthForm.mau) || 0) * 0.7),

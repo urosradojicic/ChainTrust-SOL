@@ -25,6 +25,7 @@ export const PAGE_ACCESS: Record<string, Access> = {
   '/governance':      'auth',
   '/compliance':      'auth',
   '/provenance':      'auth',
+  '/startup':         'auth',   // dynamic: /startup/:id
 
   // Investor-specific
   '/investor-hub':    'investor',
@@ -43,7 +44,9 @@ export const PAGE_ACCESS: Record<string, Access> = {
 
 /** Check if a given role can access a route */
 export function canAccess(role: AppRole | null, path: string): boolean {
-  const access = PAGE_ACCESS[path] ?? 'admin'; // deny by default for unknown routes
+  // Support dynamic routes: /startup/123 → lookup /startup
+  const normalizedPath = path.replace(/\/\d+$/, '').replace(/\/$/, '') || '/';
+  const access = PAGE_ACCESS[normalizedPath] ?? PAGE_ACCESS[path] ?? 'admin'; // deny by default
 
   if (access === 'public') return true;
   if (!role) return false;

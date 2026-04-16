@@ -42,7 +42,10 @@ export function generateSmartAlerts(
     if (metrics.length >= 2) {
       const latest = metrics[metrics.length - 1];
       const prev = metrics[metrics.length - 2];
-      const mrrChange = ((Number(latest.revenue) - Number(prev.revenue)) / Number(prev.revenue)) * 100;
+      const prevRevenue = Number(prev.revenue) || 0;
+      const mrrChange = prevRevenue > 0
+        ? ((Number(latest.revenue) - prevRevenue) / prevRevenue) * 100
+        : 0;
 
       if (mrrChange < -20) {
         alerts.push({
@@ -113,13 +116,13 @@ export function generateSmartAlerts(
       });
     }
 
-    // Verification status
+    // Verification nudge: high trust score but not yet verified — encourage them to verify
     if (!s.verified && s.trust_score > 70) {
       alerts.push({
         id: `unverified-${s.id}`,
         severity: 'info',
-        title: `${s.name}: High trust but not verified`,
-        detail: `Trust score is ${s.trust_score} but startup hasn't completed oracle verification. Recommend they apply.`,
+        title: `${s.name}: High trust but not yet verified`,
+        detail: `Trust score is ${s.trust_score} but startup hasn't completed on-chain oracle verification. Recommend they apply to strengthen credibility.`,
         startupId: s.id,
         startupName: s.name,
         category: 'verification',
@@ -130,8 +133,8 @@ export function generateSmartAlerts(
 
     // Low runway warning
     const treasury = Number(s.treasury) || 0;
-    const mrr = s.mrr || 1;
-    const runwayMonths = treasury > 0 ? Math.round(treasury / (mrr * 0.7)) : 0;
+    const mrr = s.mrr || 0;
+    const runwayMonths = (treasury > 0 && mrr > 0) ? Math.round(treasury / (mrr * 0.7)) : 0;
     if (runwayMonths > 0 && runwayMonths < 6) {
       alerts.push({
         id: `runway-${s.id}`,

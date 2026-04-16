@@ -19,6 +19,11 @@
 
 import type { DbStartup } from '@/types/database';
 
+/** Safe dynamic field access for startup properties */
+function getField(s: DbStartup, field: string): unknown {
+  return (s as Record<string, unknown>)[field];
+}
+
 // ── Types ────────────────────────────────────────────────────────────
 
 export type QueryResultType = 'list' | 'comparison' | 'aggregate' | 'count' | 'single' | 'error';
@@ -144,7 +149,7 @@ function extractFilters(query: string): { filters: FilterRule[]; descriptions: s
       const num = parseNumber(valueStr);
       if (num === null) continue;
 
-      filters.push({ field: metric.field as any, operator, value: num });
+      filters.push({ field: metric.field, operator, value: num });
       descriptions.push(`${metric.label} ${operator} ${num.toLocaleString()}`);
       break;
     }
@@ -246,7 +251,7 @@ function isAggregateQuery(query: string): { type: 'average' | 'sum' | 'count' | 
 function applyFilters(startups: DbStartup[], filters: FilterRule[]): DbStartup[] {
   return startups.filter(s => {
     return filters.every(f => {
-      const value = (s as any)[f.field];
+      const value = getField(s, f.field as string);
       const numValue = typeof value === 'string' ? parseFloat(value) : value;
       const filterValue = f.value;
 
@@ -265,8 +270,8 @@ function applyFilters(startups: DbStartup[], filters: FilterRule[]): DbStartup[]
 
 function applySort(startups: DbStartup[], sort: { field: string; direction: 'asc' | 'desc' }): DbStartup[] {
   return [...startups].sort((a, b) => {
-    const aVal = Number((a as any)[sort.field]) || 0;
-    const bVal = Number((b as any)[sort.field]) || 0;
+    const aVal = Number(getField(a, sort.field)) || 0;
+    const bVal = Number(getField(b, sort.field)) || 0;
     return sort.direction === 'desc' ? bVal - aVal : aVal - bVal;
   });
 }
@@ -278,7 +283,7 @@ function computeAggregate(
 ): number {
   if (aggType === 'count') return startups.length;
 
-  const values = startups.map(s => Number((s as any)[field]) || 0);
+  const values = startups.map(s => Number(getField(s, field)) || 0);
   if (values.length === 0) return 0;
 
   switch (aggType) {

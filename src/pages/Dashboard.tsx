@@ -205,7 +205,7 @@ export default function Dashboard() {
                   className="w-full rounded-lg border border-border bg-card pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition"
                 />
                 {search && (
-                  <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  <button onClick={() => setSearch('')} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                   </button>
                 )}
@@ -242,14 +242,14 @@ export default function Dashboard() {
                 <option value="trust_score">Trust Score</option>
                 <option value="users">Users</option>
               </select>
-              <button onClick={() => setSortAsc(!sortAsc)} className="rounded-lg border border-border bg-card p-1.5 text-foreground transition hover:bg-secondary">
+              <button onClick={() => setSortAsc(!sortAsc)} aria-label={sortAsc ? 'Sort descending' : 'Sort ascending'} className="rounded-lg border border-border bg-card p-1.5 text-foreground transition hover:bg-secondary">
                 <svg className={`h-4 w-4 transition ${sortAsc ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               <div className="flex rounded-lg border border-border">
                 {(['grid', 'table'] as const).map(v => (
-                  <button key={v} onClick={() => setViewMode(v)} className={`p-1.5 transition ${viewMode === v ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'} ${v === 'grid' ? 'rounded-l-lg' : 'rounded-r-lg'}`}>
+                  <button key={v} onClick={() => setViewMode(v)} aria-label={v === 'grid' ? 'Grid view' : 'Table view'} className={`p-1.5 transition ${viewMode === v ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'} ${v === 'grid' ? 'rounded-l-lg' : 'rounded-r-lg'}`}>
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       {v === 'grid' ? (
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />

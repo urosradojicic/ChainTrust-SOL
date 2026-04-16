@@ -6,7 +6,7 @@ import Badge from '@/components/common/Badge';
 import { Leaf, Plus, X, Shield, CheckCircle2, Loader2 } from 'lucide-react';
 import { useCreateProposal as useCreateProposalOnChain, useCastVote as useCastVoteOnChain, useDelegateVotes, useExecuteProposal as useExecuteOnChain } from '@/hooks/use-blockchain';
 import { PublicKey } from '@solana/web3.js';
-import { sanitizeText, isValidSolanaAddress } from '@/lib/sanitize';
+import { sanitizeText, isValidSolanaAddress, rateLimit } from '@/lib/sanitize';
 import { Progress } from '@/components/ui/progress';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose,
@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import type { DbProposal } from '@/types/database';
 type Tab = 'Active' | 'Passed' | 'Sustainability Pledges' | 'All';
 
 const statusVariant: Record<string, 'info' | 'success' | 'danger'> = {
@@ -57,20 +58,23 @@ export default function Governance() {
   const [proposalModalOpen, setProposalModalOpen] = useState(false);
   const [proposalTitle, setProposalTitle] = useState('');
   const [proposalDesc, setProposalDesc] = useState('');
-  const [votedProposals, setVotedProposals] = useState<Record<string | number, string>>({});
-  const [votingId, setVotingId] = useState<string | number | null>(null);
+  const [votedProposals, setVotedProposals] = useState<Record<string, string>>({});
+  const [votingId, setVotingId] = useState<string | null>(null);
   const [delegating, setDelegating] = useState(false);
 
   // DB proposals
-  const [dbProposals, setDbProposals] = useState<any[]>([]);
+  const [dbProposals, setDbProposals] = useState<DbProposal[]>([]);
 
   useEffect(() => {
     fetchProposals();
   }, []);
 
   const fetchProposals = async () => {
-    const { data } = await supabase.from('proposals').select('*').order('created_at', { ascending: false });
-    if (data) setDbProposals(data);
+    try {
+      const { data, error } = await supabase.from('proposals').select('*').order('created_at', { ascending: false });
+      if (error) { if (import.meta.env.DEV) console.warn('Failed to load proposals:', error.message); return; }
+      if (data) setDbProposals(data as DbProposal[]);
+    } catch { /* Supabase unavailable — use mock proposals */ }
   };
 
   // Use DB proposals first, fall back to mock only if DB is empty
@@ -107,6 +111,10 @@ export default function Governance() {
     const safeTitle = sanitizeText(proposalTitle, 200);
     const safeDesc = sanitizeText(proposalDesc, 1000);
     if (!safeTitle) return;
+    if (!rateLimit('create-proposal', 3, 60000)) {
+      toast.error('Too many proposals. Please wait a minute.');
+      return;
+    }
 
     // Submit on-chain first, then persist to database
     const txSig = await createOnChain(safeTitle, safeDesc);

@@ -207,20 +207,24 @@ export function logEngineUsage(
   };
 
   // Store in localStorage (circular buffer, max 500 entries)
-  const stored = localStorage.getItem(AUDIT_KEY);
-  let entries: UsageAuditEntry[] = stored ? JSON.parse(stored) : [];
-  entries.push(entry);
-  if (entries.length > 500) entries = entries.slice(-500);
-  localStorage.setItem(AUDIT_KEY, JSON.stringify(entries));
+  try {
+    const stored = localStorage.getItem(AUDIT_KEY);
+    let entries: UsageAuditEntry[] = stored ? JSON.parse(stored) : [];
+    entries.push(entry);
+    if (entries.length > 500) entries = entries.slice(-500);
+    localStorage.setItem(AUDIT_KEY, JSON.stringify(entries));
+  } catch { /* localStorage unavailable or corrupted — skip audit write */ }
 }
 
 /**
  * Get usage audit entries.
  */
 export function getUsageAudit(limit: number = 100): UsageAuditEntry[] {
-  const stored = localStorage.getItem(AUDIT_KEY);
-  const entries: UsageAuditEntry[] = stored ? JSON.parse(stored) : [];
-  return entries.slice(-limit);
+  try {
+    const stored = localStorage.getItem(AUDIT_KEY);
+    const entries: UsageAuditEntry[] = stored ? JSON.parse(stored) : [];
+    return entries.slice(-limit);
+  } catch { return []; }
 }
 
 /**

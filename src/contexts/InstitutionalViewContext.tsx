@@ -52,13 +52,13 @@ const InstitutionalViewContext = createContext<InstitutionalViewContextType>({
 
 export function InstitutionalViewProvider({ children }: { children: ReactNode }) {
   const [institutionalMode, setInstitutionalMode] = useState(() => {
-    return localStorage.getItem('institutional-mode') === 'true';
+    try { return localStorage.getItem('institutional-mode') === 'true'; } catch { return false; }
   });
 
   const toggleInstitutionalMode = () => {
     setInstitutionalMode(prev => {
       const next = !prev;
-      localStorage.setItem('institutional-mode', String(next));
+      try { localStorage.setItem('institutional-mode', String(next)); } catch { /* private browsing */ }
       return next;
     });
   };

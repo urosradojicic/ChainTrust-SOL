@@ -346,6 +346,12 @@ export default function InvestorHub() {
           <OpportunitiesCard opportunities={briefing.newOpportunities} />
 
           {/* Smart Monitoring Alerts */}
+          {smartAlerts.length === 0 && (
+            <div className="rounded-xl border bg-card p-5 text-center">
+              <Zap className="h-5 w-5 text-muted-foreground/50 mx-auto mb-2" />
+              <p className="text-sm text-muted-foreground">No alerts right now. Portfolio is healthy.</p>
+            </div>
+          )}
           {smartAlerts.length > 0 && (
             <div className="rounded-xl border bg-card overflow-hidden">
               <div className="flex items-center justify-between px-5 py-3 border-b border-border">
@@ -363,7 +369,7 @@ export default function InvestorHub() {
               </div>
               <div className="divide-y divide-border max-h-80 overflow-y-auto">
                 {smartAlerts.slice(0, 8).map(alert => (
-                  <Link key={alert.id} to={alert.actionUrl} className="flex items-start gap-3 px-5 py-3 transition hover:bg-muted/50">
+                  <Link key={alert.id} to={alert.actionUrl || '/dashboard'} className="flex items-start gap-3 px-5 py-3 transition hover:bg-muted/50">
                     <div className={`mt-0.5 h-2 w-2 rounded-full shrink-0 ${
                       alert.severity === 'critical' ? 'bg-red-500' :
                       alert.severity === 'warning' ? 'bg-amber-500' :

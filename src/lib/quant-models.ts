@@ -451,11 +451,11 @@ export function decomposeRiskFactors(
   const allSust = allStartups.map(s => s.sustainability_score);
 
   const factors: FactorExposure[] = [
-    { factor: 'Market (Revenue Scale)', loading: +zScore(startup.mrr, allMrr).toFixed(2) as any, contribution: 0 },
-    { factor: 'Growth', loading: +zScore(Number(startup.growth_rate), allGrowth).toFixed(2) as any, contribution: 0 },
-    { factor: 'Quality (Trust)', loading: +zScore(startup.trust_score, allTrust).toFixed(2) as any, contribution: 0 },
-    { factor: 'Concentration Risk', loading: +(-zScore(startup.whale_concentration, allWhale)).toFixed(2) as any, contribution: 0 },
-    { factor: 'ESG / Sustainability', loading: +zScore(startup.sustainability_score, allSust).toFixed(2) as any, contribution: 0 },
+    { factor: 'Market (Revenue Scale)', loading: +(zScore(startup.mrr, allMrr).toFixed(2)), contribution: 0 },
+    { factor: 'Growth', loading: +(zScore(Number(startup.growth_rate), allGrowth).toFixed(2)), contribution: 0 },
+    { factor: 'Quality (Trust)', loading: +(zScore(startup.trust_score, allTrust).toFixed(2)), contribution: 0 },
+    { factor: 'Concentration Risk', loading: +(-zScore(startup.whale_concentration, allWhale)).toFixed(2), contribution: 0 },
+    { factor: 'ESG / Sustainability', loading: +(zScore(startup.sustainability_score, allSust).toFixed(2)), contribution: 0 },
   ];
 
   // Contribution = loading^2 / total_loading^2

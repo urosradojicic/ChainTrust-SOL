@@ -10,7 +10,7 @@ import {
   CheckCircle2, ChevronLeft, ChevronRight, Loader2, ExternalLink, AlertTriangle,
 } from 'lucide-react';
 import { explorerTxUrl } from '@/lib/solana-config';
-import { sanitizeText, sanitizeUrl, sanitizeNumber } from '@/lib/sanitize';
+import { sanitizeText, sanitizeUrl, sanitizeNumber, rateLimit } from '@/lib/sanitize';
 import { Progress } from '@/components/ui/progress';
 import Toggle from '@/components/form/Toggle';
 import DistSlider from '@/components/form/DistSlider';
@@ -81,6 +81,10 @@ export default function Register() {
   const submit = async () => {
     if (!isConnected) {
       toast({ title: 'Wallet Required', description: 'Please connect your wallet to register on-chain.', variant: 'destructive' });
+      return;
+    }
+    if (!rateLimit('register-startup', 3, 60000)) {
+      toast({ title: 'Too many attempts', description: 'Please wait a minute before trying again.', variant: 'destructive' });
       return;
     }
     setSubmitting(true);

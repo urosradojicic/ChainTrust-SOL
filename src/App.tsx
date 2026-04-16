@@ -84,7 +84,7 @@ const AnimatedRoutes = () => {
           {/* All authenticated users */}
           <Route path="/dashboard" element={<G path="/dashboard"><Dashboard /></G>} />
           <Route path="/leaderboard" element={<G path="/leaderboard"><Leaderboard /></G>} />
-          <Route path="/startup/:id" element={<G path="/dashboard"><StartupDetail /></G>} />
+          <Route path="/startup/:id" element={<G path="/startup"><StartupDetail /></G>} />
           <Route path="/staking" element={<G path="/staking"><Staking /></G>} />
           <Route path="/governance" element={<G path="/governance"><Governance /></G>} />
           <Route path="/security" element={<G path="/security"><Security /></G>} />
@@ -93,7 +93,7 @@ const AnimatedRoutes = () => {
           <Route path="/provenance" element={<G path="/provenance"><Provenance /></G>} />
 
           {/* Investor-only */}
-          <Route path="/investor-hub" element={<G path="/portfolio"><InvestorHub /></G>} />
+          <Route path="/investor-hub" element={<G path="/investor-hub"><InvestorHub /></G>} />
           <Route path="/portfolio" element={<G path="/portfolio"><Portfolio /></G>} />
           <Route path="/screener" element={<G path="/screener"><Screener /></G>} />
           <Route path="/compare" element={<G path="/compare"><Compare /></G>} />

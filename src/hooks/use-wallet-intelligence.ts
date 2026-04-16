@@ -94,29 +94,47 @@ export function useWalletIntelligence() {
 
       // Analyze transaction patterns
       const txCount = signatures.length;
-      const firstSeen = signatures.length > 0 ? new Date((signatures[signatures.length - 1].blockTime ?? 0) * 1000).toISOString() : null;
-      const lastActive = signatures.length > 0 ? new Date((signatures[0].blockTime ?? 0) * 1000).toISOString() : null;
+      const firstSeen = txCount > 0 ? new Date((signatures[txCount - 1].blockTime ?? 0) * 1000).toISOString() : null;
+      const lastActive = txCount > 0 ? new Date((signatures[0].blockTime ?? 0) * 1000).toISOString() : null;
+
+      // Parse recent transactions to extract counterparties
+      const recentBatch = signatures.slice(0, 20);
+      for (const sig of recentBatch) {
+        try {
+          const tx = await connection.getParsedTransaction(sig.signature, { maxSupportedTransactionVersion: 0 });
+          if (!tx?.transaction?.message?.accountKeys) continue;
+          for (const key of tx.transaction.message.accountKeys) {
+            const addr = typeof key === 'string' ? key : (key as any).pubkey?.toBase58?.();
+            if (addr && addr !== walletAddress) {
+              counterparties.set(addr, (counterparties.get(addr) ?? 0) + 1);
+            }
+          }
+        } catch { /* skip unparseable txs */ }
+      }
 
       // Check for suspicious patterns
       if (txCount > 50) {
-        // Check for rapid burst transactions (potential wash trading)
+        // Rapid burst detection: times are descending (newest first)
         const recentTimes = signatures.slice(0, 20).map(s => s.blockTime ?? 0);
-        const timeDiffs = recentTimes.slice(1).map((t, i) => recentTimes[i] - t);
-        const avgTimeBetween = timeDiffs.reduce((a, b) => a + b, 0) / timeDiffs.length;
+        const timeDiffs = recentTimes.slice(1).map((t, i) => Math.abs(recentTimes[i] - t));
+        const avgTimeBetween = timeDiffs.length > 0
+          ? timeDiffs.reduce((a, b) => a + b, 0) / timeDiffs.length
+          : Infinity;
 
         if (avgTimeBetween < 5) {
           suspiciousPatterns.push('Rapid-fire transactions detected (<5s between txs)');
         }
       }
 
-      // Classify wallet type based on behavior if not already known
-      if (tag.type === 'unknown') {
-        if (balanceSol > 10000) tag.type = 'whale';
-        else if (txCount > 500) tag.type = 'contract';
-        else if (txCount > 50) tag.type = 'retail';
+      // Classify wallet type based on behavior — create a new tag object to avoid mutating shared KNOWN_WALLETS
+      const classifiedTag = { ...tag };
+      if (classifiedTag.type === 'unknown') {
+        if (balanceSol > 10000) classifiedTag.type = 'whale';
+        else if (txCount > 500) classifiedTag.type = 'contract';
+        else if (txCount > 50) classifiedTag.type = 'retail';
       }
 
-      // Get top counterparties (simplified — in production parse full tx data)
+      // Get top counterparties
       const topCounterparties = [...counterparties.entries()]
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5)
@@ -124,7 +142,7 @@ export function useWalletIntelligence() {
 
       const result: WalletIntelligence = {
         address: walletAddress,
-        tag,
+        tag: classifiedTag,
         balanceSol,
         transactionCount: txCount,
         firstSeen,

@@ -168,11 +168,12 @@ function trainGradientBoosting(
     stumps.push(bestStump);
     featureSplitCount[bestStump.featureIndex]++;
 
-    // Update residuals
+    // Update residuals — capture bestStump in a const to avoid non-null assertions
+    const stump = bestStump;
     residuals = residuals.map((r, i) => {
-      const prediction = features[i][bestStump!.featureIndex] < bestStump!.threshold
-        ? bestStump!.leftValue
-        : bestStump!.rightValue;
+      const prediction = features[i][stump.featureIndex] < stump.threshold
+        ? stump.leftValue
+        : stump.rightValue;
       return r - prediction;
     });
   }
