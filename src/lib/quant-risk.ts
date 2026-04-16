@@ -271,7 +271,7 @@ export function analyzeQuantRisk(
   allMetrics: Map<string, DbMetricsHistory[]>,
 ): QuantRiskReport {
   const returns = computeReturns(metrics);
-  const riskFreeRate = 0.4; // Monthly risk-free rate (approx 5% annual)
+  const riskFreeRate = 0.05 / 12; // 5% annual → ~0.42% monthly
 
   // Core metrics
   const avgReturn = mean(returns);
@@ -297,8 +297,18 @@ export function analyzeQuantRisk(
     const r = computeReturns(m);
     return mean(r);
   });
-  const avgBenchmark = mean(benchmarkReturns);
-  const benchReturns = returns.map(() => avgBenchmark); // Simplified benchmark
+  // Construct benchmark as equal-weight average of ALL startup returns per month
+  const maxLen = returns.length;
+  const benchReturns: number[] = [];
+  for (let t = 0; t < maxLen; t++) {
+    let sum = 0, cnt = 0;
+    for (const s of allStartups) {
+      const m = allMetrics.get(s.id) ?? [];
+      const r = computeReturns(m);
+      if (t < r.length) { sum += r[t]; cnt++; }
+    }
+    benchReturns.push(cnt > 0 ? sum / cnt : 0);
+  }
   const { beta, alpha, informationRatio } = computeBetaAlpha(returns, benchReturns);
 
   const sk = skewness(returns);

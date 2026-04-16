@@ -249,12 +249,14 @@ export function runSimulation(
 
   // Storage for all simulation paths
   const allRevenues: number[][] = [];
+  const allCosts: number[][] = [];
   const allCash: number[][] = [];
 
   // Run simulations
   for (let i = 0; i < iterations; i++) {
     const result = runSingleSimulation(estimated, params);
     allRevenues.push(result.revenues);
+    allCosts.push(result.costs);
     allCash.push(result.cash);
   }
 
@@ -290,9 +292,11 @@ export function runSimulation(
       mean: cashValues.reduce((s, v) => s + v, 0) / cashValues.length,
     });
 
-    // Profitability probability (revenue > costs equivalent: cash increasing)
-    const profitableCount = allCash.filter(c => m > 0 && c[m] > c[m - 1]).length;
-    profitabilityByMonth.push(m === 0 ? 0 : profitableCount / iterations);
+    // Profitability = revenue exceeds costs (true operating profitability)
+    const profitableCount = allRevenues.filter((r, idx) =>
+      m < r.length && m < allCosts[idx].length && r[m] > allCosts[idx][m]
+    ).length;
+    profitabilityByMonth.push(profitableCount / iterations);
   }
 
   // Milestone probability

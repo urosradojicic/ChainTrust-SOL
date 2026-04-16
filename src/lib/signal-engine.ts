@@ -272,14 +272,32 @@ export function generateSignals(
     2: 'Strong Buy', 1: 'Buy', 0: 'Hold', [-1]: 'Sell', [-2]: 'Strong Sell',
   };
 
-  // Signal history (simplified - use current data as latest point)
+  // Signal history: compute actual signals at each historical point
   const sorted = [...metrics].sort((a, b) => a.month_date.localeCompare(b.month_date));
-  const signalHistory = sorted.slice(-6).map((m, i) => ({
-    month: m.month_date.slice(0, 7),
-    composite: +(compositeValue * (0.7 + i * 0.05)).toFixed(2),
-    momentum: +(signals[0].value * (0.6 + i * 0.07)).toFixed(2),
-    quality: +(signals[3].value).toFixed(2),
-  }));
+  const signalHistory = sorted.slice(-12).map((m, i) => {
+    const windowEnd = sorted.indexOf(m) + 1;
+    const window = sorted.slice(0, windowEnd);
+    const revenues = window.map(x => Number(x.revenue) || 0);
+    const growthRates = window.map(x => Number(x.growth_rate) || 0);
+
+    // Momentum: rate of change of growth in this window
+    const recentGrowth = growthRates.length >= 3 ? growthRates.slice(-3).reduce((a, b) => a + b, 0) / 3 : 0;
+    const olderGrowth = growthRates.length >= 6 ? growthRates.slice(-6, -3).reduce((a, b) => a + b, 0) / 3 : recentGrowth;
+    const momValue = olderGrowth !== 0 ? (recentGrowth - olderGrowth) / Math.abs(olderGrowth) : 0;
+
+    // Quality: trust-based (doesn't change per month, but cap at startup value)
+    const qualityValue = signals.length > 3 ? signals[3].value : 0;
+
+    // Composite: weighted blend
+    const comp = 0.4 * Math.max(-2, Math.min(2, momValue)) + 0.3 * qualityValue + 0.3 * (recentGrowth / 10);
+
+    return {
+      month: m.month_date.slice(0, 7),
+      composite: +comp.toFixed(2),
+      momentum: +Math.max(-2, Math.min(2, momValue)).toFixed(2),
+      quality: +qualityValue.toFixed(2),
+    };
+  });
 
   // Regime detection
   const regime: SignalDashboard['regime'] =

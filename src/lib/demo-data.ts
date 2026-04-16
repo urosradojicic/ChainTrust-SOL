@@ -106,37 +106,106 @@ export const DEMO_STARTUPS: DbStartup[] = [
   },
 ];
 
-// ── Metrics History ──────────────────────────────────────────────
+// ── Metrics History (24 months with realistic patterns) ──────────
 
-const MONTHS = ['2024-10', '2024-11', '2024-12', '2025-01', '2025-02', '2025-03'];
+// Seeded PRNG for deterministic "random" data across sessions
+function seededRng(seed: number) {
+  let s = seed;
+  return () => { s = (s * 16807 + 0) % 2147483647; return (s - 1) / 2147483646; };
+}
 
-function genMetrics(startupId: string, baseRev: number, baseMau: number, growthPct: number): DbMetricsHistory[] {
-  return MONTHS.map((m, i) => {
-    const mult = Math.pow(1 + growthPct / 100 / 6, i);
+// Generate 24 months: Apr 2024 → Mar 2026
+const MONTHS_24: string[] = [];
+for (let y = 2024; y <= 2026; y++) {
+  for (let m = (y === 2024 ? 4 : 1); m <= (y === 2026 ? 3 : 12); m++) {
+    MONTHS_24.push(`${y}-${String(m).padStart(2, '0')}`);
+  }
+}
+
+function genMetrics(
+  startupId: string,
+  baseRev: number,
+  baseMau: number,
+  annualGrowthPct: number,
+  opts: {
+    seasonality?: number;    // 0-1 strength of seasonal pattern
+    volatility?: number;     // 0-1 revenue noise level
+    costRatio?: number;      // base cost/revenue ratio
+    dipMonth?: number;       // month index where a dip occurs (simulates real setbacks)
+    dipMagnitude?: number;   // how bad the dip is (0-1)
+    accelerating?: boolean;  // growth rate increases over time
+  } = {},
+): DbMetricsHistory[] {
+  const rng = seededRng(startupId.split('').reduce((s, c) => s + c.charCodeAt(0), 0));
+  const {
+    seasonality = 0.1,
+    volatility = 0.08,
+    costRatio = 0.6,
+    dipMonth = -1,
+    dipMagnitude = 0.3,
+    accelerating = false,
+  } = opts;
+
+  let rev = baseRev * 0.4; // Start at 40% of current (we're generating history)
+  let mau = baseMau * 0.35;
+  let costBase = rev * costRatio;
+  const monthlyGrowth = annualGrowthPct / 100 / 12;
+
+  return MONTHS_24.map((m, i) => {
+    // Growth rate varies: accelerating startups speed up, others slow slightly
+    const growthAdj = accelerating
+      ? monthlyGrowth * (1 + i * 0.02)  // 2% acceleration per month
+      : monthlyGrowth * (1 - i * 0.003); // Slight deceleration
+
+    // Seasonal effect (Q4 stronger, Q1 weaker for B2B)
+    const monthNum = parseInt(m.split('-')[1]);
+    const seasonalFactor = 1 + seasonality * Math.sin((monthNum - 3) * Math.PI / 6);
+
+    // Random noise (deterministic per startup)
+    const noise = 1 + (rng() - 0.5) * 2 * volatility;
+
+    // Dip event
+    const dipFactor = (i === dipMonth) ? (1 - dipMagnitude)
+      : (i === dipMonth + 1) ? (1 - dipMagnitude * 0.4) // Partial recovery
+      : 1;
+
+    // Apply growth
+    rev *= (1 + growthAdj) * seasonalFactor * noise * dipFactor;
+    mau *= (1 + growthAdj * 0.8) * (1 + (rng() - 0.5) * volatility * 0.6);
+    costBase *= (1 + growthAdj * 0.5) * (1 + (rng() - 0.5) * volatility * 0.3);
+
+    // Costs don't scale linearly with revenue (some fixed costs)
+    const costs = costBase * 0.7 + rev * 0.2 + (rng() * rev * 0.05);
+
+    // MoM growth rate (actual, computed from this month vs last)
+    const prevRev = i > 0 ? rev / ((1 + growthAdj) * seasonalFactor * noise * dipFactor) : rev;
+    const momGrowth = prevRev > 0 ? ((rev - prevRev) / prevRev) * 100 : 0;
+
     return {
       id: `${startupId}-${m}`,
       startup_id: startupId,
       month: m.split('-')[1],
       month_date: `${m}-01`,
-      revenue: Math.round(baseRev * mult),
-      costs: Math.round(baseRev * 0.6 * mult),
-      mau: Math.round(baseMau * mult),
-      transactions: Math.round(baseMau * 3.2 * mult),
-      carbon_offsets: Math.round(5 + i * 2 + Math.random() * 3),
-      growth_rate: +(growthPct / 6 * (0.8 + Math.random() * 0.4)).toFixed(1),
+      revenue: Math.max(0, Math.round(rev)),
+      costs: Math.max(0, Math.round(costs)),
+      mau: Math.max(0, Math.round(mau)),
+      transactions: Math.max(0, Math.round(mau * (2.5 + rng() * 1.5))),
+      carbon_offsets: Math.round(3 + i * 1.5 + rng() * 4),
+      growth_rate: +momGrowth.toFixed(1),
     };
   });
 }
 
 export const DEMO_METRICS: DbMetricsHistory[] = [
-  ...genMetrics('payflow', 120000, 10000, 23.4),
-  ...genMetrics('cloudmetrics', 75000, 4200, 18.2),
-  ...genMetrics('defiyield', 250000, 22000, 41.7),
-  ...genMetrics('greenchain', 55000, 3100, 15.8),
-  ...genMetrics('datavault', 160000, 7200, 29.3),
-  ...genMetrics('tokenbridge', 200000, 12800, 34.1),
-  ...genMetrics('solanaid', 38000, 35000, 52.6),
-  ...genMetrics('nftmarket', 145000, 17500, 27.9),
+  // Each startup has unique growth characteristics
+  ...genMetrics('payflow', 142000, 12847, 28, { seasonality: 0.12, volatility: 0.06, costRatio: 0.55, accelerating: true }),
+  ...genMetrics('cloudmetrics', 89500, 5234, 22, { seasonality: 0.15, volatility: 0.1, costRatio: 0.65, dipMonth: 14, dipMagnitude: 0.2 }),
+  ...genMetrics('defiyield', 312000, 28100, 50, { seasonality: 0.08, volatility: 0.15, costRatio: 0.45, accelerating: true }),
+  ...genMetrics('greenchain', 67000, 3800, 19, { seasonality: 0.2, volatility: 0.07, costRatio: 0.7 }),
+  ...genMetrics('datavault', 185000, 8400, 35, { seasonality: 0.1, volatility: 0.12, costRatio: 0.5, dipMonth: 8, dipMagnitude: 0.15 }),
+  ...genMetrics('tokenbridge', 228000, 15200, 40, { seasonality: 0.05, volatility: 0.18, costRatio: 0.4, accelerating: true }),
+  ...genMetrics('solanaid', 45000, 42000, 65, { seasonality: 0.06, volatility: 0.2, costRatio: 0.75, accelerating: true }),
+  ...genMetrics('nftmarket', 167000, 21000, 30, { seasonality: 0.25, volatility: 0.14, costRatio: 0.58, dipMonth: 18, dipMagnitude: 0.25 }),
 ];
 
 // ── Proposals ──────────────────────────────────────────────────
