@@ -23,6 +23,7 @@ import { optimizePortfolio } from '@/lib/portfolio-optimizer';
 import { analyzeCompetitiveLandscape } from '@/lib/competitive-intel';
 import { generateComplianceReport } from '@/lib/regulatory-compliance';
 import { useSmartAlerts } from '@/hooks/use-smart-monitoring';
+import MacroRegimePanel from '@/components/startup/MacroRegimePanel';
 import {
   generateDailyBriefing,
   recordLogin,
@@ -382,6 +383,9 @@ export default function InvestorHub() {
 
         {/* Side Column (1/3) */}
         <div className="space-y-4">
+          {/* Macro Regime */}
+          <MacroRegimePanel />
+
           {/* Onboarding (shown until complete) */}
           <OnboardingCard steps={onboardingSteps} />
 

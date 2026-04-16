@@ -21,6 +21,7 @@ import SoulboundBadge from '@/components/startup/SoulboundBadge';
 import TransactionHistory from '@/components/startup/TransactionHistory';
 import ProofChainVisualizer from '@/components/startup/ProofChainVisualizer';
 import OnChainVerification from '@/components/startup/OnChainVerification';
+import QuantModelsPanel from '@/components/startup/QuantModelsPanel';
 import TrustScoreBreakdown from '@/components/startup/TrustScoreBreakdown';
 import ValuationMetrics from '@/components/startup/ValuationMetrics';
 import TokenUnlockCalendar from '@/components/startup/TokenUnlockCalendar';
@@ -208,6 +209,7 @@ export default function StartupDetail() {
           >
             <optgroup label="Analysis">
               <option value="overview">Overview</option>
+              <option value="quant-models">Quant Models</option>
               <option value="due-diligence">AI Due Diligence</option>
               <option value="memo">Investment Memo</option>
               <option value="red-flags">Red Flags</option>
@@ -241,6 +243,9 @@ export default function StartupDetail() {
         <TabsList className="hidden sm:flex w-full justify-start overflow-x-auto">
           {/* Core */}
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="quant-models" className="flex items-center gap-1">
+            <BarChart3 className="h-3 w-3" /> Quant Models
+          </TabsTrigger>
           <TabsTrigger value="due-diligence" className="flex items-center gap-1">
             <Brain className="h-3 w-3" /> AI Due Diligence
           </TabsTrigger>
@@ -288,6 +293,11 @@ export default function StartupDetail() {
         </TabsList>
 
         {/* Overview */}
+        {/* Quant Models */}
+        <TabsContent value="quant-models" className="mt-6 space-y-6">
+          <QuantModelsPanel startup={startup} metrics={metrics} allStartups={allStartups} />
+        </TabsContent>
+
         <TabsContent value="overview" className="mt-6 space-y-6">
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
             <MetricCard label="MRR" value={formatCurrency(startup.mrr)} icon={Wallet} bg="" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
