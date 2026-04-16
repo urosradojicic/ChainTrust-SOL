@@ -61,7 +61,7 @@ function QueryResultDisplay({ result }: { result: QueryResult }) {
       <div className="flex items-start gap-2 p-3">
         <Sparkles className="h-4 w-4 text-primary shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm text-foreground" dangerouslySetInnerHTML={{ __html: result.answer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+          <p className="text-sm text-foreground">{result.answer.replace(/\*\*/g, '')}</p>
           <p className="text-[10px] text-muted-foreground mt-1 font-mono">{result.interpretation}</p>
         </div>
       </div>

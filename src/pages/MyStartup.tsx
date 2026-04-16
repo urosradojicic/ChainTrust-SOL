@@ -11,6 +11,7 @@ import {
   Building2, BarChart3, Leaf, FileText, AlertTriangle, Award, Lock, Shield,
   Upload, X, File, Download,
 } from 'lucide-react';
+import { sanitizeText, sanitizeNumber } from '@/lib/sanitize';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
 import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
@@ -249,13 +250,13 @@ export default function MyStartup() {
       // Then save to Supabase
       const { error } = await supabase.from('metrics_history').insert({
         startup_id: startup.id,
-        month: monthForm.month,
-        month_date: `${monthForm.month}-01`,
-        revenue: Number(monthForm.revenue) || 0,
-        costs: Number(monthForm.costs) || 0,
-        mau: Number(monthForm.mau) || 0,
-        carbon_offsets: Number(monthForm.carbon_offsets) || 0,
-        growth_rate: Number(form.growth_rate) || 0,
+        month: sanitizeText(monthForm.month, 7),
+        month_date: `${sanitizeText(monthForm.month, 7)}-01`,
+        revenue: sanitizeNumber(monthForm.revenue, 0, 1e12),
+        costs: sanitizeNumber(monthForm.costs, 0, 1e12),
+        mau: sanitizeNumber(monthForm.mau, 0, 1e9),
+        carbon_offsets: sanitizeNumber(monthForm.carbon_offsets, 0, 1e6),
+        growth_rate: sanitizeNumber(form.growth_rate, -100, 1000),
       });
       if (error) throw error;
 

@@ -117,7 +117,7 @@ export default function Governance() {
     const { error } = await supabase.from('proposals').insert({
       title: safeTitle,
       description: safeDesc || null,
-      proposer: user?.email || 'anon...wallet',
+      proposer: sanitizeText(user?.email || 'anonymous', 100),
       status: 'Active',
       votes_for: 0,
       votes_against: 0,
