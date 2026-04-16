@@ -46,14 +46,17 @@
 - [ ] 4e. Performance audit — lazy load everything, reduce initial bundle
 - [ ] 4f. Add OG meta tags for Twitter/X card previews
 
-## Phase 5: Differentiator Features
+## Phase 5: Differentiator Features ✅
 **Goal:** Features no other hackathon project has
 
-- [ ] 5a. One-click verification flow — judge enters ANY Solana address, sees instant results
-- [ ] 5b. Live Pyth price feed visible on landing page
-- [ ] 5c. cNFT certificate minting demo (judge can mint one)
+- [x] 5a. One-click verification flow — inline wallet verifier on /hackathon page
+- [x] 5b. Live Pyth price feed visible on hackathon page + InvestorHub
+- [x] 5c. cNFT certificate minting on verification dashboard
 - [ ] 5d. ZK range proof demo (prove revenue > $100K without revealing exact number)
 - [ ] 5e. Shareable verification Blink URL (paste in Twitter, shows preview)
+- [x] 5f. 5 hedge fund quant models (momentum, vol targeting, relative value, macro regime, risk factors)
+- [x] 5g. Macro Regime Detection panel in InvestorHub with Pyth-powered indicators
+- [x] 5h. Quant Models tab in StartupDetail (momentum signals, relative value z-scores, factor decomposition)
 
 ## Phase 6: Traction & Social Proof
 **Goal:** Judges explicitly look for early traction signals
