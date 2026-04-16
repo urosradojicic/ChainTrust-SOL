@@ -41,3 +41,6 @@ bun.lockb
 # Claude Code
 .claude/
 build_output.txt
+
+# Lovable (historical)
+.lovable/
