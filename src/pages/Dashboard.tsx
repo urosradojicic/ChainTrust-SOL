@@ -8,6 +8,7 @@ import Badge from '@/components/common/Badge';
 import { useStartups } from '@/hooks/use-startups';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import LiveFeed from '@/components/LiveFeed';
 import BlockchainStatus from '@/components/BlockchainStatus';
 import NetworkPulse from '@/components/NetworkPulse';
@@ -186,7 +187,9 @@ export default function Dashboard() {
       {/* Natural Language Query Bar */}
       {startups && startups.length > 0 && (
         <div className="mb-8">
-          <Suspense fallback={null}><NLQueryBar startups={startups} /></Suspense>
+          <ErrorBoundary fallback={null}>
+            <Suspense fallback={null}><NLQueryBar startups={startups} /></Suspense>
+          </ErrorBoundary>
         </div>
       )}
 
@@ -403,7 +406,9 @@ export default function Dashboard() {
       {/* 3D Portfolio Universe — desktop only (heavy WebGL canvas) */}
       {startups && startups.length > 0 && (
         <div className="mt-8 hidden lg:block">
-          <Suspense fallback={null}><Portfolio3D startups={startups} /></Suspense>
+          <ErrorBoundary fallback={null}>
+            <Suspense fallback={null}><Portfolio3D startups={startups} /></Suspense>
+          </ErrorBoundary>
         </div>
       )}
 

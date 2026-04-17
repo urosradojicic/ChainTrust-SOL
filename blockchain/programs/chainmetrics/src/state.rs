@@ -92,6 +92,10 @@ pub struct InvestorAccount {
 }
 
 /// Soulbound verification badge (PDA: seeds = ["badge", startup_id.to_le_bytes()])
+/// Tier system: 0 = Bronze (initial verification, score >= 50)
+///              1 = Silver (metrics published, score >= 60)
+///              2 = Gold (revenue proven, score >= 75)
+///              3 = Platinum (exit/IPO-grade, score >= 90)
 #[account]
 #[derive(InitSpace)]
 pub struct VerificationBadge {
@@ -101,6 +105,8 @@ pub struct VerificationBadge {
     pub verified_at: i64,
     pub verifier: Pubkey,
     pub is_locked: bool, // Always true — soulbound
+    pub tier: u8,        // Badge tier: 0=Bronze, 1=Silver, 2=Gold, 3=Platinum
+    pub tier_upgraded_at: i64, // Last tier upgrade timestamp
     pub bump: u8,
 }
 

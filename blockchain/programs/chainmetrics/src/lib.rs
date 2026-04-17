@@ -123,8 +123,10 @@ pub mod chainmetrics {
         category: String,
         metadata_uri: String,
     ) -> Result<()> {
-        require!(name.len() > 0 && name.len() <= 100, ChainMetricsError::NameTooLong);
-        require!(category.len() > 0 && category.len() <= 50, ChainMetricsError::CategoryTooLong);
+        require!(!name.is_empty(), ChainMetricsError::EmptyName);
+        require!(name.len() <= 100, ChainMetricsError::NameTooLong);
+        require!(!category.is_empty(), ChainMetricsError::EmptyCategory);
+        require!(category.len() <= 50, ChainMetricsError::CategoryTooLong);
         require!(metadata_uri.len() <= 200, ChainMetricsError::UriTooLong);
 
         let registry = &mut ctx.accounts.registry;
@@ -173,6 +175,11 @@ pub mod chainmetrics {
         require!(startup.id > 0, ChainMetricsError::StartupNotFound);
         // Validate active_users <= total_users
         require!(active_users <= total_users, ChainMetricsError::InvalidMetrics);
+        // Growth rate in basis points: -10000 (-100%) to 10000 (+100%)
+        require!(
+            growth_rate >= -10000 && growth_rate <= 10000,
+            ChainMetricsError::GrowthRateOutOfBounds
+        );
 
         let metrics = &mut ctx.accounts.metrics;
         metrics.startup_id = startup.id;
@@ -212,6 +219,12 @@ pub mod chainmetrics {
 
         startup.is_verified = true;
         startup.verified_at = Clock::get()?.unix_timestamp;
+
+        emit!(StartupVerified {
+            id: startup.id,
+            verified_at: startup.verified_at,
+            verifier: ctx.accounts.authority.key(),
+        });
         Ok(())
     }
 
@@ -225,7 +238,15 @@ pub mod chainmetrics {
         require!(new_score <= 100, ChainMetricsError::InvalidTrustScore);
 
         let startup = &mut ctx.accounts.startup;
+        let old_score = startup.trust_score;
         startup.trust_score = new_score;
+
+        emit!(TrustScoreUpdated {
+            id: startup.id,
+            old_score,
+            new_score,
+            updated_at: Clock::get()?.unix_timestamp,
+        });
         Ok(())
     }
 
@@ -363,6 +384,12 @@ pub mod chainmetrics {
         require!(investor.user == ctx.accounts.user.key(), ChainMetricsError::Unauthorized);
         require!(investor.pending_rewards > 0, ChainMetricsError::NoRewards);
 
+        // Ensure vault has enough balance to pay rewards (fail-fast, better error than SPL panic)
+        require!(
+            ctx.accounts.vault_token_account.amount >= investor.pending_rewards,
+            ChainMetricsError::InsufficientVaultFunds
+        );
+
         let rewards = investor.pending_rewards;
         investor.pending_rewards = 0;
 
@@ -426,12 +453,16 @@ pub mod chainmetrics {
         badge.verified_at = Clock::get()?.unix_timestamp;
         badge.verifier = ctx.accounts.authority.key();
         badge.is_locked = true; // Soulbound — non-transferable
+        // Assign initial tier based on trust score
+        badge.tier = compute_badge_tier(trust_score);
+        badge.tier_upgraded_at = badge.verified_at;
         badge.bump = ctx.bumps.badge;
 
         emit!(BadgeMinted {
             startup_id,
             owner: ctx.accounts.recipient.key(),
             trust_score,
+            tier: badge.tier,
         });
 
         Ok(())
@@ -450,7 +481,53 @@ pub mod chainmetrics {
         require!(new_trust_score <= 100, ChainMetricsError::InvalidTrustScore);
 
         let badge = &mut ctx.accounts.badge;
+        let old_score = badge.trust_score;
         badge.trust_score = new_trust_score;
+
+        emit!(BadgeScoreUpdated {
+            startup_id: badge.startup_id,
+            old_score,
+            new_score: new_trust_score,
+        });
+        Ok(())
+    }
+
+    /// Upgrade a verification badge to a higher tier.
+    /// Tiers: 0=Bronze (≥50), 1=Silver (≥60), 2=Gold (≥75), 3=Platinum (≥90).
+    /// Requires authority permission and sufficient trust score.
+    pub fn upgrade_badge_tier(ctx: Context<UpdateBadge>) -> Result<()> {
+        let registry = &ctx.accounts.registry;
+        require!(
+            ctx.accounts.authority.key() == registry.authority,
+            ChainMetricsError::Unauthorized
+        );
+
+        let badge = &mut ctx.accounts.badge;
+        require!(badge.tier < 3, ChainMetricsError::BadgeAtMaxTier);
+
+        let next_tier = badge.tier + 1;
+        let min_score = match next_tier {
+            1 => 60,
+            2 => 75,
+            3 => 90,
+            _ => return Err(ChainMetricsError::InvalidBadgeTier.into()),
+        };
+
+        require!(
+            badge.trust_score >= min_score,
+            ChainMetricsError::TierTrustScoreTooLow
+        );
+
+        badge.tier = next_tier;
+        badge.tier_upgraded_at = Clock::get()?.unix_timestamp;
+
+        emit!(BadgeTierUpgraded {
+            startup_id: badge.startup_id,
+            new_tier: next_tier,
+            trust_score: badge.trust_score,
+            upgraded_at: badge.tier_upgraded_at,
+        });
+
         Ok(())
     }
 
@@ -569,6 +646,7 @@ pub mod chainmetrics {
     }
 
     /// Execute a passed proposal (authority only, after voting ends).
+    /// Enforces quorum: total participating vote weight >= (total_staked * quorum_pct / 100).
     pub fn execute_proposal(ctx: Context<ExecuteProposal>) -> Result<()> {
         let dao = &ctx.accounts.dao;
         require!(
@@ -576,11 +654,28 @@ pub mod chainmetrics {
             ChainMetricsError::Unauthorized
         );
 
+        let vault = &ctx.accounts.vault;
         let proposal = &mut ctx.accounts.proposal;
         let now = Clock::get()?.unix_timestamp;
         require!(now > proposal.voting_ends, ChainMetricsError::VotingNotEnded);
         require!(!proposal.executed, ChainMetricsError::ProposalAlreadyExecuted);
         require!(!proposal.cancelled, ChainMetricsError::ProposalCancelled);
+
+        // Compute total votes participated (in whole tokens, matching vote weight)
+        let total_votes = proposal.for_votes
+            .checked_add(proposal.against_votes)
+            .and_then(|v| v.checked_add(proposal.abstain_votes))
+            .ok_or(ChainMetricsError::AmountTooLarge)?;
+
+        // Quorum: fraction of total staked supply that must participate.
+        // vault.total_staked is in base units; divide by CMT_DECIMALS to match whole-token vote weights.
+        let total_stake_whole = vault.total_staked / CMT_DECIMALS;
+        let quorum_required = total_stake_whole
+            .checked_mul(dao.quorum_percentage as u64)
+            .and_then(|v| v.checked_div(100))
+            .unwrap_or(0);
+
+        require!(total_votes >= quorum_required, ChainMetricsError::QuorumNotMet);
 
         // Check if proposal passed (for > against)
         require!(
@@ -592,6 +687,10 @@ pub mod chainmetrics {
 
         emit!(ProposalExecuted {
             id: proposal.id,
+            for_votes: proposal.for_votes,
+            against_votes: proposal.against_votes,
+            abstain_votes: proposal.abstain_votes,
+            executed_at: now,
         });
 
         Ok(())
@@ -1094,6 +1193,10 @@ pub struct ExecuteProposal<'info> {
     #[account(seeds = [b"dao"], bump = dao.bump)]
     pub dao: Account<'info, DaoConfig>,
 
+    /// Staking vault — used to compute quorum threshold
+    #[account(seeds = [b"vault"], bump = vault.bump)]
+    pub vault: Account<'info, StakingVault>,
+
     #[account(mut)]
     pub proposal: Account<'info, Proposal>,
 }
@@ -1182,6 +1285,37 @@ pub struct BadgeMinted {
     pub startup_id: u64,
     pub owner: Pubkey,
     pub trust_score: u64,
+    pub tier: u8,
+}
+
+#[event]
+pub struct BadgeScoreUpdated {
+    pub startup_id: u64,
+    pub old_score: u64,
+    pub new_score: u64,
+}
+
+#[event]
+pub struct BadgeTierUpgraded {
+    pub startup_id: u64,
+    pub new_tier: u8,
+    pub trust_score: u64,
+    pub upgraded_at: i64,
+}
+
+#[event]
+pub struct StartupVerified {
+    pub id: u64,
+    pub verified_at: i64,
+    pub verifier: Pubkey,
+}
+
+#[event]
+pub struct TrustScoreUpdated {
+    pub id: u64,
+    pub old_score: u64,
+    pub new_score: u64,
+    pub updated_at: i64,
 }
 
 #[event]
@@ -1200,4 +1334,22 @@ pub struct ProposalCreated {
 #[event]
 pub struct ProposalExecuted {
     pub id: u64,
+    pub for_votes: u64,
+    pub against_votes: u64,
+    pub abstain_votes: u64,
+    pub executed_at: i64,
+}
+
+// ── Helper Functions ──────────────────────────────────────────────
+
+/// Compute initial badge tier from trust score.
+/// Bronze (0): score 50-59
+/// Silver (1): score 60-74
+/// Gold (2):   score 75-89
+/// Platinum (3): score 90-100
+pub fn compute_badge_tier(trust_score: u64) -> u8 {
+    if trust_score >= 90 { 3 }
+    else if trust_score >= 75 { 2 }
+    else if trust_score >= 60 { 1 }
+    else { 0 }
 }

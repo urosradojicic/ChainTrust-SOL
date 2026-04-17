@@ -44,6 +44,15 @@ export default function Login() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Minimum password hygiene: 8+ chars, at least one number
+    if (password.length < 8) {
+      toast.error('Password must be at least 8 characters.');
+      return;
+    }
+    if (!/\d/.test(password)) {
+      toast.error('Password must contain at least one number.');
+      return;
+    }
     setLoading(true);
     const { error } = await signUp(email, password, signUpRole, displayName);
     setLoading(false);

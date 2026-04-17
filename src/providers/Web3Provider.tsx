@@ -25,7 +25,12 @@ export default function Web3Provider({ children }: { children: React.ReactNode }
 
   return (
     <ConnectionProvider endpoint={SOLANA_RPC_URL}>
-      <WalletProvider wallets={wallets} autoConnect>
+      {/*
+        autoConnect intentionally disabled — auto-reconnecting to the last
+        wallet would let a previous user's session carry over on shared
+        machines. Users must explicitly click "Connect Wallet".
+      */}
+      <WalletProvider wallets={wallets} autoConnect={false}>
         <WalletModalProvider>
           {children}
         </WalletModalProvider>

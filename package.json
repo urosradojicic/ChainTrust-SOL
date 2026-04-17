@@ -1,7 +1,8 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "chaintrust",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "On-chain startup verification platform built on Solana.",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",

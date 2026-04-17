@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import RiskAnalysisButton from '@/components/RiskAnalysisButton';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { motion } from 'framer-motion';
 import { useState, useMemo } from 'react';
 import {
@@ -297,7 +298,9 @@ export default function StartupDetail() {
         {/* Overview */}
         {/* Quant Models */}
         <TabsContent value="quant-models" className="mt-6 space-y-6">
-          <QuantModelsPanel startup={startup} metrics={metrics} allStartups={allStartups} metricsMap={metricsMap} />
+          <ErrorBoundary fallback={<div className="rounded-xl border bg-card p-6 text-sm text-muted-foreground">Quant models unavailable right now.</div>}>
+            <QuantModelsPanel startup={startup} metrics={metrics} allStartups={allStartups} metricsMap={metricsMap} />
+          </ErrorBoundary>
         </TabsContent>
 
         <TabsContent value="overview" className="mt-6 space-y-6">
@@ -370,7 +373,9 @@ export default function StartupDetail() {
 
         {/* AI Due Diligence */}
         <TabsContent value="due-diligence" className="mt-6 space-y-6">
-          <AIDueDiligence startup={startup} metrics={metrics} allStartups={allStartups || []} />
+          <ErrorBoundary fallback={<div className="rounded-xl border bg-card p-6 text-sm text-muted-foreground">Due diligence engine unavailable right now.</div>}>
+            <AIDueDiligence startup={startup} metrics={metrics} allStartups={allStartups || []} />
+          </ErrorBoundary>
           <div className="grid gap-6 lg:grid-cols-2">
             <PercentileRank startup={startup} allStartups={allStartups || []} />
             <MultiSigTreasury startup={startup} />
@@ -431,12 +436,14 @@ export default function StartupDetail() {
 
         {/* Verification — On-Chain + Proof Chain */}
         <TabsContent value="verification" className="mt-6 space-y-6">
-          <OnChainVerification
-            walletAddress={startup.solana_address || startup.wallet_address}
-            startupName={startup.name}
-            startupCategory={startup.category}
-            claimedTreasuryUsd={startup.treasury}
-          />
+          <ErrorBoundary fallback={<div className="rounded-xl border bg-card p-6 text-sm text-muted-foreground">On-chain verification temporarily unavailable. Try again in a moment.</div>}>
+            <OnChainVerification
+              walletAddress={startup.solana_address || startup.wallet_address}
+              startupName={startup.name}
+              startupCategory={startup.category}
+              claimedTreasuryUsd={startup.treasury}
+            />
+          </ErrorBoundary>
           <ProofChainVisualizer startup={startup} />
           <TrustScoreBreakdown startup={startup} />
         </TabsContent>

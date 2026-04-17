@@ -20,6 +20,13 @@ export default class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    // Log in dev; in production this is where you'd pipe to Sentry/DataDog/etc.
+    if (import.meta.env.DEV) {
+      console.error('[ErrorBoundary] caught:', error, info.componentStack);
+    }
+  }
+
   render() {
     if (this.state.hasError) {
       if (this.props.fallback) return this.props.fallback;

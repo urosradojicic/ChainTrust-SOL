@@ -37,12 +37,20 @@ function createDemoUser(email: string, account: typeof DEMO_ACCOUNTS[string]): U
   } as User;
 }
 
+/**
+ * Demo session lifetime — 24 hours. Balances "don't force re-login every hour
+ * during investor demos" with "limit attack window if browser is compromised".
+ * Test credentials (admin/investor/startup@chainmetrics.io) still work normally;
+ * the user just has to sign in again after a day.
+ */
+const DEMO_SESSION_SECONDS = 3600 * 24; // 24 hours
+
 function createDemoSession(user: User): Session {
   return {
     access_token: `demo_token_${user.id}`,
     refresh_token: `demo_refresh_${user.id}`,
-    expires_in: 3600 * 24 * 365,
-    expires_at: Math.floor(Date.now() / 1000) + 3600 * 24 * 365,
+    expires_in: DEMO_SESSION_SECONDS,
+    expires_at: Math.floor(Date.now() / 1000) + DEMO_SESSION_SECONDS,
     token_type: 'bearer',
     user,
   } as Session;
@@ -73,8 +81,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Validate stored data structure before trusting it
         if (typeof parsed?.email === 'string' && typeof parsed?.role === 'string') {
           const account = DEMO_ACCOUNTS[parsed.email];
-          // Only restore if email matches a known demo account AND role matches
-          if (account && account.role === parsed.role) {
+          // Check session age — auto-expire after DEMO_SESSION_SECONDS
+          const signedInAt = typeof parsed?.signedInAt === 'number' ? parsed.signedInAt : 0;
+          const ageSeconds = (Date.now() - signedInAt) / 1000;
+          const expired = signedInAt === 0 || ageSeconds > DEMO_SESSION_SECONDS;
+          // Only restore if email matches a known demo account AND role matches AND session fresh
+          if (account && account.role === parsed.role && !expired) {
             const demoUser = createDemoUser(parsed.email, account);
             setUser(demoUser);
             setSession(createDemoSession(demoUser));
@@ -84,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             return;
           }
         }
-        // Invalid data — clear it
+        // Invalid or expired — clear it
         localStorage.removeItem(DEMO_STORAGE_KEY);
       } catch {
         localStorage.removeItem(DEMO_STORAGE_KEY);
@@ -139,6 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({
         email: email.toLowerCase(),
         role: demoAccount.role,
+        signedInAt: Date.now(),
       }));
       return { error: null };
     }

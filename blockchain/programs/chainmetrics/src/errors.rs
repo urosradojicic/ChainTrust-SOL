@@ -91,4 +91,31 @@ pub enum ChainMetricsError {
 
     #[msg("Must stake CMT tokens to vote")]
     InsufficientStakeToVote,
+
+    #[msg("Quorum not reached for proposal")]
+    QuorumNotMet,
+
+    #[msg("Vault has insufficient balance to cover rewards")]
+    InsufficientVaultFunds,
+
+    #[msg("Badge tier is invalid (must be 0-3)")]
+    InvalidBadgeTier,
+
+    #[msg("Cannot upgrade badge tier: trust score too low")]
+    TierTrustScoreTooLow,
+
+    #[msg("Badge is already at the maximum tier")]
+    BadgeAtMaxTier,
+
+    #[msg("Metrics growth rate out of bounds (must be -10000 to 10000 basis points)")]
+    GrowthRateOutOfBounds,
+
+    #[msg("Startup name cannot be empty")]
+    EmptyName,
+
+    #[msg("Startup category cannot be empty")]
+    EmptyCategory,
+
+    #[msg("Authority cannot be the default pubkey")]
+    InvalidAuthority,
 }

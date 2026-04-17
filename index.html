@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.devnet.solana.com https://api.mainnet-beta.solana.com https://hermes.pyth.network; frame-ancestors 'none';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.devnet.solana.com https://api.mainnet-beta.solana.com https://hermes.pyth.network; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self';" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()" />
     <title>ChainTrust — Verify Startups Against the Blockchain</title>
     <meta name="description" content="Verify startup claims against live Solana data. Treasury balances, token distribution, payment volume, wash trading detection. Cost: $0.00025 per verification.">
     <meta name="author" content="ChainTrust" />
