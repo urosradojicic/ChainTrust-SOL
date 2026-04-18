@@ -112,7 +112,11 @@ export interface MarketPosition {
  *   cost = C(q_yes + shares, q_no) - C(q_yes, q_no)
  */
 function lmsrCost(yesShares: number, noShares: number, b: number): number {
-  return b * Math.log(Math.exp(yesShares / b) + Math.exp(noShares / b));
+  // Numerically stable log-sum-exp: log(e^a + e^b) = max + log(e^(a-max) + e^(b-max))
+  const a = yesShares / b;
+  const c = noShares / b;
+  const maxQ = Math.max(a, c);
+  return b * (maxQ + Math.log(Math.exp(a - maxQ) + Math.exp(c - maxQ)));
 }
 
 /**
@@ -134,8 +138,8 @@ export function calculateTradeCost(
   const newCost = lmsrCost(newYes, newNo, b);
   const cost = newCost - currentCost;
 
-  // New price after trade
-  const newPrice = Math.exp(newYes / b) / (Math.exp(newYes / b) + Math.exp(newNo / b));
+  // New price after trade (sigmoid form for stability)
+  const newPrice = 1 / (1 + Math.exp((newNo - newYes) / b));
   const priceImpact = Math.abs(newPrice - market.yesPrice);
 
   return { cost, newPrice, priceImpact };
@@ -145,7 +149,8 @@ export function calculateTradeCost(
  * Calculate current YES price from share counts.
  */
 function currentYesPrice(yesShares: number, noShares: number, b: number): number {
-  return Math.exp(yesShares / b) / (Math.exp(yesShares / b) + Math.exp(noShares / b));
+  // Sigmoid form: 1 / (1 + exp((no - yes) / b)) — numerically stable
+  return 1 / (1 + Math.exp((noShares - yesShares) / b));
 }
 
 // ── Market Operations ────────────────────────────────────────────────

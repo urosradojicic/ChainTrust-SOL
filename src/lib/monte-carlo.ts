@@ -96,7 +96,8 @@ export interface SimulationSummary {
 
 /** Box-Muller transform for normal distribution */
 function normalRandom(mean: number, stdDev: number): number {
-  const u1 = Math.random();
+  // Avoid log(0) = -Infinity by mapping [0,1) to (0,1]
+  const u1 = 1 - Math.random();
   const u2 = Math.random();
   const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
   return mean + stdDev * z;

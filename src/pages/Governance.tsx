@@ -339,9 +339,9 @@ export default function Governance() {
           <AnimatePresence mode="popLayout">
             {filtered.map((p, i) => {
               const total = p.forVotes + p.againstVotes + p.abstainVotes;
-              const forPct = (p.forVotes / total) * 100;
-              const againstPct = (p.againstVotes / total) * 100;
-              const abstainPct = (p.abstainVotes / total) * 100;
+              const forPct = total > 0 ? (p.forVotes / total) * 100 : 0;
+              const againstPct = total > 0 ? (p.againstVotes / total) * 100 : 0;
+              const abstainPct = total > 0 ? (p.abstainVotes / total) * 100 : 0;
               const isActive = p.status === 'Active';
               const endDate = new Date(p.endDate);
               const now = new Date();

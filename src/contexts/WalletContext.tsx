@@ -23,10 +23,6 @@ interface WalletContextType extends WalletState {
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
-// Tier thresholds match on-chain Rust program (in base units with 6 decimals)
-function getTier(stakedBaseUnits: number): 'Free' | 'Basic' | 'Pro' | 'Whale' {
-  return computeTier(stakedBaseUnits);
-}
 
 export function WalletProvider({ children }: { children: ReactNode }) {
   const solanaWallet = useSolanaWallet();
@@ -54,11 +50,12 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           setStakedAmount(0);
         }
       }).catch(() => setStakedAmount(0));
-      // Try to read CMT token balance via token accounts
+      // Try to read CMT token balance via token accounts.
+      // TODO: Filter by CMT mint address once deployed. Currently sums all
+      // 6-decimal SPL tokens, which may overcount if the wallet holds other tokens.
       connection.getParsedTokenAccountsByOwner(solanaWallet.publicKey, {
         programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'),
       }).then(({ value }) => {
-        // Sum all SPL token balances with 6 decimals (CMT)
         const cmtAccounts = value.filter(
           (a) => a.account.data.parsed?.info?.tokenAmount?.decimals === 6,
         );
@@ -66,7 +63,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           (s, a) => s + Number(a.account.data.parsed?.info?.tokenAmount?.uiAmount ?? 0),
           0,
         );
-        setCmtBalance(total);
+        setCmtBalance(Number.isFinite(total) ? total : 0);
       }).catch(() => setCmtBalance(0));
     } else {
       setSolBalance(0);
@@ -85,7 +82,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     address,
     balance: solBalance,
     cmtBalance,
-    tier: getTier(stakedAmount),
+    tier: computeTier(stakedAmount),
     stakedAmount,
     walletType: solanaWallet.wallet?.adapter.name || null,
     bookmarkedStartups,

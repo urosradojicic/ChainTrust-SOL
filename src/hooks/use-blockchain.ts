@@ -141,13 +141,13 @@ export function usePublishMetrics() {
         // Build publish_metrics instruction data: 7 u64 + 1 i64 + 32 bytes hash
         const dataBuffer = Buffer.alloc(8 * 7 + 8 + 32);
         let offset = 0;
-        dataBuffer.writeBigUInt64LE(BigInt(params.mrr), offset); offset += 8;
-        dataBuffer.writeBigUInt64LE(BigInt(params.totalUsers), offset); offset += 8;
-        dataBuffer.writeBigUInt64LE(BigInt(params.activeUsers), offset); offset += 8;
-        dataBuffer.writeBigUInt64LE(BigInt(params.burnRate), offset); offset += 8;
-        dataBuffer.writeBigUInt64LE(BigInt(params.runway), offset); offset += 8;
-        dataBuffer.writeBigInt64LE(BigInt(Math.round(params.growthRate * 100)), offset); offset += 8;
-        dataBuffer.writeBigUInt64LE(BigInt(params.carbonOffset), offset); offset += 8;
+        dataBuffer.writeBigUInt64LE(BigInt(validatedParams.mrr), offset); offset += 8;
+        dataBuffer.writeBigUInt64LE(BigInt(validatedParams.totalUsers), offset); offset += 8;
+        dataBuffer.writeBigUInt64LE(BigInt(validatedParams.activeUsers), offset); offset += 8;
+        dataBuffer.writeBigUInt64LE(BigInt(validatedParams.burnRate), offset); offset += 8;
+        dataBuffer.writeBigUInt64LE(BigInt(validatedParams.runway), offset); offset += 8;
+        dataBuffer.writeBigInt64LE(BigInt(Math.round(validatedParams.growthRate * 100)), offset); offset += 8;
+        dataBuffer.writeBigUInt64LE(BigInt(validatedParams.carbonOffset), offset); offset += 8;
         proofHash.forEach((b, i) => dataBuffer.writeUInt8(b, offset + i));
 
         const discriminator = await disc('publish_metrics');

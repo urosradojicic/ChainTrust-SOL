@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import {
   Code, Copy, Check, Terminal, Layers, Zap, Shield,
   ArrowRight, ExternalLink, GitBranch, Package, Globe,
@@ -273,9 +274,9 @@ export default function Integrate() {
                 className="inline-flex items-center gap-2 brand-gradient rounded-lg px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90">
                 <GitBranch className="h-4 w-4" /> View on GitHub
               </a>
-              <a href="/api" className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-secondary">
+              <Link to="/api" className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-secondary">
                 API Docs <ArrowRight className="h-4 w-4" />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

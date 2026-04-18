@@ -72,5 +72,13 @@ export function rateLimit(key: string, maxAttempts: number = 5, windowMs: number
   if (recent.length >= maxAttempts) return false;
   recent.push(now);
   rateLimitMap.set(key, recent);
+  // Prevent unbounded growth: prune stale keys periodically
+  if (rateLimitMap.size > 100) {
+    for (const [k, v] of rateLimitMap) {
+      const live = v.filter(t => now - t < windowMs);
+      if (live.length === 0) rateLimitMap.delete(k);
+      else rateLimitMap.set(k, live);
+    }
+  }
   return true;
 }

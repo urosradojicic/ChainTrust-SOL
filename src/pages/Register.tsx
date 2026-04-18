@@ -138,6 +138,7 @@ export default function Register() {
         mrr: sanitizeNumber(form.mrr, 0, 1_000_000_000),
         users: sanitizeNumber(form.mau, 0, 1_000_000_000),
         growth_rate: sanitizeNumber(form.growthRate, -100, 10000),
+        funding_raised: sanitizeNumber(form.fundingRaised, 0, 1_000_000_000_000),
         treasury: sanitizeNumber(form.treasury, 0, 100_000_000_000),
         chain_type: form.chainType,
         energy_per_transaction: `${form.energyPerTx} kWh`,

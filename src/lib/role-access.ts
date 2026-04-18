@@ -46,9 +46,24 @@ export const PAGE_ACCESS: Record<string, Access> = {
 
 /** Check if a given role can access a route */
 export function canAccess(role: AppRole | null, path: string): boolean {
-  // Support dynamic routes: /startup/123 → lookup /startup
-  const normalizedPath = path.replace(/\/\d+$/, '').replace(/\/$/, '') || '/';
-  const access = PAGE_ACCESS[normalizedPath] ?? PAGE_ACCESS[path] ?? 'admin'; // deny by default
+  // Direct match first
+  if (PAGE_ACCESS[path]) {
+    const access = PAGE_ACCESS[path];
+    return resolveAccess(access, role);
+  }
+  // Support dynamic routes: /startup/abc-123 → lookup /startup
+  const segments = path.split('/').filter(Boolean);
+  if (segments.length >= 2) {
+    const parentPath = '/' + segments[0];
+    if (PAGE_ACCESS[parentPath]) {
+      return resolveAccess(PAGE_ACCESS[parentPath], role);
+    }
+  }
+  // Default: deny (require admin)
+  return resolveAccess('admin', role);
+}
+
+function resolveAccess(access: Access, role: AppRole | null): boolean {
 
   if (access === 'public') return true;
   if (!role) return false;

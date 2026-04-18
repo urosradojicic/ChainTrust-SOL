@@ -201,7 +201,8 @@ export function addPricedRound(
 
   // Create option pool first (dilutes pre-money)
   let poolShares = 0;
-  const updatedShareholders = [...capTable.shareholders];
+  // Deep-clone each shareholder to avoid mutating the original cap table
+  const updatedShareholders = capTable.shareholders.map(s => ({ ...s }));
   if (optionPoolExpansionPct > 0) {
     poolShares = Math.round(existingShares * (optionPoolExpansionPct / 100) / (1 - optionPoolExpansionPct / 100));
     updatedShareholders.push({

@@ -27,8 +27,9 @@ const DEMO_ACCOUNTS: Record<string, { password: string; role: AppRole; name: str
 const DEMO_STORAGE_KEY = 'chaintrust_demo_user';
 
 function createDemoUser(email: string, account: typeof DEMO_ACCOUNTS[string]): User {
+  // Use a stable ID so data keyed by user ID persists across session restores
   return {
-    id: `demo-${account.role}-${Date.now()}`,
+    id: `demo-${account.role}`,
     email,
     app_metadata: {},
     user_metadata: { display_name: account.name, role: account.role },
@@ -63,10 +64,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isDemo, setIsDemo] = useState(false);
 
+  const VALID_ROLES: AppRole[] = ['admin', 'investor', 'startup'];
+
   const fetchRole = async (userId: string) => {
     try {
       const { data } = await supabase.rpc('get_user_role', { _user_id: userId });
-      if (data) setRole(data as AppRole);
+      if (data && VALID_ROLES.includes(data as AppRole)) {
+        setRole(data as AppRole);
+      }
     } catch {
       // Supabase not configured — role stays null for real users
     }
