@@ -5,6 +5,8 @@ import { formatCurrency, formatNumber } from '@/lib/format';
 import {
   ArrowRight, ArrowUpRight, Shield, BarChart3, Lock, Eye,
   Zap, Hash, Award, CheckCircle2, Globe, FileCheck,
+  Database, Brain, TrendingUp, Users, AlertTriangle, Code,
+  Layers, Target, Rocket,
 } from 'lucide-react';
 import AnimatedCounter from '@/components/common/AnimatedCounter';
 import LiveProofHash from '@/components/common/LiveProofHash';
@@ -41,16 +43,14 @@ export default function Landing() {
 
               <motion.h1 custom={1} variants={enter} initial="hidden" animate="visible" className="font-display text-4xl font-bold text-foreground sm:text-5xl lg:text-6xl" style={{ lineHeight: 1.08, letterSpacing: '-0.03em' }}>
                 The{' '}
-                <span className="brand-gradient-text">trust layer</span>
+                <span className="brand-gradient-text">credit bureau</span>
                 <br />
-                for startup
-                <br />
-                fundraising
+                for startups
               </motion.h1>
 
               <motion.p custom={2} variants={enter} initial="hidden" animate="visible" className="mt-6 max-w-lg text-base text-muted-foreground leading-relaxed">
-                Publish metrics on Solana. Get verified by Pyth oracles. Earn soulbound NFT certificates.
-                All for <span className="font-mono font-semibold text-foreground">$0.00025</span> per verification.
+                Startups prove their metrics are real with cryptographic proofs on Solana.
+                Investors verify in <span className="font-mono font-semibold text-foreground">2 seconds</span> for <span className="font-mono font-semibold text-foreground">$0.00025</span> — replacing $50,000 audits that take 6 weeks.
               </motion.p>
 
               <motion.div custom={3} variants={enter} initial="hidden" animate="visible" className="mt-8 flex flex-wrap items-center gap-3">
@@ -469,6 +469,268 @@ export default function Landing() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Competitor comparison — the "Why not X?" section ── */}
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-xs font-medium uppercase tracking-widest text-primary mb-4 font-mono">
+            Why ChainTrust
+          </motion.p>
+          <motion.h2 initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-display text-3xl font-bold text-foreground sm:text-4xl" style={{ letterSpacing: '-0.02em' }}>
+            Everyone else trusts databases.{' '}
+            <span className="brand-gradient-text">We trust math.</span>
+          </motion.h2>
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mt-4 text-sm text-muted-foreground max-w-2xl mx-auto">
+            PitchBook, Crunchbase, and CB Insights rely on self-reported data. Nansen and Dune track wallets, not startup claims.
+            ChainTrust is the only platform that cryptographically verifies startup metrics.
+          </motion.p>
+        </div>
+
+        {/* Comparison table */}
+        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left py-4 px-4 text-muted-foreground font-medium w-48">Feature</th>
+                <th className="text-center py-4 px-3 min-w-[120px]">
+                  <span className="brand-gradient-text font-bold">ChainTrust</span>
+                </th>
+                <th className="text-center py-4 px-3 text-muted-foreground min-w-[100px]">PitchBook</th>
+                <th className="text-center py-4 px-3 text-muted-foreground min-w-[100px]">Crunchbase</th>
+                <th className="text-center py-4 px-3 text-muted-foreground min-w-[100px]">Nansen</th>
+                <th className="text-center py-4 px-3 text-muted-foreground min-w-[100px]">CB Insights</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { feature: 'Verified metrics', ct: true, pb: false, cb: false, na: false, cbi: false },
+                { feature: 'Cryptographic proofs', ct: true, pb: false, cb: false, na: false, cbi: false },
+                { feature: 'ZK privacy', ct: true, pb: false, cb: false, na: false, cbi: false },
+                { feature: 'Real-time data', ct: true, pb: false, cb: false, na: true, cbi: false },
+                { feature: 'Investment memos', ct: true, pb: false, cb: false, na: false, cbi: true },
+                { feature: 'On-chain proof chain', ct: true, pb: false, cb: false, na: false, cbi: false },
+                { feature: 'Soulbound certificates', ct: true, pb: false, cb: false, na: false, cbi: false },
+                { feature: 'Startup trust scoring', ct: true, pb: false, cb: false, na: false, cbi: true },
+                { feature: 'Cap table analysis', ct: true, pb: true, cb: false, na: false, cbi: false },
+                { feature: 'Anomaly detection (ML)', ct: true, pb: false, cb: false, na: true, cbi: false },
+              ].map((row, i) => (
+                <tr key={row.feature} className={`border-b border-border/50 ${i % 2 === 0 ? 'bg-muted/20' : ''}`}>
+                  <td className="py-3 px-4 text-foreground font-medium">{row.feature}</td>
+                  <td className="text-center py-3 px-3">
+                    {row.ct ? <CheckCircle2 className="h-5 w-5 text-emerald-500 mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                  </td>
+                  <td className="text-center py-3 px-3">
+                    {row.pb ? <CheckCircle2 className="h-5 w-5 text-muted-foreground/50 mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                  </td>
+                  <td className="text-center py-3 px-3">
+                    {row.cb ? <CheckCircle2 className="h-5 w-5 text-muted-foreground/50 mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                  </td>
+                  <td className="text-center py-3 px-3">
+                    {row.na ? <CheckCircle2 className="h-5 w-5 text-muted-foreground/50 mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                  </td>
+                  <td className="text-center py-3 px-3">
+                    {row.cbi ? <CheckCircle2 className="h-5 w-5 text-muted-foreground/50 mx-auto" /> : <span className="text-muted-foreground">—</span>}
+                  </td>
+                </tr>
+              ))}
+              {/* Pricing row */}
+              <tr className="border-t-2 border-primary/30">
+                <td className="py-4 px-4 text-foreground font-bold">Annual price</td>
+                <td className="text-center py-4 px-3 font-bold brand-gradient-text text-lg">Free*</td>
+                <td className="text-center py-4 px-3 text-red-400 font-mono">$20-50K</td>
+                <td className="text-center py-4 px-3 text-red-400 font-mono">$588+</td>
+                <td className="text-center py-4 px-3 text-red-400 font-mono">$1,800+</td>
+                <td className="text-center py-4 px-3 text-red-400 font-mono">$50-70K</td>
+              </tr>
+            </tbody>
+          </table>
+          <p className="text-[11px] text-muted-foreground mt-3 text-center">*Free tier includes basic verification. Pro tier with AI analytics from $99/mo. On-chain verification costs $0.00025 per transaction.</p>
+        </motion.div>
+
+        {/* The killer stat */}
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+          className="mt-16 rounded-2xl border border-primary/20 overflow-hidden">
+          <div className="relative p-8 sm:p-12 text-center">
+            <div className="absolute inset-0 brand-gradient opacity-5" />
+            <div className="relative">
+              <p className="text-xs font-medium uppercase tracking-widest text-primary mb-3 font-mono">The math speaks for itself</p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12">
+                <div>
+                  <div className="text-4xl sm:text-5xl font-display font-bold text-red-400 line-through opacity-60">$50,000</div>
+                  <div className="text-xs text-muted-foreground mt-1">Big 4 audit, 6 weeks</div>
+                </div>
+                <div className="text-2xl text-muted-foreground hidden sm:block">vs</div>
+                <div>
+                  <div className="text-4xl sm:text-5xl font-display font-bold brand-gradient-text">$0.00025</div>
+                  <div className="text-xs text-muted-foreground mt-1">ChainTrust, 2 seconds</div>
+                </div>
+              </div>
+              <p className="mt-6 text-lg font-display font-bold text-foreground">
+                <AnimatedCounter value={200000000} suffix="x" /> cheaper. <AnimatedCounter value={9000000} suffix="x" /> faster. Same cryptographic certainty.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* ── Platform depth — show the 75 engines ── */}
+      <section className="border-y border-border bg-surface">
+        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-xs font-medium uppercase tracking-widest text-primary mb-4 font-mono">
+              Under the hood
+            </motion.p>
+            <motion.h2 initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-display text-3xl font-bold text-foreground sm:text-4xl" style={{ letterSpacing: '-0.02em' }}>
+              75 analytical engines. One simple interface.
+            </motion.h2>
+            <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mt-4 text-sm text-muted-foreground max-w-2xl mx-auto">
+              Power users discover depth. New users feel clarity. Every number tells a story.
+            </motion.p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { icon: Brain, title: 'AI Intelligence', count: 11, items: 'Red flags, investment memos, claim verification, competitive intel', color: 'from-violet-500 to-purple-600' },
+              { icon: TrendingUp, title: 'Quant Finance', count: 8, items: 'VaR, Sharpe ratio, portfolio optimization, return calculator', color: 'from-blue-500 to-cyan-600' },
+              { icon: Database, title: 'Machine Learning', count: 6, items: 'Isolation Forest, gradient boosting, pattern recognition', color: 'from-emerald-500 to-teal-600' },
+              { icon: Shield, title: 'Regulatory', count: 8, items: 'US, EU, APAC compliance, MiCA, GDPR, 14 jurisdictions', color: 'from-amber-500 to-orange-600' },
+              { icon: Layers, title: 'Infrastructure', count: 12, items: 'Deal rooms, DD workflows, pipelines, smart alerts, Blinks', color: 'from-rose-500 to-pink-600' },
+              { icon: Lock, title: 'Cryptography', count: 2, items: 'ZK range proofs, knowledge graph with PageRank', color: 'from-indigo-500 to-blue-600' },
+              { icon: Target, title: 'Deep Intelligence', count: 7, items: 'Startup DNA, moat scoring, network effects, tokenomics sim', color: 'from-teal-500 to-green-600' },
+              { icon: Code, title: 'Enterprise SDK', count: 5, items: 'Unified facade, plugin system, event bus, feature flags', color: 'from-gray-500 to-slate-600' },
+            ].map((cat, i) => {
+              const Icon = cat.icon;
+              return (
+                <motion.div
+                  key={cat.title}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                  className="card-shine rounded-xl border border-border bg-card p-5"
+                >
+                  <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${cat.color} text-white mb-3`}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="text-sm font-bold text-foreground">{cat.title}</h3>
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">{cat.count}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{cat.items}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mt-8 text-center">
+            <div className="inline-flex items-center gap-6 rounded-xl border border-border bg-card px-6 py-4">
+              <div className="text-center">
+                <div className="text-2xl font-display font-bold text-foreground">75</div>
+                <div className="text-[10px] text-muted-foreground">Engines</div>
+              </div>
+              <div className="h-8 w-px bg-border" />
+              <div className="text-center">
+                <div className="text-2xl font-display font-bold text-foreground">24</div>
+                <div className="text-[10px] text-muted-foreground">On-chain instructions</div>
+              </div>
+              <div className="h-8 w-px bg-border" />
+              <div className="text-center">
+                <div className="text-2xl font-display font-bold text-foreground">14</div>
+                <div className="text-[10px] text-muted-foreground">Jurisdictions</div>
+              </div>
+              <div className="h-8 w-px bg-border" />
+              <div className="text-center">
+                <div className="text-2xl font-display font-bold text-foreground">56K</div>
+                <div className="text-[10px] text-muted-foreground">Lines of code</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Who it's for ── */}
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-xs font-medium uppercase tracking-widest text-primary mb-4 font-mono">
+            Built for
+          </motion.p>
+          <motion.h2 initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-display text-3xl font-bold text-foreground sm:text-4xl" style={{ letterSpacing: '-0.02em' }}>
+            Two sides. One trust layer.
+          </motion.h2>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* For Startups */}
+          <motion.div initial={{ opacity: 0, x: -16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+            className="rounded-2xl border border-border bg-card overflow-hidden">
+            <div className="p-8 border-b border-border bg-gradient-to-br from-blue-500/5 to-cyan-500/5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 text-white">
+                  <Rocket className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-display font-bold text-foreground">For Startups</h3>
+                  <p className="text-sm text-muted-foreground">Prove your metrics. Build trust. Raise faster.</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              {[
+                { title: 'Publish verified metrics', desc: 'SHA-256 hash your MRR, users, and growth rate on Solana. Immutable proof.' },
+                { title: 'Earn soulbound badges', desc: 'Non-transferable NFT certificates that prove your verification history.' },
+                { title: 'Stand out to investors', desc: 'Verified startups rank higher in the screener and get flagged to matched investors.' },
+                { title: 'Free on devnet, $0.00025 on mainnet', desc: 'The cheapest verification in existence. No auditor fees, no gatekeepers.' },
+              ].map(item => (
+                <div key={item.title} className="flex gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                    <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+              <Link to="/register" className="inline-flex items-center gap-2 brand-gradient rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 mt-2">
+                Register Your Startup <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* For Investors */}
+          <motion.div initial={{ opacity: 0, x: 16 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+            className="rounded-2xl border border-border bg-card overflow-hidden">
+            <div className="p-8 border-b border-border bg-gradient-to-br from-emerald-500/5 to-teal-500/5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+                  <TrendingUp className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-display font-bold text-foreground">For Investors</h3>
+                  <p className="text-sm text-muted-foreground">Verify claims. Find alpha. Reduce risk.</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              {[
+                { title: 'AI-powered due diligence', desc: 'Investment memos, red flag detection, anomaly scoring — all generated instantly.' },
+                { title: 'Verify before you invest', desc: 'Every metric has a proof hash. Click any number to see the on-chain transaction.' },
+                { title: 'Portfolio analytics', desc: 'Monte Carlo simulation, VaR, Sharpe ratio, survival prediction — institutional grade.' },
+                { title: 'Daily briefings', desc: 'Personalized morning reports with portfolio changes, alerts, and new opportunities.' },
+              ].map(item => (
+                <div key={item.title} className="flex gap-3">
+                  <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                    <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+              <Link to="/login" className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-secondary mt-2">
+                Explore as Investor <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 

@@ -43,6 +43,8 @@ const Tokenomics = lazy(() => import("./pages/Tokenomics"));
 const Verify = lazy(() => import("./pages/Verify"));
 const Hackathon = lazy(() => import("./pages/Hackathon"));
 const InvestorHub = lazy(() => import("./pages/InvestorHub"));
+const ProofExplorer = lazy(() => import("./pages/ProofExplorer"));
+const Integrate = lazy(() => import("./pages/Integrate"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageLoader() {
@@ -80,6 +82,8 @@ const AnimatedRoutes = () => {
           <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
           <Route path="/verify" element={<PageTransition><Verify /></PageTransition>} />
           <Route path="/hackathon" element={<PageTransition><Hackathon /></PageTransition>} />
+          <Route path="/proof-explorer" element={<PageTransition><ProofExplorer /></PageTransition>} />
+          <Route path="/integrate" element={<PageTransition><Integrate /></PageTransition>} />
 
           {/* All authenticated users */}
           <Route path="/dashboard" element={<G path="/dashboard"><Dashboard /></G>} />

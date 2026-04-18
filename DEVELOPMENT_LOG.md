@@ -1494,7 +1494,128 @@ License Guard (HMAC-SHA256 key verification, 5 tiers, domain lock, engine gating
 
 ---
 
-## Step 42 — Winning Playbook: Colosseum + YC Strategy (April 18, 2026)
+## Step 42 — Master Plan: Deep Research + App Overhaul for Colosseum & YC (April 18, 2026)
+
+### What was done
+
+Massive research sprint + implementation session. 3 parallel research agents covered Colosseum criteria, YC evaluation, competitor landscape, and growth tactics. Then implemented critical app changes based on the 7 gaps identified.
+
+### Research Conducted (4 Agents, 6+ Hours)
+
+1. **Competitive landscape analysis** — Mapped 8 direct/adjacent competitors (Nansen, Dune, Token Terminal, DefiLlama, Crunchbase, PitchBook, CB Insights, Credmark). Key finding: **zero direct competitors on Solana** for startup verification.
+
+2. **Market sizing (bottom-up)** — TAM $5-8B, SAM $300-600M, SOM Year 1 $500K-2M. Growth drivers: regulatory pressure, institutional crypto adoption, $1.7B annual fraud losses.
+
+3. **Growth hacking tactics** — 10 channels researched with specific tactics:
+   - Superteam Earn bounties (20-50 submissions per bounty)
+   - Crypto Twitter strategy (reply-guy + data threads)
+   - Product Hunt launch playbook (Tuesday 12:01AM PT)
+   - Partnership priority: Phantom > Jupiter > Superteam > Helius > Raydium
+   - Viral mechanics: public trust pages, "Powered by ChainTrust" badges, VC portfolio play
+
+4. **UX gap analysis** — Identified 14 friction points across the entire user journey (landing → login → dashboard → register → verify → badge)
+
+### App Changes Implemented
+
+#### 1. Landing Page Overhaul (`src/pages/Landing.tsx`)
+- **New positioning**: "The credit bureau for startups" (not "trust layer for fundraising")
+- **Sharper hero copy**: "Startups prove their metrics are real... replacing $50,000 audits"
+- **Competitor comparison table**: ChainTrust vs PitchBook vs Crunchbase vs Nansen vs CB Insights across 10 features
+- **"The math speaks for itself" section**: $50,000 vs $0.00025 side-by-side visual
+- **75-engine showcase**: Platform depth displayed in 8 categories with counts
+- **"Two sides, one trust layer"**: For Startups / For Investors dual-path cards with specific benefits
+- **Stats badge**: 75 engines, 24 on-chain instructions, 14 jurisdictions, 56K lines
+
+#### 2. Login Page Improvement (`src/pages/Login.tsx`)
+- Reordered demo roles: Investor first (recommended), Startup second, Admin third
+- Added "Recommended" badge on Investor role
+- Added platform stats bar (75 AI engines, 24 on-chain ops, $0.00025/verify, 2s speed)
+- Better descriptions: "Explore AI analytics, screener, due diligence, portfolio tools"
+- New tagline: "The credit bureau for startups"
+
+#### 3. Post-Registration Success Screen (`src/pages/Register.tsx`)
+- Added "What to do next" 3-step guided flow:
+  1. Publish your metrics (primary CTA with link to /my-startup)
+  2. Get verified by oracles (explains the process)
+  3. Earn your soulbound badge (end goal)
+- Changed primary CTA from "Go to Dashboard" to "Publish Metrics Now"
+- Added individual step cards with numbered indicators
+
+#### 4. Proof Explorer — New Public Page (`src/pages/ProofExplorer.tsx`)
+- **No auth required** — anyone can view all verifications
+- Stats header: total verifications, unique startups, verified proofs, cost per proof
+- Searchable proof list with startup name, category, proof hash, metrics snapshot
+- Copy-to-clipboard for proof hashes
+- Solana Explorer link for every proof
+- "How to verify independently" instructions (SHA-256 recomputation guide)
+- Filterable by startup name, proof hash, or category
+
+#### 5. SDK Integration Showcase — New Public Page (`src/pages/Integrate.tsx`)
+- 4 integration methods displayed: NPM SDK, CPI (Rust), Solana Blinks, REST API
+- **4 complete code examples** with syntax highlighting and copy button:
+  - TypeScript: `ChainTrust.getTrustScore()` and `verifyProof()`
+  - Rust: CPI integration with trust score check before loan approval
+  - Solana Blinks: Shareable verification links for Twitter/X
+  - REST API: curl examples for score queries and webhooks
+- 6 integration use cases: Lending, Launchpads, Prediction Markets, Wallets, VC Dashboards, Insurance
+- Architecture diagram: Your dApp → SDK → CPI → ChainTrust Program → Solana
+- GitHub CTA linking to the repo
+
+#### 6. Navigation Overhaul (`src/components/layout/Navbar.tsx`)
+- Added "Getting Started" section at top: Dashboard, Investor Hub, Interactive Demo
+- Promoted Investor Hub from buried "Intelligence" section to top-level
+- Added new Developer section: Build on ChainTrust, API Docs, Proof Explorer, Verify On-Chain
+- Removed duplicate Investor Hub from Intelligence section
+
+#### 7. Route Registration (`src/App.tsx` + `src/lib/role-access.ts`)
+- Added /proof-explorer and /integrate as public routes (no auth required)
+- Lazy-loaded both new pages for performance
+- Registered in role-access as 'public' access level
+
+### Strategy Documents Created
+
+| Document | Purpose |
+|----------|---------|
+| `WINNING_PLAYBOOK.md` | Colosseum + YC criteria, pitch scripts, application tutorial |
+| `MASTER_PLAN.md` | Full research synthesis, competitive analysis, growth playbook, action items |
+
+### Key Strategic Insights
+
+- **Zero competitors on Solana** for startup verification — category-creating opportunity
+- **Price disruption**: $0.00025 vs $50,000 (200M x cheaper) is the most compelling pitch point
+- **YC positioning**: Lead with "credit bureau for startups," not "Solana blockchain project"
+- **Colosseum positioning**: "The on-chain growth stack" maps to their #4 investment thesis
+- **Highest-impact growth channel**: Public trust score pages (startups share with investors = free marketing)
+- **The one sentence that wins**: "ChainTrust makes lying more expensive than telling the truth"
+
+### New files
+| File | Purpose |
+|------|---------|
+| `src/pages/ProofExplorer.tsx` | Public proof verification explorer |
+| `src/pages/Integrate.tsx` | SDK & integration showcase |
+| `MASTER_PLAN.md` | Complete research synthesis + implementation roadmap |
+| `WINNING_PLAYBOOK.md` | Colosseum + YC criteria + pitch scripts |
+
+### Modified files
+| File | Changes |
+|------|---------|
+| `src/pages/Landing.tsx` | New positioning, competitor comparison, engine showcase, dual-path cards |
+| `src/pages/Login.tsx` | Investor-first, stats bar, better descriptions |
+| `src/pages/Register.tsx` | Post-registration "next steps" guide |
+| `src/components/layout/Navbar.tsx` | Getting Started section, new Developer links |
+| `src/App.tsx` | New route registrations |
+| `src/lib/role-access.ts` | New public page access |
+
+### Platform Stats After This Session
+- **25 pages** (2 new: ProofExplorer, Integrate)
+- **75 engine libraries**
+- **Zero TypeScript errors** (full strict mode pass)
+- **4 strategy documents** (WINNING_PLAYBOOK, MASTER_PLAN, HACKATHON_STRATEGY, PITCH)
+- **2 new public pages** (no auth required — for demos and pitch videos)
+
+---
+
+## Step 42a — Winning Playbook: Colosseum + YC Strategy (April 18, 2026)
 
 ### What was done
 

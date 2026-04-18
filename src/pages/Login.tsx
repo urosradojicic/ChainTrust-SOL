@@ -13,9 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 type AppRole = 'admin' | 'investor' | 'startup';
 
 const DEMO_ROLES = [
-  { role: 'Admin' as const, email: 'admin@chainmetrics.io', password: 'admin123', icon: Shield, desc: 'Full platform access', color: 'border-primary/30 bg-primary/5 hover:bg-primary/10' },
-  { role: 'Investor' as const, email: 'investor@chainmetrics.io', password: 'investor1', icon: TrendingUp, desc: 'Screener, analytics, portfolio', color: 'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10' },
-  { role: 'Startup' as const, email: 'startup@chainmetrics.io', password: 'startup1', icon: Building2, desc: 'Register, publish, earn badges', color: 'border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10' },
+  { role: 'Investor' as const, email: 'investor@chainmetrics.io', password: 'investor1', icon: TrendingUp, desc: 'Explore AI analytics, screener, due diligence, portfolio tools', color: 'border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10', highlight: true },
+  { role: 'Startup' as const, email: 'startup@chainmetrics.io', password: 'startup1', icon: Building2, desc: 'See the registration flow, publish metrics, earn soulbound badges', color: 'border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10', highlight: false },
+  { role: 'Admin' as const, email: 'admin@chainmetrics.io', password: 'admin123', icon: Shield, desc: 'Full platform access — all features unlocked', color: 'border-primary/30 bg-primary/5 hover:bg-primary/10', highlight: false },
 ];
 
 export default function Login() {
@@ -85,17 +85,40 @@ export default function Login() {
           <CardHeader className="pb-2 pt-6 px-6">
             <h1 className="text-2xl font-bold tracking-tight">Welcome to ChainTrust</h1>
             <p className="text-muted-foreground text-sm mt-1">
-              Choose a role to explore the platform
+              The credit bureau for startups. Choose a perspective to explore.
             </p>
           </CardHeader>
           <CardContent className="px-6 pb-6">
-            <div className="grid gap-3 mt-2">
+            {/* Stats bar */}
+            <div className="flex items-center justify-between rounded-lg bg-muted/50 px-4 py-2.5 mb-4 mt-2">
+              <div className="text-center">
+                <div className="text-sm font-bold text-foreground">75</div>
+                <div className="text-[10px] text-muted-foreground">AI engines</div>
+              </div>
+              <div className="h-6 w-px bg-border" />
+              <div className="text-center">
+                <div className="text-sm font-bold text-foreground">24</div>
+                <div className="text-[10px] text-muted-foreground">On-chain ops</div>
+              </div>
+              <div className="h-6 w-px bg-border" />
+              <div className="text-center">
+                <div className="text-sm font-bold text-foreground">$0.00025</div>
+                <div className="text-[10px] text-muted-foreground">Per verify</div>
+              </div>
+              <div className="h-6 w-px bg-border" />
+              <div className="text-center">
+                <div className="text-sm font-bold text-foreground">2s</div>
+                <div className="text-[10px] text-muted-foreground">Speed</div>
+              </div>
+            </div>
+
+            <div className="grid gap-3">
               {DEMO_ROLES.map((cred) => (
                 <button
                   key={cred.role}
                   onClick={() => quickLogin(cred)}
                   disabled={signingInAs !== null}
-                  className={`flex items-center gap-4 rounded-xl border p-4 text-left transition ${cred.color} disabled:opacity-50`}
+                  className={`flex items-center gap-4 rounded-xl border p-4 text-left transition ${cred.color} disabled:opacity-50 ${(cred as any).highlight ? 'ring-1 ring-emerald-500/30' : ''}`}
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-background/80 shrink-0">
                     {signingInAs === cred.role ? (
@@ -105,8 +128,9 @@ export default function Login() {
                     )}
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm font-bold text-foreground">
-                      {signingInAs === cred.role ? `Signing in as ${cred.role}...` : `Continue as ${cred.role}`}
+                    <div className="text-sm font-bold text-foreground flex items-center gap-2">
+                      {signingInAs === cred.role ? `Signing in as ${cred.role}...` : `Explore as ${cred.role}`}
+                      {(cred as any).highlight && <span className="rounded-full bg-emerald-500/10 text-emerald-500 px-2 py-0.5 text-[9px] font-bold uppercase">Recommended</span>}
                     </div>
                     <div className="text-xs text-muted-foreground">{cred.desc}</div>
                   </div>

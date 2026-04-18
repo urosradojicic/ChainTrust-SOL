@@ -31,9 +31,16 @@ const HEADER_LINKS_ALL: HeaderLink[] = [
 interface SidebarLink { path: string; label: string; icon: any; desc: string }
 const SIDEBAR_SECTIONS: { title: string; links: SidebarLink[] }[] = [
   {
-    title: 'Core',
+    title: 'Getting Started',
     links: [
       { path: '/dashboard', label: 'Dashboard', icon: BarChart3, desc: 'Platform metrics overview' },
+      { path: '/investor-hub', label: 'Investor Hub', icon: BarChart3, desc: 'AI briefings & deal flow' },
+      { path: '/demo', label: 'Interactive Demo', icon: Eye, desc: 'Try the full workflow' },
+    ],
+  },
+  {
+    title: 'Core',
+    links: [
       { path: '/portfolio', label: 'Portfolio', icon: Shield, desc: 'Bookmarks & alerts' },
       { path: '/screener', label: 'Screener', icon: Search, desc: 'Multi-metric filter' },
       { path: '/leaderboard', label: 'Leaderboard', icon: TrendingUp, desc: 'Top startups ranked' },
@@ -66,7 +73,6 @@ const SIDEBAR_SECTIONS: { title: string; links: SidebarLink[] }[] = [
   {
     title: 'Intelligence',
     links: [
-      { path: '/investor-hub', label: 'Investor Hub', icon: BarChart3, desc: 'AI briefings & deal flow' },
       { path: '/analytics', label: 'Platform Analytics', icon: BarChart3, desc: 'KPIs & growth metrics' },
       { path: '/cost-calculator', label: 'Cost Calculator', icon: Calculator, desc: 'Savings vs. traditional' },
       { path: '/investors', label: 'Investor Relations', icon: Users, desc: 'Traction & case studies' },
@@ -75,8 +81,9 @@ const SIDEBAR_SECTIONS: { title: string; links: SidebarLink[] }[] = [
   {
     title: 'Developers',
     links: [
-      { path: '/api', label: 'API & Integrations', icon: Code, desc: 'REST API, webhooks, SDKs' },
-      { path: '/demo', label: 'Interactive Demo', icon: Eye, desc: 'Try the full workflow' },
+      { path: '/integrate', label: 'Build on ChainTrust', icon: Code, desc: 'SDK, CPI, Blinks, API' },
+      { path: '/api', label: 'API Docs', icon: Code, desc: 'REST API, webhooks' },
+      { path: '/proof-explorer', label: 'Proof Explorer', icon: Globe, desc: 'All proofs, public' },
       { path: '/verify', label: 'Verify On-Chain', icon: Shield, desc: 'Public proof verification' },
     ],
   },

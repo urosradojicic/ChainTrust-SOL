@@ -17,6 +17,8 @@ export const PAGE_ACCESS: Record<string, Access> = {
   '/demo':            'public',
   '/verify':          'public',
   '/hackathon':       'public',
+  '/proof-explorer':  'public',
+  '/integrate':       'public',
   '/dashboard':       'auth',
   '/leaderboard':     'auth',
   '/security':        'auth',

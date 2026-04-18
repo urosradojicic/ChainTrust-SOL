@@ -180,7 +180,7 @@ export default function Register() {
 
   if (success) {
     return (
-      <div className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 py-20 text-center">
+      <div className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-center justify-center px-4 py-20 text-center">
         <div className="relative mb-8">
           {Array.from({ length: 12 }).map((_, i) => (
             <motion.div key={i} className="absolute h-3 w-3 rounded-full"
@@ -195,18 +195,47 @@ export default function Register() {
           </motion.div>
         </div>
         <h2 className="text-2xl font-bold text-foreground">Confirmed on Solana!</h2>
-        <p className="mt-3 text-muted-foreground">Your startup has been registered and will appear on the Dashboard.</p>
-        <div className="mt-4 rounded-lg bg-muted p-3">
+        <p className="mt-3 text-muted-foreground">Your startup is now registered on-chain with a permanent identity.</p>
+
+        <div className="mt-4 rounded-lg bg-muted p-3 w-full">
           <p className="text-xs text-muted-foreground">Transaction Hash</p>
           <p className="mt-1 break-all font-mono text-xs text-foreground">{txHash}</p>
         </div>
-        <div className="mt-6 flex gap-3">
-          <Link to="/dashboard" className="rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90">
-            Go to Dashboard
+
+        {/* Next steps guidance */}
+        <div className="mt-8 w-full text-left">
+          <h3 className="text-sm font-bold text-foreground mb-3">What to do next:</h3>
+          <div className="space-y-3">
+            {[
+              { step: '1', title: 'Publish your metrics', desc: 'Go to My Startup and publish your MRR, users, and growth rate on-chain.', link: '/my-startup', linkText: 'Go to My Startup', primary: true },
+              { step: '2', title: 'Get verified by oracles', desc: 'Once metrics are published, Pyth oracles cross-check your data and assign a trust score.', link: null, linkText: null, primary: false },
+              { step: '3', title: 'Earn your soulbound badge', desc: 'Verified startups receive a non-transferable NFT certificate in their wallet.', link: null, linkText: null, primary: false },
+            ].map(item => (
+              <div key={item.step} className="flex gap-3 items-start rounded-lg border border-border p-3">
+                <div className={`flex h-7 w-7 items-center justify-center rounded-full shrink-0 text-xs font-bold ${item.primary ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+                  {item.step}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-foreground">{item.title}</p>
+                  <p className="text-xs text-muted-foreground">{item.desc}</p>
+                  {item.link && (
+                    <Link to={item.link} className="inline-flex items-center gap-1 mt-1.5 text-xs font-medium text-primary hover:underline">
+                      {item.linkText} <ExternalLink className="h-3 w-3" />
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-3 w-full">
+          <Link to="/my-startup" className="flex-1 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90 text-center">
+            Publish Metrics Now
           </Link>
           <a href={explorerTxUrl(txHash)} target="_blank" rel="noopener noreferrer"
-            className="flex items-center gap-1 rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition hover:bg-secondary">
-            View on Solana Explorer <ExternalLink className="h-3.5 w-3.5" />
+            className="flex items-center justify-center gap-1 rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition hover:bg-secondary">
+            Solana Explorer <ExternalLink className="h-3.5 w-3.5" />
           </a>
         </div>
       </div>
