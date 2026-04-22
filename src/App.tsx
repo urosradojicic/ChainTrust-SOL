@@ -47,6 +47,7 @@ const InvestorHub = lazy(() => import("./pages/InvestorHub"));
 const ProofExplorer = lazy(() => import("./pages/ProofExplorer"));
 const Integrate = lazy(() => import("./pages/Integrate"));
 const EntityDossier = lazy(() => import("./pages/EntityDossier"));
+const DealRooms = lazy(() => import("./pages/DealRooms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function PageLoader() {
@@ -92,6 +93,7 @@ const AnimatedRoutes = () => {
           <Route path="/leaderboard" element={<G path="/leaderboard"><Leaderboard /></G>} />
           <Route path="/startup/:id" element={<G path="/startup"><StartupDetail /></G>} />
           <Route path="/entity/:id" element={<G path="/entity"><EntityDossier /></G>} />
+          <Route path="/deals" element={<G path="/deals"><DealRooms /></G>} />
           <Route path="/staking" element={<G path="/staking"><Staking /></G>} />
           <Route path="/governance" element={<G path="/governance"><Governance /></G>} />
           <Route path="/security" element={<G path="/security"><Security /></G>} />

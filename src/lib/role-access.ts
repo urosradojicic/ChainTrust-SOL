@@ -29,6 +29,7 @@ export const PAGE_ACCESS: Record<string, Access> = {
   '/provenance':      'auth',
   '/startup':         'auth',   // dynamic: /startup/:id
   '/entity':          'auth',   // dynamic: /entity/:id
+  '/deals':           'auth',   // Deal Rooms (investors + admins + startups)
 
   // Investor-specific
   '/investor-hub':    'investor',
