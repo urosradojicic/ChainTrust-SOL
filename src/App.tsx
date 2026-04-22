@@ -14,6 +14,7 @@ import PageTransition from "./components/layout/PageTransition";
 import RoleGuard from "./components/RoleGuard";
 import { useRealtimeSync } from "./hooks/use-realtime";
 import CommandPalette from "./components/CommandPalette";
+import KeyboardHelpOverlay from "./components/KeyboardHelpOverlay";
 import { Loader2 } from "lucide-react";
 
 import { InstitutionalViewProvider } from "./contexts/InstitutionalViewContext";
@@ -129,6 +130,7 @@ const App = () => (
           <BrowserRouter>
             <RealtimeProvider>
               <CommandPalette />
+              <KeyboardHelpOverlay />
               <div className="flex min-h-screen flex-col">
                 <Navbar />
                 <main className="flex-1">

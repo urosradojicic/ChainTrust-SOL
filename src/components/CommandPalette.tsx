@@ -8,9 +8,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ArrowRight, Command, Hash, Zap, Star, Clock, Keyboard } from 'lucide-react';
+import { Search, ArrowRight, Command, Hash, Zap, Star, Clock, Keyboard, Terminal } from 'lucide-react';
 import { useStartups } from '@/hooks/use-startups';
 import { searchCommands, getRecentPages, recordPageVisit, type Command as CommandType } from '@/lib/command-palette';
+import { parseSlashCommand, addToWatchlist, type SlashCommandMatch } from '@/lib/slash-commands';
+import { toast } from '@/hooks/use-toast';
 
 const CATEGORY_ICONS: Record<string, typeof Search> = {
   page: Hash,
@@ -60,6 +62,9 @@ export default function CommandPalette() {
 
   const recentPages = getRecentPages();
   const results = searchCommands(query, startups, recentPages);
+  const slashMatch: SlashCommandMatch | null = query.trim().startsWith('/')
+    ? parseSlashCommand(query, startups)
+    : null;
 
   // Group results by category
   const grouped = new Map<string, CommandType[]>();
@@ -70,6 +75,34 @@ export default function CommandPalette() {
   }
 
   const flatResults = results.commands;
+
+  const runSlashCommand = useCallback((match: SlashCommandMatch) => {
+    if (!match.valid) {
+      if (match.hint) toast({ title: 'Incomplete', description: match.hint });
+      return;
+    }
+    setOpen(false);
+    if (match.kind === 'watch') {
+      const id = match.target.replace(/^watch:/, '');
+      addToWatchlist(id);
+      toast({ title: 'Added to watchlist', description: match.label });
+      return;
+    }
+    if (match.kind === 'export') {
+      // Dispatch a custom event that pages can listen to for current-view export
+      window.dispatchEvent(new CustomEvent('chaintrust:export-request'));
+      toast({ title: 'Export triggered' });
+      return;
+    }
+    if (match.kind === 'help') {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: '?' }));
+      return;
+    }
+    if (match.target.startsWith('/')) {
+      recordPageVisit(match.target);
+      navigate(match.target);
+    }
+  }, [navigate]);
 
   const handleSelect = useCallback((command: CommandType) => {
     setOpen(false);
@@ -86,6 +119,12 @@ export default function CommandPalette() {
   }, [navigate]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    // Slash-command takes priority: Enter runs the parsed command
+    if (slashMatch && e.key === 'Enter') {
+      e.preventDefault();
+      runSlashCommand(slashMatch);
+      return;
+    }
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setSelectedIndex(i => Math.min(i + 1, flatResults.length - 1));
@@ -95,7 +134,7 @@ export default function CommandPalette() {
     } else if (e.key === 'Enter' && flatResults[selectedIndex]) {
       handleSelect(flatResults[selectedIndex]);
     }
-  }, [flatResults, selectedIndex, handleSelect]);
+  }, [flatResults, selectedIndex, handleSelect, slashMatch, runSlashCommand]);
 
   if (!open) return null;
 
@@ -125,7 +164,7 @@ export default function CommandPalette() {
               value={query}
               onChange={e => { setQuery(e.target.value); setSelectedIndex(0); }}
               onKeyDown={handleKeyDown}
-              placeholder="Search pages, startups, actions..."
+              placeholder="Search, or type / for slash commands..."
               className="flex-1 bg-transparent py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
             <kbd className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-muted text-[10px] text-muted-foreground font-mono">
@@ -133,9 +172,33 @@ export default function CommandPalette() {
             </kbd>
           </div>
 
+          {/* Slash command preview */}
+          {slashMatch && (
+            <button
+              onClick={() => runSlashCommand(slashMatch)}
+              disabled={!slashMatch.valid}
+              className={`w-full flex items-center gap-3 px-4 py-3 border-b border-border text-left transition ${
+                slashMatch.valid ? 'bg-primary/5 hover:bg-primary/10' : 'bg-amber-500/5'
+              }`}
+            >
+              <Terminal className={`h-4 w-4 shrink-0 ${slashMatch.valid ? 'text-primary' : 'text-amber-500'}`} />
+              <div className="flex-1 min-w-0">
+                <p className={`text-sm font-medium ${slashMatch.valid ? 'text-primary' : 'text-amber-600 dark:text-amber-400'}`}>
+                  {slashMatch.label}
+                </p>
+                <p className="text-[11px] text-muted-foreground truncate">{slashMatch.description}</p>
+              </div>
+              {slashMatch.valid && (
+                <kbd className="hidden sm:block text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-mono shrink-0">
+                  ↵
+                </kbd>
+              )}
+            </button>
+          )}
+
           {/* Results */}
           <div className="max-h-[400px] overflow-y-auto py-2">
-            {flatResults.length === 0 ? (
+            {flatResults.length === 0 && !slashMatch ? (
               <div className="px-4 py-8 text-center text-sm text-muted-foreground">
                 No results for "{query}"
               </div>
