@@ -23,6 +23,8 @@ import TransactionHistory from '@/components/startup/TransactionHistory';
 import ProofChainVisualizer from '@/components/startup/ProofChainVisualizer';
 import OnChainVerification from '@/components/startup/OnChainVerification';
 import SmartMoneyPanel from '@/components/startup/SmartMoneyPanel';
+import SquadsMultisigBadge from '@/components/startup/SquadsMultisigBadge';
+import FoundingTeamCard from '@/components/startup/FoundingTeamCard';
 import QuantModelsPanel from '@/components/startup/QuantModelsPanel';
 import TrustScoreBreakdown from '@/components/startup/TrustScoreBreakdown';
 import ValuationMetrics from '@/components/startup/ValuationMetrics';
@@ -174,6 +176,10 @@ export default function StartupDetail() {
             >
               <BarChart3 className="h-3 w-3" /> Entity Dossier
             </Link>
+            <SquadsMultisigBadge
+              walletAddress={startup.solana_address || startup.wallet_address}
+              compact
+            />
             <button
               onClick={() => exportElementAsPDF('startup-detail-content', `${startup.name}-report.pdf`)}
               className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition hover:text-foreground hover:bg-secondary"
@@ -311,6 +317,7 @@ export default function StartupDetail() {
         </TabsContent>
 
         <TabsContent value="overview" className="mt-6 space-y-6">
+          <FoundingTeamCard startup={startup} />
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
             <MetricCard label="MRR" value={formatCurrency(startup.mrr)} icon={Wallet} bg="" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
             <MetricCard label="Total Users" value={formatNumber(startup.users)} icon={Users} bg="" provenance={startup.verified ? 'on-chain' : 'self-reported'} />
@@ -449,6 +456,11 @@ export default function StartupDetail() {
               startupName={startup.name}
               startupCategory={startup.category}
               claimedTreasuryUsd={startup.treasury}
+            />
+          </ErrorBoundary>
+          <ErrorBoundary fallback={null}>
+            <SquadsMultisigBadge
+              walletAddress={startup.solana_address || startup.wallet_address}
             />
           </ErrorBoundary>
           <ErrorBoundary fallback={null}>

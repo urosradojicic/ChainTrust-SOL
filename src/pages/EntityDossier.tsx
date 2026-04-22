@@ -33,6 +33,7 @@ import { buildEntityDossier, type EntityTag, type TimelineEvent } from '@/lib/en
 import { formatCurrency, formatNumber } from '@/lib/format';
 import { chartTooltipStyle } from '@/lib/constants';
 import SmartMoneyPanel from '@/components/startup/SmartMoneyPanel';
+import SquadsMultisigBadge from '@/components/startup/SquadsMultisigBadge';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 const TIER_COLOR: Record<string, { bg: string; text: string; ring: string }> = {
@@ -267,6 +268,11 @@ export default function EntityDossier() {
           </div>
         </div>
       </div>
+
+      {/* Squads multisig */}
+      <ErrorBoundary fallback={null}>
+        <SquadsMultisigBadge walletAddress={dossier.wallets[0]?.address ?? null} />
+      </ErrorBoundary>
 
       {/* Smart Money */}
       <ErrorBoundary fallback={null}>

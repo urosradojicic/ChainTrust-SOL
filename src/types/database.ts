@@ -27,6 +27,18 @@ export interface DbStartup {
   energy_consumption: number;
   whale_concentration: number;
   created_at: string;
+  // Pitchbook-style fields (nullable; added in migration 20260422100000)
+  headquarters?: string | null;
+  employee_count?: number | null;
+  linkedin_url?: string | null;
+  twitter_handle?: string | null;
+  founding_team?: Array<{ name: string; role: string; linkedin?: string }> | null;
+  sector_tags?: string[] | null;
+  stage?: 'idea' | 'pre-seed' | 'seed' | 'series-a' | 'series-b' | 'series-c' | 'series-d' | 'growth' | 'exit' | null;
+  ticker?: string | null;
+  total_raised_usd?: number | null;
+  solana_address?: string | null;
+  wallet_address?: string | null;
 }
 
 export interface DbMetricsHistory {
