@@ -32,6 +32,8 @@ import { useStartup, useMetricsHistory, useAuditLog, useFundingRounds } from '@/
 import { buildEntityDossier, type EntityTag, type TimelineEvent } from '@/lib/entity-aggregator';
 import { formatCurrency, formatNumber } from '@/lib/format';
 import { chartTooltipStyle } from '@/lib/constants';
+import SmartMoneyPanel from '@/components/startup/SmartMoneyPanel';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const TIER_COLOR: Record<string, { bg: string; text: string; ring: string }> = {
   Platinum: { bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-900 dark:text-slate-100', ring: 'ring-slate-400/40' },
@@ -265,6 +267,14 @@ export default function EntityDossier() {
           </div>
         </div>
       </div>
+
+      {/* Smart Money */}
+      <ErrorBoundary fallback={null}>
+        <SmartMoneyPanel
+          walletAddress={dossier.wallets[0]?.address ?? null}
+          startupName={dossier.name}
+        />
+      </ErrorBoundary>
 
       {/* Timeline */}
       <div className="rounded-2xl border bg-card p-5">

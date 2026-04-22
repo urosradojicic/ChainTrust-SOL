@@ -22,6 +22,7 @@ import SoulboundBadge from '@/components/startup/SoulboundBadge';
 import TransactionHistory from '@/components/startup/TransactionHistory';
 import ProofChainVisualizer from '@/components/startup/ProofChainVisualizer';
 import OnChainVerification from '@/components/startup/OnChainVerification';
+import SmartMoneyPanel from '@/components/startup/SmartMoneyPanel';
 import QuantModelsPanel from '@/components/startup/QuantModelsPanel';
 import TrustScoreBreakdown from '@/components/startup/TrustScoreBreakdown';
 import ValuationMetrics from '@/components/startup/ValuationMetrics';
@@ -448,6 +449,12 @@ export default function StartupDetail() {
               startupName={startup.name}
               startupCategory={startup.category}
               claimedTreasuryUsd={startup.treasury}
+            />
+          </ErrorBoundary>
+          <ErrorBoundary fallback={null}>
+            <SmartMoneyPanel
+              walletAddress={startup.solana_address || startup.wallet_address}
+              startupName={startup.name}
             />
           </ErrorBoundary>
           <ProofChainVisualizer startup={startup} />
