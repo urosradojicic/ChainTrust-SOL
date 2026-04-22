@@ -167,6 +167,12 @@ export default function StartupDetail() {
             <ViewOnExplorerButton />
             <VerifyOnChainButton startup={startup} />
             <RiskAnalysisButton startup={startup} />
+            <Link
+              to={`/entity/${startup.id}`}
+              className="inline-flex items-center gap-1 rounded-md border border-primary/30 bg-primary/5 px-2.5 py-1 text-xs font-medium text-primary transition hover:bg-primary/10"
+            >
+              <BarChart3 className="h-3 w-3" /> Entity Dossier
+            </Link>
             <button
               onClick={() => exportElementAsPDF('startup-detail-content', `${startup.name}-report.pdf`)}
               className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition hover:text-foreground hover:bg-secondary"

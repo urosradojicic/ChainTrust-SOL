@@ -28,6 +28,7 @@ export const PAGE_ACCESS: Record<string, Access> = {
   '/compliance':      'auth',
   '/provenance':      'auth',
   '/startup':         'auth',   // dynamic: /startup/:id
+  '/entity':          'auth',   // dynamic: /entity/:id
 
   // Investor-specific
   '/investor-hub':    'investor',
