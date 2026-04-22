@@ -15,6 +15,8 @@ import {
 import { useSolPrice } from '@/hooks/use-pyth-price';
 import { useVerifyTreasury, useVerifyActivity, computeVerificationScore } from '@/hooks/use-chain-verification';
 import { useWalletIntelligence } from '@/hooks/use-wallet-intelligence';
+import ZKCompressionBanner from '@/components/ZKCompressionBanner';
+import PythPublisherBanner from '@/components/PythPublisherBanner';
 
 const enter = {
   hidden: { opacity: 0, y: 10 },
@@ -275,6 +277,12 @@ export default function Hackathon() {
             </div>
           ))}
         </div>
+      </motion.div>
+
+      {/* Solana-native narrative: ZK Compression + Pyth Publisher */}
+      <motion.div custom={3} variants={enter} initial="hidden" animate="visible" className="mb-10 space-y-4">
+        <ZKCompressionBanner />
+        <PythPublisherBanner />
       </motion.div>
 
       {/* Tech Architecture */}
