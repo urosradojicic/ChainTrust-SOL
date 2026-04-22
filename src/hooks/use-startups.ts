@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { DEMO_STARTUPS, DEMO_METRICS, DEMO_PROPOSALS } from '@/lib/demo-data';
+import { logDataError } from '@/lib/error-handler';
 import type { DbStartup, DbMetricsHistory, DbPledge, DbAuditEntry, DbProposal, DbVote, DbFundingRound, DbTokenUnlock } from '@/types/database';
 
 // Re-export types so existing imports don't break
@@ -15,9 +16,11 @@ export function useStartups() {
           .from('startups')
           .select('*')
           .order('mrr', { ascending: false });
-        if (error || !data || data.length === 0) return DEMO_STARTUPS;
+        if (error) { logDataError(error, 'useStartups.select'); return DEMO_STARTUPS; }
+        if (!data || data.length === 0) return DEMO_STARTUPS;
         return data as DbStartup[];
-      } catch {
+      } catch (err) {
+        logDataError(err, 'useStartups.catch');
         return DEMO_STARTUPS;
       }
     },
@@ -35,9 +38,11 @@ export function useStartup(id: string | undefined) {
           .select('*')
           .eq('id', id)
           .maybeSingle();
-        if (error || !data) return DEMO_STARTUPS.find(s => s.id === id) ?? null;
+        if (error) { logDataError(error, 'useStartup.select'); return DEMO_STARTUPS.find(s => s.id === id) ?? null; }
+        if (!data) return DEMO_STARTUPS.find(s => s.id === id) ?? null;
         return data as DbStartup;
-      } catch {
+      } catch (err) {
+        logDataError(err, 'useStartup.catch');
         return DEMO_STARTUPS.find(s => s.id === id) ?? null;
       }
     },
@@ -56,11 +61,13 @@ export function useMetricsHistory(startupId: string | undefined) {
           .select('*')
           .eq('startup_id', startupId)
           .order('month_date', { ascending: true });
-        if (error || !data || data.length === 0) {
+        if (error) { logDataError(error, 'useMetricsHistory.select'); return DEMO_METRICS.filter(m => m.startup_id === startupId); }
+        if (!data || data.length === 0) {
           return DEMO_METRICS.filter(m => m.startup_id === startupId);
         }
         return data as DbMetricsHistory[];
-      } catch {
+      } catch (err) {
+        logDataError(err, 'useMetricsHistory.catch');
         return DEMO_METRICS.filter(m => m.startup_id === startupId);
       }
     },
