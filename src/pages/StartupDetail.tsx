@@ -25,6 +25,7 @@ import OnChainVerification from '@/components/startup/OnChainVerification';
 import SmartMoneyPanel from '@/components/startup/SmartMoneyPanel';
 import SquadsMultisigBadge from '@/components/startup/SquadsMultisigBadge';
 import FoundingTeamCard from '@/components/startup/FoundingTeamCard';
+import IntelligenceSummary from '@/components/startup/IntelligenceSummary';
 import QuantModelsPanel from '@/components/startup/QuantModelsPanel';
 import TrustScoreBreakdown from '@/components/startup/TrustScoreBreakdown';
 import ValuationMetrics from '@/components/startup/ValuationMetrics';
@@ -387,6 +388,9 @@ export default function StartupDetail() {
 
         {/* AI Due Diligence */}
         <TabsContent value="due-diligence" className="mt-6 space-y-6">
+          <ErrorBoundary fallback={null}>
+            <IntelligenceSummary startup={startup} metrics={metrics} />
+          </ErrorBoundary>
           <ErrorBoundary fallback={<div className="rounded-xl border bg-card p-6 text-sm text-muted-foreground">Due diligence engine unavailable right now.</div>}>
             <AIDueDiligence startup={startup} metrics={metrics} allStartups={allStartups || []} />
           </ErrorBoundary>
