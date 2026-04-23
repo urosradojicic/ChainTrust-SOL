@@ -1677,4 +1677,57 @@ Deep research across 3 parallel agents covering Colosseum hackathon judging crit
 
 ---
 
+## Step 43 — Live Testnet Demo: real Solana devnet transactions for investors (April 23, 2026)
+
+### Problem
+
+The Anchor program at `blockchain/programs/chainmetrics/` (~1350 lines, fully written: tokens, staking, DAO, soulbound badges) has **never been deployed** — `declare_id!` is still the placeholder `CMTRgstry1111…`. Every on-chain write in `src/hooks/use-blockchain.ts` silently catches its failure and returns a fake `DEMO_…` signature. All PDA reads return null. For an investor demo this reads as "nothing actually works on-chain."
+
+Deploying the full Anchor program from a Windows dev box requires Rust + Solana CLI + Anchor CLI + a working Linux toolchain — hours of setup, multiple failure modes. Not viable for a "show me today" demo.
+
+### What was done
+
+Built a **Live Testnet Demo** page at `/testnet-demo` that uses the canonical **SPL Memo Program** (deployed on every Solana cluster) to anchor a real, signed, confirmable SHA-256 proof of startup metrics on devnet. No custom program deploy required.
+
+### How it works
+1. **Connect wallet** — reuses the existing `@solana/wallet-adapter-react` flow (Phantom / Solflare / Coinbase).
+2. **Airdrop** — one-click `connection.requestAirdrop(1 SOL)` on devnet; disabled on mainnet.
+3. **Enter metrics** — pre-filled sample (MRR, users, burn, runway, growth, carbon offset).
+4. **Anchor** — client computes `SHA-256(mrr|users|active|burn|runway|growth*100|carbon)` — byte-identical to the hash format the full `publish_metrics` instruction uses, so memos posted now are forward-compatible with the real registry when it ships.
+5. **Send** — wraps a JSON payload `{p:'ChainTrust', v:1, kind:'metrics', sid, name, mrr, …, h:<hash>, t}` in a Memo instruction, signed by the user's wallet, confirmed via `confirmTransaction`.
+6. **Verify** — returns the Solana Explorer link for the tx; anyone anywhere can replay the verification.
+
+### New files
+| File | Purpose |
+|------|---------|
+| `src/lib/memo-anchor.ts` | SPL Memo v2 helpers: instruction builder, proof-hash computer (matches `computeProofHash`), devnet airdrop, `sendProofHashMemo` end-to-end. |
+| `src/pages/LiveTestnetDemo.tsx` | 4-step investor demo page with wallet-adapter button, airdrop, metrics form, anchor button, success/error states, Explorer link. |
+| `.env` | Local devnet config (gitignored). |
+
+### Modified files
+| File | Change |
+|------|--------|
+| `src/App.tsx` | Lazy route `/testnet-demo → <LiveTestnetDemo />` (public, no role guard). |
+| `src/components/layout/Navbar.tsx` | Sidebar link under "Getting Started" with `Radio` icon. |
+| `src/pages/Verify.tsx` | Top-of-page CTA card linking to `/testnet-demo` (since current Verify reads fail with no deployed program). |
+
+### Why SPL Memo rather than deploy the Anchor program
+
+- **Zero setup risk** — the Memo Program is canonical Solana infrastructure; no compile, no deploy, no keypair management.
+- **Same cryptographic guarantees** — real signed tx, real confirmation, real Explorer link.
+- **Hash-compatible** — identical `SHA-256(mrr|users|…)` format as our Anchor program would use, so these memos are valid historical proofs even after the full registry is deployed.
+- **Ships today** — investors can point Phantom at devnet, click one button, and see a real tx in under 10 seconds.
+
+### Verification
+- `npm run build` — passes in 46s. `LiveTestnetDemo-*.js` bundle is 14.18 kB (4.60 kB gzipped).
+- `npm run test` — 1/1 passing.
+- `npm run dev` — serves `/` (200) and `/testnet-demo` (200).
+- TypeScript: no errors introduced by the new files. Pre-existing type errors in unrelated files (`Governance.tsx`, `MyStartup.tsx`, `Register.tsx`, etc.) remain; those are tracked as follow-ups from the Phase 8 security audit.
+
+### Not done (deliberately)
+- Deploying the full Anchor program — that's the next step for "full on-chain writes" and requires a Linux/WSL toolchain. The Live Testnet Demo gives investors a real cryptographic anchoring flow in the meantime.
+- Unwrapping the `DEMO_…` fallbacks in `use-blockchain.ts` — those stay until the Anchor program ships.
+
+---
+
 *This log is updated with every change pushed to GitHub.*

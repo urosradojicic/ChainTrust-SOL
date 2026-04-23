@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Shield, CheckCircle2, XCircle, Loader2, Hash,
   Clock, Users, TrendingUp, DollarSign, Leaf, ExternalLink,
-  Copy, Check, AlertTriangle,
+  Copy, Check, AlertTriangle, Radio, ArrowRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -230,6 +231,24 @@ export default function Verify() {
 
       <div className="grid lg:grid-cols-[1fr_280px] gap-6">
         <div className="space-y-6">
+          {/* Live Testnet CTA */}
+          <Link to="/testnet-demo" className="block group">
+            <Card className="border-green-300 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 transition dark:from-green-950/30 dark:to-emerald-950/30 dark:border-green-800">
+              <CardContent className="p-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/10">
+                  <Radio className="h-5 w-5 text-green-600 animate-pulse" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-sm">Try the Live Testnet Demo</p>
+                  <p className="text-xs text-muted-foreground">
+                    Connect a wallet and anchor a real proof on Solana {SOLANA_NETWORK} in under 10 seconds.
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-green-600 group-hover:translate-x-1 transition" />
+              </CardContent>
+            </Card>
+          </Link>
+
           {/* Search */}
           <Card>
             <CardContent className="p-5">

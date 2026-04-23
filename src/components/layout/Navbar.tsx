@@ -8,7 +8,7 @@ import {
   LogIn, LogOut, User, Sun, Moon, Bell, TrendingDown, FileText, Shield,
   Search, Building2, Menu, X, BarChart3, Coins, Vote, Eye, Award,
   FileCheck, Calculator, Code, Users, Globe, TrendingUp, GitCompareArrows,
-  Scale, ChevronRight,
+  Scale, ChevronRight, Radio,
 } from 'lucide-react';
 import SearchModal from '@/components/SearchModal';
 import ChainStatus from '@/components/common/ChainStatus';
@@ -36,6 +36,7 @@ const SIDEBAR_SECTIONS: { title: string; links: SidebarLink[] }[] = [
       { path: '/dashboard', label: 'Dashboard', icon: BarChart3, desc: 'Platform metrics overview' },
       { path: '/investor-hub', label: 'Investor Hub', icon: BarChart3, desc: 'AI briefings & deal flow' },
       { path: '/demo', label: 'Interactive Demo', icon: Eye, desc: 'Try the full workflow' },
+      { path: '/testnet-demo', label: 'Live Testnet Demo', icon: Radio, desc: 'Real Solana devnet tx — sign & verify' },
     ],
   },
   {
