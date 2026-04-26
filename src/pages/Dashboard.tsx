@@ -268,10 +268,32 @@ export default function Dashboard() {
           </div>
 
           {filtered.length === 0 && !isLoading && (
-            <div className="rounded-xl border border-dashed border-border bg-card/50 p-12 text-center">
-              <svg className="mx-auto h-10 w-10 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-              <p className="mt-3 text-muted-foreground">No startups match your search{category !== 'All' ? ` in ${category}` : ''}.</p>
-              <button onClick={() => { setSearch(''); setCategory('All'); }} className="mt-2 text-sm text-primary hover:underline">Clear filters</button>
+            <div className="rounded-xl border border-dashed border-border bg-card/50 p-10 sm:p-14 text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                <svg className="h-6 w-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 className="mt-4 text-base font-semibold text-foreground">
+                No matches{category !== 'All' ? ` in ${category}` : ''}{search ? ` for "${search}"` : ''}
+              </h3>
+              <p className="mt-1 text-sm text-muted-foreground max-w-sm mx-auto">
+                Try widening your filters, searching by ticker, or browsing the leaderboard.
+              </p>
+              <div className="mt-5 flex items-center justify-center gap-2 flex-wrap">
+                <button
+                  onClick={() => { setSearch(''); setCategory('All'); }}
+                  className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted transition"
+                >
+                  Clear filters
+                </button>
+                <Link
+                  to="/leaderboard"
+                  className="rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition"
+                >
+                  View leaderboard
+                </Link>
+              </div>
             </div>
           )}
 
@@ -322,18 +344,19 @@ export default function Dashboard() {
               ))}
             </div>
           ) : filtered.length > 0 ? (
-            <div className="overflow-x-auto rounded-lg border border-border bg-card">
+            <div className="overflow-x-auto rounded-lg border border-border bg-card max-h-[70vh]">
               <table className="w-full text-sm">
-                <thead className="border-b border-border">
+                {/* Sticky headers — institutional dashboards never lose context on scroll */}
+                <thead className="sticky top-0 z-10 bg-card border-b border-border">
                   <tr>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">#</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Startup</th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">Category</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">MRR</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Users</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Growth</th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">Trust</th>
-                    <th className="px-4 py-3 text-center font-medium text-muted-foreground">Verified</th>
+                    <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
+                    <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Startup</th>
+                    <th className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Category</th>
+                    <th className="px-4 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">MRR</th>
+                    <th className="px-4 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Users</th>
+                    <th className="px-4 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Growth</th>
+                    <th className="px-4 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Trust</th>
+                    <th className="px-4 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Verified</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">

@@ -84,7 +84,7 @@ export default function DigitalTwin({ startup, metrics }: DigitalTwinProps) {
   return (
     <div className="rounded-xl border bg-card overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary/10 via-cyan-500/5 to-purple-500/10 p-5 border-b border-border">
+      <div className="bg-gradient-to-r from-primary/10 via-cyan-500/5 to-primary/10 p-5 border-b border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-card border-2 border-primary/30">

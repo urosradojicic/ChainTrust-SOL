@@ -361,9 +361,9 @@ export default function Demo() {
                 )}
                 {currentStep === 3 && (
                   <>
-                    <span className="rounded-full bg-purple-500/10 text-purple-600 px-2.5 py-0.5 text-[10px] font-medium">Metaplex</span>
-                    <span className="rounded-full bg-purple-500/10 text-purple-600 px-2.5 py-0.5 text-[10px] font-medium">Bubblegum cNFT</span>
-                    <span className="rounded-full bg-purple-500/10 text-purple-600 px-2.5 py-0.5 text-[10px] font-medium">Soulbound</span>
+                    <span className="rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-[10px] font-medium">Metaplex</span>
+                    <span className="rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-[10px] font-medium">Bubblegum cNFT</span>
+                    <span className="rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-[10px] font-medium">Soulbound</span>
                   </>
                 )}
               </div>

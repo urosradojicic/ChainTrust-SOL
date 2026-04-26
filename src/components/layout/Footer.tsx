@@ -53,8 +53,8 @@ export default function Footer() {
             <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground mb-3">Company</h4>
             <div className="flex flex-col gap-2">
               <Link to="/security" className="text-xs text-muted-foreground transition hover:text-foreground">Security & Audits</Link>
-              <span className="text-xs text-muted-foreground">Terms of Service</span>
-              <span className="text-xs text-muted-foreground">Privacy Policy</span>
+              <Link to="/compliance" className="text-xs text-muted-foreground transition hover:text-foreground">Terms of Service</Link>
+              <Link to="/compliance" className="text-xs text-muted-foreground transition hover:text-foreground">Privacy Policy</Link>
               <a href="mailto:contact@chaintrust.io" className="text-xs text-muted-foreground transition hover:text-foreground">contact@chaintrust.io</a>
             </div>
           </div>
@@ -62,10 +62,10 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-8 border-t border-border pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} ChainTrust. Built on Solana.
           </span>
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             3 independent audits. Zero critical vulnerabilities.
           </span>
         </div>

@@ -6,7 +6,7 @@ const config: Record<ProvenanceType, { icon: React.ElementType; label: string; c
   'on-chain': { icon: Shield, label: 'On-Chain Verified', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
   'self-reported': { icon: AlertTriangle, label: 'Self-Reported', color: 'text-amber-400', bg: 'bg-amber-500/10' },
   'computed': { icon: Database, label: 'Computed', color: 'text-blue-400', bg: 'bg-blue-500/10' },
-  'oracle': { icon: LinkIcon, label: 'Oracle Verified', color: 'text-purple-400', bg: 'bg-purple-500/10' },
+  'oracle': { icon: LinkIcon, label: 'Oracle Verified', color: 'text-primary', bg: 'bg-primary/10' },
 };
 
 interface DataProvenanceProps {

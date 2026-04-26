@@ -52,9 +52,9 @@ function BriefingCard({ briefing }: { briefing: DailyBriefing }) {
             </p>
           </div>
           {briefing.portfolioSummary.alertCount > 0 && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500">
-              <Bell className="h-4 w-4" />
-              <span className="text-sm font-bold">{briefing.portfolioSummary.alertCount} alerts</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/15 border border-red-500/25 text-red-600 dark:text-red-400">
+              <Bell className="h-4 w-4" aria-hidden="true" />
+              <span className="text-sm font-bold tabular-nums">{briefing.portfolioSummary.alertCount} alert{briefing.portfolioSummary.alertCount === 1 ? '' : 's'}</span>
             </div>
           )}
         </div>
@@ -96,8 +96,8 @@ function BriefingCard({ briefing }: { briefing: DailyBriefing }) {
           </div>
         )}
 
-        {/* Market pulse */}
-        <div className="grid grid-cols-4 gap-2">
+        {/* Market pulse — mobile uses 2 cols, desktop uses 4 */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {briefing.marketPulse.map((pulse, i) => (
             <div key={i} className="rounded-lg bg-muted/20 p-2 text-center">
               <p className="text-[10px] text-muted-foreground">{pulse.indicator}</p>
@@ -277,7 +277,7 @@ function AchievementsCard({ badges }: { badges: AchievementBadge[] }) {
 function QuickActions() {
   const actions = [
     { label: 'Dashboard', icon: BarChart3, link: '/dashboard', color: 'bg-blue-500/10 text-blue-500' },
-    { label: 'Screener', icon: Target, link: '/screener', color: 'bg-purple-500/10 text-purple-500' },
+    { label: 'Screener', icon: Target, link: '/screener', color: 'bg-primary/10 text-primary' },
     { label: 'Compare', icon: Activity, link: '/compare', color: 'bg-emerald-500/10 text-emerald-500' },
     { label: 'Portfolio', icon: Star, link: '/portfolio', color: 'bg-amber-500/10 text-amber-500' },
     { label: 'Analytics', icon: TrendingUp, link: '/analytics', color: 'bg-cyan-500/10 text-cyan-500' },

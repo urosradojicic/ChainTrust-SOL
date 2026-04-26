@@ -296,9 +296,9 @@ export default function CostCalculator() {
               <div className="flex items-center gap-3">
                 <span className="w-32 text-sm text-muted-foreground">Ethereum</span>
                 <div className="flex-1 h-4 rounded-full bg-muted overflow-hidden">
-                  <div className="h-full rounded-full bg-indigo-500" style={{ width: `${Math.min(100, (results.ethMonthlyCost / results.currentMonthlyCost) * 100)}%` }} />
+                  <div className="h-full rounded-full bg-primary/70" style={{ width: `${Math.min(100, (results.ethMonthlyCost / results.currentMonthlyCost) * 100)}%` }} />
                 </div>
-                <span className="w-24 text-right text-sm font-mono font-bold text-indigo-400">{formatUSD(results.ethMonthlyCost)}</span>
+                <span className="w-24 text-right text-sm font-mono font-bold text-primary/80">{formatUSD(results.ethMonthlyCost)}</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-32 text-sm text-primary font-medium">ChainTrust</span>

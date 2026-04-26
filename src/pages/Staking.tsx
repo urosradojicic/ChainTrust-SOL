@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 const TOKEN_DISTRIBUTION = [
-  { label: 'Staking Rewards', pct: 35, color: 'bg-purple-500' },
+  { label: 'Staking Rewards', pct: 35, color: 'bg-primary' },
   { label: 'Treasury', pct: 25, color: 'bg-blue-500' },
   { label: 'Community', pct: 20, color: 'bg-emerald-500' },
   { label: 'Team (vested)', pct: 15, color: 'bg-amber-500' },

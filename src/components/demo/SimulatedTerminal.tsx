@@ -39,7 +39,7 @@ export default function SimulatedTerminal({ lines, speed = 60 }: SimulatedTermin
                 : line.startsWith('⏳') || line.startsWith('→')
                   ? 'text-yellow-400'
                   : line.startsWith('⚡')
-                    ? 'text-purple-400'
+                    ? 'text-primary'
                     : line.startsWith('🛡') || line.startsWith('🏆')
                       ? 'text-blue-400'
                       : line.startsWith('❯')

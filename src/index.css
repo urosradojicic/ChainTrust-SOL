@@ -17,13 +17,18 @@
     --secondary: 220 14% 96%;
     --secondary-foreground: 222 47% 11%;
     --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 43%;
+    --muted-foreground: 220 9% 38%;             /* darker for AA contrast on muted bg */
     --accent: 221 83% 53%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
+    /* New semantic tokens — replace hardcoded emerald/green/cyan across components */
+    --success: 142 50% 38%;
+    --success-foreground: 0 0% 100%;
+    --info: 217 91% 50%;
+    --info-foreground: 0 0% 100%;
     --border: 220 13% 90%;
     --input: 220 13% 90%;
     --ring: 221 83% 53%;
@@ -42,35 +47,39 @@
 
   .dark {
     --background: 222 47% 5%;
-    --foreground: 210 20% 88%;
+    --foreground: 210 20% 92%;                  /* slightly brighter for AA */
     --card: 222 35% 8%;
-    --card-foreground: 210 20% 88%;
+    --card-foreground: 210 20% 92%;
     --popover: 222 35% 10%;
-    --popover-foreground: 210 20% 88%;
+    --popover-foreground: 210 20% 92%;
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
     --secondary: 222 30% 13%;
-    --secondary-foreground: 210 20% 88%;
+    --secondary-foreground: 210 20% 92%;
     --muted: 222 30% 13%;
-    --muted-foreground: 215 15% 50%;
+    --muted-foreground: 215 20% 65%;            /* was 50% — now passes AA on muted bg */
     --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62% 55%;
     --destructive-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
-    --border: 222 25% 14%;
-    --input: 222 25% 14%;
+    --success: 142 55% 45%;
+    --success-foreground: 0 0% 100%;
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+    --border: 222 25% 16%;                      /* slightly more visible */
+    --input: 222 25% 16%;
     --ring: 217 91% 60%;
     --surface: 222 47% 4%;
 
     --sidebar-background: 222 47% 4%;
-    --sidebar-foreground: 210 20% 88%;
+    --sidebar-foreground: 210 20% 92%;
     --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 222 30% 13%;
-    --sidebar-accent-foreground: 210 20% 88%;
-    --sidebar-border: 222 25% 14%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 222 25% 16%;
     --sidebar-ring: 217 91% 60%;
   }
 }
@@ -81,30 +90,49 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+  /* Heading defaults — Lexend, tighter tracking, Bloomberg-grade hierarchy */
+  h1, h2, h3, h4 { font-family: 'Lexend', system-ui, sans-serif; letter-spacing: -0.01em; }
+  h1 { font-weight: 700; }
+  h2, h3 { font-weight: 600; }
+  /* Numbers use tabular figures everywhere — prevents column jitter */
+  .tabular-nums, td, th { font-variant-numeric: tabular-nums; }
 }
 
 @layer utilities {
   .text-highlight { color: hsl(var(--primary)); }
 
+  /* ── Surface elevation system ─────────────────────────────────────
+     Three depth levels: flat / raised / elevated. Use semantic names
+     instead of arbitrary `shadow-sm/md/lg` for institutional consistency.
+  */
+  .surface-flat { @apply bg-card border border-border; }
+  .surface-raised {
+    @apply bg-card border border-border;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+  .surface-elevated {
+    @apply bg-card border border-border;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  :is(.dark) .surface-raised { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
+  :is(.dark) .surface-elevated {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+
   .card-elevated {
     @apply bg-card border border-border;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.03);
   }
   .card-elevated:hover {
     border-color: hsl(var(--primary) / 0.3);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 10px 24px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04), 0 10px 24px rgba(0, 0, 0, 0.06);
   }
 
-  .glass-card {
-    @apply bg-card border border-border;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-  }
-  :is(.dark) .glass-card {
-    @apply bg-card/80;
-    backdrop-filter: blur(12px);
-    box-shadow: none;
-  }
+  /* glass-card kept for backwards compat but no longer applies blur — clarity > vibrancy */
+  .glass-card { @apply bg-card border border-border; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03); }
+  :is(.dark) .glass-card { @apply bg-card; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); }
 
+  /* gradient-border kept but tone reduced — institutional, not flashy */
   .gradient-border {
     position: relative;
     border: 1px solid transparent;
@@ -116,7 +144,7 @@
     inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, hsl(217 91% 60% / 0.3), hsl(217 91% 60% / 0.08));
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--border)));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -127,36 +155,26 @@
   .glow-dot { box-shadow: 0 0 6px 2px currentColor; }
 
   .startup-card-hover {
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   }
   .startup-card-hover:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     border-color: hsl(var(--primary) / 0.25);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.04);
   }
-  :is(.dark) .startup-card-hover:hover {
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  }
+  :is(.dark) .startup-card-hover:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
 
-  .tabular-nums { font-variant-numeric: tabular-nums; }
-
-  /* ── ChainTrust brand gradient ── */
+  /* ── Brand surfaces ────────────────────────────────────────────────
+     Solid primary surface, no rainbow gradient. Used on hero CTAs and
+     primary interactive surfaces. Never on text — institutional copy
+     stays solid foreground.
+  */
   .brand-gradient {
-    background: linear-gradient(135deg, hsl(221, 83%, 53%) 0%, hsl(199, 89%, 48%) 50%, hsl(172, 66%, 50%) 100%);
-  }
-  .brand-gradient-text {
-    background: linear-gradient(135deg, hsl(221, 83%, 53%) 0%, hsl(199, 89%, 48%) 50%, hsl(172, 66%, 50%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  :is(.dark) .brand-gradient-text {
-    background: linear-gradient(135deg, hsl(217, 91%, 65%) 0%, hsl(199, 95%, 60%) 50%, hsl(172, 80%, 55%) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(217 76% 42%) 100%);
   }
 
-  /* ── Animated mesh gradient background ── */
+  /* Subdued mesh background — primary blue + neutral steel only.
+     No animation: institutional surfaces sit still. */
   .mesh-gradient {
     position: relative;
     overflow: hidden;
@@ -166,62 +184,46 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 50% at 20% 40%, hsl(221, 83%, 53%, 0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 40% at 80% 20%, hsl(199, 89%, 48%, 0.06) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 50% 80%, hsl(172, 66%, 50%, 0.05) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 50% at 20% 40%, hsl(221 83% 53% / 0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 20%, hsl(217 33% 45% / 0.05) 0%, transparent 60%);
     pointer-events: none;
-    animation: mesh-shift 20s ease-in-out infinite alternate;
   }
   :is(.dark) .mesh-gradient::before {
     background:
-      radial-gradient(ellipse 80% 50% at 20% 40%, hsl(221, 83%, 53%, 0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 40% at 80% 20%, hsl(199, 89%, 48%, 0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 60% at 50% 80%, hsl(172, 66%, 50%, 0.06) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 50% at 20% 40%, hsl(221 83% 53% / 0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 20%, hsl(217 33% 45% / 0.08) 0%, transparent 60%);
   }
 
-  @keyframes mesh-shift {
-    0% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(1.05) translateX(2%); }
-    100% { opacity: 1; transform: scale(1) translateX(-1%); }
-  }
-
-  /* ── Proof hash animation ── */
-  .hash-scroll {
-    animation: hash-slide 30s linear infinite;
-  }
+  /* Hash-scroll only used on the hash-marquee in the hero */
+  .hash-scroll { animation: hash-slide 30s linear infinite; }
   @keyframes hash-slide {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
 
-  /* ── Glow pulse for verified badges ── */
-  .glow-pulse {
-    animation: glow-pulse 2s ease-in-out infinite;
-  }
-  @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 8px 2px hsl(172, 66%, 50%, 0.3); }
-    50% { box-shadow: 0 0 20px 6px hsl(172, 66%, 50%, 0.5); }
-  }
-
-  /* ── Feature card shine effect ── */
-  .card-shine {
-    position: relative;
-    overflow: hidden;
-  }
-  .card-shine::after {
+  /* Subtle status pulse — replacement for the old neon glow-pulse.
+     Used on "live" status indicators only. No box-shadow halo. */
+  .status-pulse { position: relative; }
+  .status-pulse::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(105deg, transparent 40%, hsl(var(--primary) / 0.03) 45%, hsl(var(--primary) / 0.06) 50%, hsl(var(--primary) / 0.03) 55%, transparent 60%);
-    transform: translateX(-100%);
-    transition: transform 0.6s ease;
+    border-radius: inherit;
+    background: currentColor;
+    opacity: 0.35;
+    animation: status-ping 1.8s ease-out infinite;
     pointer-events: none;
   }
-  .card-shine:hover::after {
-    transform: translateX(100%);
+  @keyframes status-ping {
+    0%   { transform: scale(1);   opacity: 0.35; }
+    80%, 100% { transform: scale(2.2); opacity: 0; }
   }
 
-  /* ── Dot grid pattern ── */
+  /* Backwards-compat alias — keep `.glow-pulse` working but use the
+     restrained status-pulse implementation instead of a neon halo. */
+  .glow-pulse { @apply status-pulse; }
+
+  /* Dot grid pattern — toned down so it never competes with content */
   .dot-pattern {
     background-image: radial-gradient(hsl(var(--border)) 1px, transparent 1px);
     background-size: 24px 24px;
@@ -233,10 +235,20 @@
 ::-webkit-scrollbar-thumb { background: hsl(var(--muted-foreground) / 0.2); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.35); }
 
+/* Institutional view — denser layouts, no animations, sharper weight */
 .institutional-view * { animation-duration: 0s !important; transition-duration: 0s !important; }
 .institutional-view .space-y-6 > * + * { margin-top: 1rem; }
 .institutional-view .p-5 { padding: 0.75rem; }
 .institutional-view .p-6 { padding: 1rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
 @media print {
   body { background: white !important; color: black !important; }

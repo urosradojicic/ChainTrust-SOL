@@ -18,7 +18,7 @@ const BADGE_COLORS = {
   blue:   { bg: 'bg-blue-500/10',    text: 'text-blue-500',    ring: 'ring-blue-500/20' },
   amber:  { bg: 'bg-amber-500/10',   text: 'text-amber-500',   ring: 'ring-amber-500/20' },
   red:    { bg: 'bg-red-500/10',     text: 'text-red-500',     ring: 'ring-red-500/20' },
-  purple: { bg: 'bg-purple-500/10',  text: 'text-purple-500',  ring: 'ring-purple-500/20' },
+  purple: { bg: 'bg-primary/10',  text: 'text-primary',  ring: 'ring-primary/20' },
 };
 
 // ── Single Badge ─────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ export default function PredictionBadges({ startup, metrics, compact = false }: 
   );
 
   const stageColors: Record<string, string> = {
-    'Pre-Seed': 'text-purple-500', 'Seed': 'text-blue-500',
+    'Pre-Seed': 'text-primary', 'Seed': 'text-blue-500',
     'Series A': 'text-emerald-500', 'Series B+': 'text-amber-500', 'Growth': 'text-cyan-500',
   };
 
@@ -81,7 +81,7 @@ export default function PredictionBadges({ startup, metrics, compact = false }: 
   return (
     <div className="rounded-xl border bg-card overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/5 to-emerald-500/10 p-5 border-b border-border">
+      <div className="bg-gradient-to-r from-blue-500/10 via-primary/5 to-emerald-500/10 p-5 border-b border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-card border-2 border-blue-500/30">

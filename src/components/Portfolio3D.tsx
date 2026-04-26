@@ -290,7 +290,7 @@ export default function Portfolio3D({ startups }: Portfolio3DProps) {
   return (
     <div className="rounded-xl border bg-card overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-primary/10 via-purple-500/10 to-cyan-500/10 p-4 border-b border-border">
+      <div className="bg-gradient-to-r from-primary/10 via-primary/10 to-cyan-500/10 p-4 border-b border-border">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold text-foreground">3D Portfolio Universe</h3>

@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   Fintech: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/30' },
-  SaaS: { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/30' },
+  SaaS: { bg: 'bg-primary/10', text: 'text-primary', border: 'border-primary/30' },
   DeFi: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' },
   Cleantech: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30' },
   Infrastructure: { bg: 'bg-pink-500/10', text: 'text-pink-400', border: 'border-pink-500/30' },

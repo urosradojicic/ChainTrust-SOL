@@ -141,7 +141,7 @@ export default function Integrate() {
           const Icon = method.icon;
           return (
             <motion.div key={method.title} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-              className="rounded-xl border border-border bg-card p-5 card-shine">
+              className="rounded-xl border border-border bg-card p-5 transition hover:border-primary/30">
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                   <Icon className="h-5 w-5 text-primary" />
@@ -247,7 +247,7 @@ export default function Integrate() {
             { label: 'ChainTrust SDK', sub: '@chaintrust/sdk', color: 'bg-primary/10 border-primary/30 text-primary' },
             { label: 'Anchor CPI', sub: 'Cross-Program Invocation', color: 'bg-cyan-500/10 border-cyan-500/30 text-cyan-500' },
             { label: 'ChainTrust Program', sub: 'CMTRgstry...111', color: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' },
-            { label: 'Solana', sub: 'Mainnet / Devnet', color: 'bg-violet-500/10 border-violet-500/30 text-violet-500' },
+            { label: 'Solana', sub: 'Mainnet / Devnet', color: 'bg-primary/10 border-primary/30 text-primary' },
           ].map((box, i) => (
             <div key={box.label} className="flex items-center gap-4 lg:gap-6">
               <div className={`rounded-xl border ${box.color} p-4 text-center min-w-[140px]`}>

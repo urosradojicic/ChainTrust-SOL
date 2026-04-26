@@ -49,12 +49,12 @@ export default function StepBadge({ playing, onComplete }: StepProps) {
             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             className="mx-auto max-w-sm"
           >
-            <div className="relative overflow-hidden rounded-2xl border-2 border-purple-400/50 bg-gradient-to-br from-purple-950/40 via-card to-primary/10 p-6 text-center shadow-2xl shadow-purple-500/10">
-              <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-purple-500/10 blur-3xl" />
+            <div className="relative overflow-hidden rounded-2xl border-2 border-primary/50 bg-gradient-to-br from-primary/40 via-card to-primary/10 p-6 text-center shadow-2xl shadow-primary/10">
+              <div className="absolute -top-20 -right-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
               <div className="absolute -bottom-20 -left-20 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
 
               <div className="relative">
-                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-primary">
+                <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary">
                   <Award className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold">Verified Startup</h3>
@@ -71,7 +71,7 @@ export default function StepBadge({ playing, onComplete }: StepProps) {
                   </div>
                 </div>
 
-                <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-purple-400">
+                <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-primary">
                   <Lock className="h-3 w-3" />
                   Soulbound — Non-Transferable (Solana PDA)
                 </div>

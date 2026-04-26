@@ -43,7 +43,7 @@ export default function Landing() {
 
               <motion.h1 custom={1} variants={enter} initial="hidden" animate="visible" className="font-display text-4xl font-bold text-foreground sm:text-5xl lg:text-6xl" style={{ lineHeight: 1.08, letterSpacing: '-0.03em' }}>
                 The{' '}
-                <span className="brand-gradient-text">credit bureau</span>
+                <span className="text-primary">credit bureau</span>
                 <br />
                 for startups
               </motion.h1>
@@ -152,7 +152,7 @@ export default function Landing() {
           </motion.p>
           <motion.h2 initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-display text-3xl font-bold text-foreground sm:text-4xl" style={{ letterSpacing: '-0.02em' }}>
             From self-reported metrics to{' '}
-            <span className="brand-gradient-text">cryptographic proof</span>
+            <span className="text-primary">cryptographic proof</span>
           </motion.h2>
         </div>
 
@@ -171,10 +171,10 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="card-shine rounded-xl border border-border bg-card p-6 relative"
+                className="surface-elevated transition hover:border-primary/30 rounded-xl border border-border bg-card p-6 relative"
               >
                 {/* Step number */}
-                <div className="text-[80px] font-display font-bold text-muted/30 dark:text-muted-foreground/5 absolute top-2 right-4 leading-none select-none">
+                <div className="text-[80px] font-display font-bold text-muted-foreground/15 dark:text-muted-foreground/10 absolute top-2 right-4 leading-none select-none pointer-events-none">
                   {item.step}
                 </div>
 
@@ -255,7 +255,7 @@ export default function Landing() {
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="card-shine rounded-xl border border-border bg-card p-6 sm:p-8"
+                  className="surface-elevated transition hover:border-primary/30 rounded-xl border border-border bg-card p-6 sm:p-8"
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${f.iconBg}`}>
@@ -417,7 +417,7 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06 }}
-                className="card-shine rounded-xl border border-border bg-card p-6"
+                className="surface-elevated transition hover:border-primary/30 rounded-xl border border-border bg-card p-6"
               >
                 <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${item.iconBg} mb-4`}>
                   <Icon className={`h-5 w-5 ${item.iconColor}`} />
@@ -459,8 +459,8 @@ export default function Landing() {
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-28 text-xs text-muted-foreground">Ethereum</span>
-                <div className="flex-1 h-3 rounded-full bg-muted overflow-hidden"><div className="h-full rounded-full bg-indigo-500" style={{ width: '90%' }} /></div>
-                <span className="text-xs font-mono text-indigo-400 w-14 text-right">$2.93</span>
+                <div className="flex-1 h-3 rounded-full bg-muted overflow-hidden"><div className="h-full rounded-full bg-primary/70" style={{ width: '90%' }} /></div>
+                <span className="text-xs font-mono text-primary/80 w-14 text-right">$2.93</span>
               </div>
               <div className="flex items-center gap-3">
                 <span className="w-28 text-xs text-primary font-medium">ChainTrust</span>
@@ -480,7 +480,7 @@ export default function Landing() {
           </motion.p>
           <motion.h2 initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="font-display text-3xl font-bold text-foreground sm:text-4xl" style={{ letterSpacing: '-0.02em' }}>
             Everyone else trusts databases.{' '}
-            <span className="brand-gradient-text">We trust math.</span>
+            <span className="text-primary">We trust math.</span>
           </motion.h2>
           <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mt-4 text-sm text-muted-foreground max-w-2xl mx-auto">
             PitchBook, Crunchbase, and CB Insights rely on self-reported data. Nansen and Dune track wallets, not startup claims.
@@ -495,7 +495,7 @@ export default function Landing() {
               <tr className="border-b border-border">
                 <th className="text-left py-4 px-4 text-muted-foreground font-medium w-48">Feature</th>
                 <th className="text-center py-4 px-3 min-w-[120px]">
-                  <span className="brand-gradient-text font-bold">ChainTrust</span>
+                  <span className="text-primary font-bold">ChainTrust</span>
                 </th>
                 <th className="text-center py-4 px-3 text-muted-foreground min-w-[100px]">PitchBook</th>
                 <th className="text-center py-4 px-3 text-muted-foreground min-w-[100px]">Crunchbase</th>
@@ -538,7 +538,7 @@ export default function Landing() {
               {/* Pricing row */}
               <tr className="border-t-2 border-primary/30">
                 <td className="py-4 px-4 text-foreground font-bold">Annual price</td>
-                <td className="text-center py-4 px-3 font-bold brand-gradient-text text-lg">Free*</td>
+                <td className="text-center py-4 px-3 font-bold text-primary text-lg">Free*</td>
                 <td className="text-center py-4 px-3 text-red-400 font-mono">$20-50K</td>
                 <td className="text-center py-4 px-3 text-red-400 font-mono">$588+</td>
                 <td className="text-center py-4 px-3 text-red-400 font-mono">$1,800+</td>
@@ -563,7 +563,7 @@ export default function Landing() {
                 </div>
                 <div className="text-2xl text-muted-foreground hidden sm:block">vs</div>
                 <div>
-                  <div className="text-4xl sm:text-5xl font-display font-bold brand-gradient-text">$0.00025</div>
+                  <div className="text-4xl sm:text-5xl font-display font-bold text-primary">$0.00025</div>
                   <div className="text-xs text-muted-foreground mt-1">ChainTrust, 2 seconds</div>
                 </div>
               </div>
@@ -592,12 +592,12 @@ export default function Landing() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: Brain, title: 'AI Intelligence', count: 11, items: 'Red flags, investment memos, claim verification, competitive intel', color: 'from-violet-500 to-purple-600' },
+              { icon: Brain, title: 'AI Intelligence', count: 11, items: 'Red flags, investment memos, claim verification, competitive intel', color: 'from-primary to-primary' },
               { icon: TrendingUp, title: 'Quant Finance', count: 8, items: 'VaR, Sharpe ratio, portfolio optimization, return calculator', color: 'from-blue-500 to-cyan-600' },
               { icon: Database, title: 'Machine Learning', count: 6, items: 'Isolation Forest, gradient boosting, pattern recognition', color: 'from-emerald-500 to-teal-600' },
               { icon: Shield, title: 'Regulatory', count: 8, items: 'US, EU, APAC compliance, MiCA, GDPR, 14 jurisdictions', color: 'from-amber-500 to-orange-600' },
               { icon: Layers, title: 'Infrastructure', count: 12, items: 'Deal rooms, DD workflows, pipelines, smart alerts, Blinks', color: 'from-rose-500 to-pink-600' },
-              { icon: Lock, title: 'Cryptography', count: 2, items: 'ZK range proofs, knowledge graph with PageRank', color: 'from-indigo-500 to-blue-600' },
+              { icon: Lock, title: 'Cryptography', count: 2, items: 'ZK range proofs, knowledge graph with PageRank', color: 'from-primary to-primary/70' },
               { icon: Target, title: 'Deep Intelligence', count: 7, items: 'Startup DNA, moat scoring, network effects, tokenomics sim', color: 'from-teal-500 to-green-600' },
               { icon: Code, title: 'Enterprise SDK', count: 5, items: 'Unified facade, plugin system, event bus, feature flags', color: 'from-gray-500 to-slate-600' },
             ].map((cat, i) => {
@@ -609,7 +609,7 @@ export default function Landing() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
-                  className="card-shine rounded-xl border border-border bg-card p-5"
+                  className="surface-elevated transition hover:border-primary/30 rounded-xl border border-border bg-card p-5"
                 >
                   <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${cat.color} text-white mb-3`}>
                     <Icon className="h-4 w-4" />

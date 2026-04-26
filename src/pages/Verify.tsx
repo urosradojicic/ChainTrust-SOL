@@ -443,11 +443,11 @@ export default function Verify() {
 
                 {/* Soulbound Badge */}
                 {result.badge ? (
-                  <Card className="border-purple-300 dark:border-purple-800">
+                  <Card className="border-primary dark:border-primary">
                     <CardContent className="p-5">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-bold flex items-center gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-purple-500" />
+                          <CheckCircle2 className="h-5 w-5 text-primary" />
                           Soulbound Badge Found
                         </h3>
                         <a
@@ -462,7 +462,7 @@ export default function Verify() {
                       <div className="grid sm:grid-cols-3 gap-3 text-sm">
                         <div>
                           <span className="text-muted-foreground">Trust Score</span>
-                          <p className="font-bold text-lg text-purple-600">{result.badge.trustScore}/100</p>
+                          <p className="font-bold text-lg text-primary">{result.badge.trustScore}/100</p>
                         </div>
                         <div>
                           <span className="text-muted-foreground">Verified At</span>
@@ -470,7 +470,7 @@ export default function Verify() {
                         </div>
                         <div>
                           <span className="text-muted-foreground">Soulbound</span>
-                          <p className="font-medium text-purple-600 flex items-center gap-1">
+                          <p className="font-medium text-primary flex items-center gap-1">
                             <CheckCircle2 className="h-4 w-4" /> Non-Transferable
                           </p>
                         </div>

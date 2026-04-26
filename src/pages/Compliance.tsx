@@ -297,7 +297,7 @@ export default function Compliance() {
             { class: 'Security Token', desc: 'Investment contracts, equity tokens, debt tokens', status: 'SEC jurisdiction', color: 'border-blue-500/20 bg-blue-500/5' },
             { class: 'Commodity Token', desc: 'Bitcoin, Ether, and 14 other classified digital commodities', status: 'CFTC jurisdiction', color: 'border-amber-500/20 bg-amber-500/5' },
             { class: 'Payment Stablecoin', desc: 'USDC, USDT — backed 1:1 by reserves, proof-of-reserves required', status: 'Dual oversight', color: 'border-emerald-500/20 bg-emerald-500/5' },
-            { class: 'Utility Token', desc: 'Platform access, governance rights, staking — functional use required', status: 'Function-dependent', color: 'border-purple-500/20 bg-purple-500/5' },
+            { class: 'Utility Token', desc: 'Platform access, governance rights, staking — functional use required', status: 'Function-dependent', color: 'border-primary/20 bg-primary/5' },
             { class: 'Hybrid Token', desc: 'Tokens with mixed characteristics — evaluated case-by-case', status: 'Joint review', color: 'border-orange-500/20 bg-orange-500/5' },
           ].map((t, i) => (
             <div key={t.class} className={`rounded-lg border p-3 ${t.color}`}>

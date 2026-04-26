@@ -221,10 +221,12 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-secondary hover:text-foreground"
-              aria-label="Open menu"
+              aria-label="Open navigation menu"
+              aria-expanded={sidebarOpen}
+              aria-controls="primary-sidebar"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-5 w-5" aria-hidden="true" />
             </button>
             <Link to="/" className="text-xl font-bold text-primary">
               ChainTrust
@@ -237,13 +239,19 @@ export default function Navbar() {
               <Link
                 key={link.path}
                 to={link.path}
-                className="relative px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+                aria-current={location.pathname === link.path ? 'page' : undefined}
+                className={`relative px-4 py-2 text-sm font-medium transition ${
+                  location.pathname === link.path
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
               >
                 {location.pathname === link.path && (
                   <motion.span
                     layoutId="nav-active"
-                    className="absolute inset-0 rounded-lg bg-primary/10"
+                    className="absolute inset-0 rounded-lg bg-primary/10 ring-1 ring-primary/20"
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    aria-hidden="true"
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-1.5">
@@ -320,12 +328,16 @@ export default function Navbar() {
             />
 
             {/* Sidebar panel */}
-            <motion.div
+            <motion.aside
+              id="primary-sidebar"
+              role="dialog"
+              aria-label="Primary navigation"
+              aria-modal="true"
               initial={{ x: -320, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -320, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed left-0 top-0 bottom-0 z-[70] w-80 border-r border-border bg-background overflow-y-auto"
+              className="fixed left-0 top-0 bottom-0 z-[70] w-72 sm:w-80 max-w-[85vw] border-r border-border bg-background overflow-y-auto"
             >
               {/* Sidebar header */}
               <div className="flex items-center justify-between border-b border-border px-5 py-4">
@@ -365,19 +377,20 @@ export default function Navbar() {
                             key={link.path}
                             to={link.path}
                             onClick={() => setSidebarOpen(false)}
+                            aria-current={location.pathname === link.path ? 'page' : undefined}
                             className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
                               location.pathname === link.path
-                                ? 'bg-primary/10 text-primary font-medium'
+                                ? 'bg-primary/10 text-primary font-medium ring-1 ring-primary/15'
                                 : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                             }`}
                           >
-                            <link.icon className="h-4 w-4 shrink-0" />
+                            <link.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
                             <div className="flex-1 min-w-0">
                               <div className="text-sm">{link.label}</div>
                               <div className="text-[10px] text-muted-foreground truncate">{link.desc}</div>
                             </div>
                             {location.pathname === link.path && (
-                              <ChevronRight className="h-3 w-3 text-primary shrink-0" />
+                              <ChevronRight className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
                             )}
                           </Link>
                         ))}
@@ -407,7 +420,7 @@ export default function Navbar() {
                   </Button>
                 )}
               </div>
-            </motion.div>
+            </motion.aside>
           </>
         )}
       </AnimatePresence>

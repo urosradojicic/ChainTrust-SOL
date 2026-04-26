@@ -39,16 +39,16 @@ export default function PythPublisherBanner() {
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border bg-gradient-to-br from-violet-500/5 to-primary/5 dark:from-violet-500/10 dark:to-primary/10 p-6"
+      className="rounded-2xl border bg-gradient-to-br from-primary/5 to-primary/5 dark:from-primary/10 dark:to-primary/10 p-6"
     >
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10">
-          <Gauge className="h-5 w-5 text-violet-500" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+          <Gauge className="h-5 w-5 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-foreground flex items-center gap-2">
             Pyth Publisher — Solana Startup Trust Index
-            <span className="text-[10px] uppercase tracking-wider rounded-full bg-violet-500/10 text-violet-500 dark:text-violet-400 px-2 py-0.5 border border-violet-500/20">
+            <span className="text-[10px] uppercase tracking-wider rounded-full bg-primary/10 text-primary dark:text-primary px-2 py-0.5 border border-primary/20">
               Live Feed
             </span>
           </h3>
@@ -111,7 +111,7 @@ interface IndexCellProps {
 function IndexCell({ label, value, sub, icon: Icon, accent }: IndexCellProps) {
   const tone =
     accent === 'violet'
-      ? 'text-violet-500 dark:text-violet-400'
+      ? 'text-primary dark:text-primary'
       : accent === 'primary'
       ? 'text-primary'
       : 'text-emerald-600 dark:text-emerald-400';

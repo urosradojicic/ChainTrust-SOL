@@ -18,7 +18,7 @@ import { computeReputationScore, type ReputationScore, type ScoreComponent, type
 // ── Config ───────────────────────────────────────────────────────────
 
 const TIER_CONFIG = {
-  Platinum: { color: 'text-purple-400', bg: 'bg-gradient-to-r from-purple-500/20 to-blue-500/20', border: 'border-purple-500/30', ring: 'ring-purple-500/20' },
+  Platinum: { color: 'text-primary', bg: 'bg-gradient-to-r from-primary/20 to-blue-500/20', border: 'border-primary/30', ring: 'ring-primary/20' },
   Gold:     { color: 'text-amber-400',  bg: 'bg-gradient-to-r from-amber-500/20 to-yellow-500/20', border: 'border-amber-500/30', ring: 'ring-amber-500/20' },
   Silver:   { color: 'text-slate-400',  bg: 'bg-gradient-to-r from-slate-400/20 to-slate-300/20', border: 'border-slate-400/30', ring: 'ring-slate-400/20' },
   Bronze:   { color: 'text-orange-500', bg: 'bg-gradient-to-r from-orange-500/20 to-red-500/20', border: 'border-orange-500/30', ring: 'ring-orange-500/20' },

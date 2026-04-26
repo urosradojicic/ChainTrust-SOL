@@ -166,7 +166,7 @@ export default function ProofChainVisualizer({ startup }: ProofChainVisualizerPr
             {activeStep === 2 && (
               <div className="rounded-lg bg-[#0d1117] border border-[#30363d] p-4 font-mono text-xs overflow-x-auto">
                 <div className="text-cyan-400">// Solana transaction instruction</div>
-                <div className="text-gray-300">program: <span className="text-purple-400">{PROGRAM_ID.toBase58().slice(0, 20)}...</span></div>
+                <div className="text-gray-300">program: <span className="text-primary">{PROGRAM_ID.toBase58().slice(0, 20)}...</span></div>
                 <div className="text-gray-300">instruction: <span className="text-amber-400">publish_metrics</span></div>
                 <div className="text-gray-300">proof_hash: <span className="text-emerald-400">[{proofHash.slice(0, 24)}...]</span></div>
                 <div className="text-gray-300">signer: <span className="text-blue-400">startup_owner.publicKey</span></div>
@@ -178,7 +178,7 @@ export default function ProofChainVisualizer({ startup }: ProofChainVisualizerPr
                 <div className="rounded-lg bg-[#0d1117] border border-[#30363d] p-4 font-mono text-xs overflow-x-auto">
                   <div className="text-cyan-400">// PDA derivation</div>
                   <div className="text-gray-300">seeds: <span className="text-amber-400">["metrics", startup_id.to_le_bytes()]</span></div>
-                  <div className="text-gray-300">program: <span className="text-purple-400">{PROGRAM_ID.toBase58().slice(0, 20)}...</span></div>
+                  <div className="text-gray-300">program: <span className="text-primary">{PROGRAM_ID.toBase58().slice(0, 20)}...</span></div>
                   <div className="mt-1 text-cyan-400">// Stored on-chain (immutable until next publish)</div>
                   <div className="text-emerald-400">{'MetricsAccount { mrr, users, proof_hash, timestamp, ... }'}</div>
                 </div>

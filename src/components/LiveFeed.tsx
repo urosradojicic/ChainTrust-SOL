@@ -52,7 +52,7 @@ const TYPES: BlockEvent['type'][] = ['revenue', 'carbon', 'users', 'verified', '
 const typeColors: Record<BlockEvent['type'], string> = {
   revenue: 'text-blue-400',
   carbon: 'text-emerald-400',
-  users: 'text-purple-400',
+  users: 'text-primary',
   verified: 'text-amber-400',
   pledge: 'text-primary',
 };

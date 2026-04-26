@@ -120,7 +120,7 @@ const CERT_TYPE_COLORS: Record<string, string> = {
   'Origin & Sustainability': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
   'Circular Economy': 'bg-blue-500/10 text-blue-400 border-blue-500/20',
   'Product Identity': 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-  'Origin & Labor Standards': 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+  'Origin & Labor Standards': 'bg-primary/10 text-primary border-primary/20',
   'Full Chain of Custody': 'bg-primary/10 text-primary border-primary/20',
 };
 

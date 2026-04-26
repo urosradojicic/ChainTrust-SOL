@@ -28,20 +28,20 @@ export default function SoulboundBadge({ startupId, startupName }: SoulboundBadg
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="relative overflow-hidden rounded-2xl border-2 border-purple-400/30 bg-gradient-to-br from-purple-950/30 via-card to-primary/5 p-6"
+      className="relative overflow-hidden rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary/30 via-card to-primary/5 p-6"
     >
-      <div className="absolute -top-16 -right-16 h-32 w-32 rounded-full bg-purple-500/10 blur-3xl" />
+      <div className="absolute -top-16 -right-16 h-32 w-32 rounded-full bg-primary/10 blur-3xl" />
       <div className="absolute -bottom-16 -left-16 h-32 w-32 rounded-full bg-primary/10 blur-3xl" />
 
       <div className="relative flex items-start gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-primary">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary">
           <Award className="h-7 w-7 text-white" />
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-bold text-foreground">Soulbound Badge</h3>
-            <div className="flex items-center gap-1 rounded-full bg-purple-400/10 px-2 py-0.5 text-[10px] font-medium text-purple-400">
+            <div className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
               <Lock className="h-2.5 w-2.5" /> Non-Transferable
             </div>
           </div>

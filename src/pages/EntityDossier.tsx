@@ -3,7 +3,7 @@
  * for a ChainTrust-verified startup. Renders everything a professional
  * investor wants at a glance: holdings, wallets, timeline, tags, tier.
  */
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -17,8 +17,10 @@ import {
 import {
   ArrowLeft,
   Award,
+  Check,
   CheckCircle2,
   Clock,
+  Copy,
   ExternalLink,
   Eye,
   Layers,
@@ -37,11 +39,11 @@ import SquadsMultisigBadge from '@/components/startup/SquadsMultisigBadge';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 const TIER_COLOR: Record<string, { bg: string; text: string; ring: string }> = {
-  Platinum: { bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-900 dark:text-slate-100', ring: 'ring-slate-400/40' },
-  Gold: { bg: 'bg-amber-100 dark:bg-amber-950/40', text: 'text-amber-800 dark:text-amber-300', ring: 'ring-amber-400/40' },
-  Silver: { bg: 'bg-zinc-100 dark:bg-zinc-800', text: 'text-zinc-700 dark:text-zinc-200', ring: 'ring-zinc-400/40' },
-  Bronze: { bg: 'bg-orange-100 dark:bg-orange-950/40', text: 'text-orange-800 dark:text-orange-300', ring: 'ring-orange-400/40' },
-  Unranked: { bg: 'bg-muted', text: 'text-muted-foreground', ring: 'ring-border' },
+  Platinum: { bg: 'bg-slate-100 dark:bg-slate-800',     text: 'text-slate-900 dark:text-slate-100',  ring: 'ring-slate-400/40' },
+  Gold:     { bg: 'bg-amber-100 dark:bg-amber-950/50',  text: 'text-amber-900 dark:text-amber-200',  ring: 'ring-amber-500/40' },
+  Silver:   { bg: 'bg-zinc-100 dark:bg-zinc-800',       text: 'text-zinc-800 dark:text-zinc-100',    ring: 'ring-zinc-400/40' },
+  Bronze:   { bg: 'bg-orange-100 dark:bg-orange-950/50',text: 'text-orange-900 dark:text-orange-200',ring: 'ring-orange-500/40' },
+  Unranked: { bg: 'bg-muted',                           text: 'text-muted-foreground',               ring: 'ring-border' },
 };
 
 const TAG_TONE: Record<EntityTag['tone'], string> = {
@@ -220,28 +222,7 @@ export default function EntityDossier() {
           ) : (
             <ul className="space-y-2.5">
               {dossier.wallets.map((w) => (
-                <li
-                  key={w.address}
-                  className="rounded-lg border border-border/60 bg-muted/30 p-3"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                      {w.label}
-                    </span>
-                    <a
-                      href={w.explorerUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label={`View ${w.label} on explorer`}
-                      className="text-primary hover:text-primary/80 transition"
-                    >
-                      <LinkIcon className="h-3.5 w-3.5" />
-                    </a>
-                  </div>
-                  <code className="mt-1 block text-[11px] text-foreground break-all font-mono">
-                    {w.address}
-                  </code>
-                </li>
+                <WalletRow key={w.address} wallet={w} />
               ))}
             </ul>
           )}
@@ -346,5 +327,55 @@ function KpiCard({ label, value, icon: Icon, emphasis }: KpiCardProps) {
       </div>
       <p className="mt-1.5 text-xl font-bold tabular-nums text-foreground">{value}</p>
     </div>
+  );
+}
+
+// ── Wallet row with truncation + copy ─────────────────────────────────
+interface WalletRowProps {
+  wallet: { address: string; label: string; explorerUrl: string };
+}
+function WalletRow({ wallet }: WalletRowProps) {
+  const [copied, setCopied] = useState(false);
+  const truncated = `${wallet.address.slice(0, 8)}…${wallet.address.slice(-6)}`;
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(wallet.address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch { /* clipboard blocked — silent */ }
+  };
+
+  return (
+    <li className="rounded-lg border border-border/60 bg-muted/30 p-3 transition hover:border-primary/30">
+      <div className="flex items-center justify-between gap-2 mb-1">
+        <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          {wallet.label}
+        </span>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={copy}
+            aria-label={copied ? 'Address copied' : 'Copy wallet address'}
+            className="text-muted-foreground hover:text-foreground transition"
+          >
+            {copied
+              ? <Check className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" />
+              : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
+          </button>
+          <a
+            href={wallet.explorerUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`View ${wallet.label} on Solana Explorer`}
+            className="text-muted-foreground hover:text-primary transition"
+          >
+            <LinkIcon className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+      <code className="block text-[12px] text-foreground font-mono tabular-nums tracking-tight">
+        {truncated}
+      </code>
+    </li>
   );
 }
