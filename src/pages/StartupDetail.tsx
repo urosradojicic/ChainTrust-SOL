@@ -256,9 +256,9 @@ export default function StartupDetail() {
             </optgroup>
           </select>
         </div>
-        {/* Desktop: horizontal scrollable tabs */}
-        <TabsList className="hidden sm:flex w-full justify-start overflow-x-auto">
-          {/* Core */}
+        {/* Desktop: tabs wrap onto multiple rows so every tab is visible at a glance.
+            Each TabsTrigger renders as a chip; rows break naturally and stay aligned via gap-y. */}
+        <TabsList className="hidden sm:flex flex-wrap h-auto w-full justify-start gap-y-1 py-1.5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="quant-models" className="flex items-center gap-1">
             <BarChart3 className="h-3 w-3" /> Quant Models
@@ -292,8 +292,6 @@ export default function StartupDetail() {
           <TabsTrigger value="escrow" className="flex items-center gap-1">
             <Lock className="h-3 w-3" /> Escrow
           </TabsTrigger>
-          {/* Compliance & Trust */}
-          <span className="mx-1 h-4 w-px bg-border" />
           <TabsTrigger value="zk-proofs" className="flex items-center gap-1">
             <Lock className="h-3 w-3" /> ZK Proofs
           </TabsTrigger>
@@ -301,8 +299,6 @@ export default function StartupDetail() {
           <TabsTrigger value="sustainability">Sustainability</TabsTrigger>
           <TabsTrigger value="impact-pl">Impact P&L</TabsTrigger>
           <TabsTrigger value="pledges">Pledges</TabsTrigger>
-          {/* On-Chain & Trust */}
-          <span className="mx-1 h-4 w-px bg-border" />
           <TabsTrigger value="verification">Verification</TabsTrigger>
           <TabsTrigger value="tokenomics">Tokenomics</TabsTrigger>
           <TabsTrigger value="funding">Funding</TabsTrigger>
