@@ -95,47 +95,48 @@ export default function NetworkPulse() {
         </div>
       </div>
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-4 gap-3 mb-4">
-        <div className="rounded-lg bg-muted/50 p-3">
+      {/* Stats grid — 2×2 layout: clean rows that never overflow even in narrow sidebars */}
+      <div className="grid grid-cols-2 gap-2.5 mb-4">
+        <div className="rounded-lg bg-muted/50 p-3 min-w-0">
           <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Server className="h-3.5 w-3.5" />
+            <Server className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <span className="text-[10px] uppercase tracking-wider">Slot</span>
           </div>
           <motion.p
             key={currentSlot}
             initial={{ y: -5, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="mt-1 font-bold font-mono text-foreground"
+            className="mt-1 text-sm font-bold font-mono tabular-nums text-foreground truncate"
+            title={currentSlot > 0 ? `#${currentSlot.toLocaleString()}` : undefined}
           >
-            {currentSlot > 0 ? `#${currentSlot.toLocaleString()}` : '—'}
+            {currentSlot > 0 ? `#${formatSlot(currentSlot)}` : '—'}
           </motion.p>
         </div>
-        <div className="rounded-lg bg-muted/50 p-3">
+        <div className="rounded-lg bg-muted/50 p-3 min-w-0">
           <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Zap className="h-3.5 w-3.5" />
+            <Zap className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <span className="text-[10px] uppercase tracking-wider">TPS</span>
           </div>
-          <p className={`mt-1 font-bold font-mono ${tps > 1000 ? 'text-accent' : tps > 0 ? 'text-foreground' : 'text-muted-foreground'}`}>
+          <p className={`mt-1 text-sm font-bold font-mono tabular-nums truncate ${tps > 1000 ? 'text-accent' : tps > 0 ? 'text-foreground' : 'text-muted-foreground'}`}>
             {tps > 0 ? tps.toLocaleString() : '—'}
           </p>
         </div>
-        <div className="rounded-lg bg-muted/50 p-3">
+        <div className="rounded-lg bg-muted/50 p-3 min-w-0">
           <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Clock className="h-3.5 w-3.5" />
-            <span className="text-[10px] uppercase tracking-wider">Block Time</span>
+            <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            <span className="text-[10px] uppercase tracking-wider">Block</span>
           </div>
-          <p className="mt-1 font-bold font-mono text-foreground">
+          <p className="mt-1 text-sm font-bold font-mono tabular-nums text-foreground truncate">
             {blockTime > 0 ? `${blockTime}ms` : '—'}
           </p>
         </div>
-        <div className="rounded-lg bg-muted/50 p-3">
+        <div className="rounded-lg bg-muted/50 p-3 min-w-0">
           <div className="flex items-center gap-1.5 text-muted-foreground">
-            <Wifi className="h-3.5 w-3.5" />
+            <Wifi className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <span className="text-[10px] uppercase tracking-wider">Energy</span>
           </div>
-          <p className="mt-1 font-bold font-mono text-accent">~0.001 kWh</p>
-          <p className="text-[9px] text-muted-foreground">est. per tx (PoS)</p>
+          <p className="mt-1 text-sm font-bold font-mono tabular-nums text-accent truncate">~0.001 kWh</p>
+          <p className="text-[9px] text-muted-foreground truncate">est. per tx · PoS</p>
         </div>
       </div>
 
@@ -165,4 +166,15 @@ export default function NetworkPulse() {
       )}
     </div>
   );
+}
+
+/**
+ * Compact slot formatter — shortens 458,226,105 → "458.2M" so the value
+ * fits in a narrow KPI tile. Numbers below 1M show full digits with thin
+ * grouping commas to stay scannable.
+ */
+function formatSlot(slot: number): string {
+  if (slot >= 1_000_000_000) return `${(slot / 1_000_000_000).toFixed(2)}B`;
+  if (slot >= 1_000_000) return `${(slot / 1_000_000).toFixed(1)}M`;
+  return slot.toLocaleString();
 }
