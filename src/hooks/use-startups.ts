@@ -7,6 +7,21 @@ import type { DbStartup, DbMetricsHistory, DbPledge, DbAuditEntry, DbProposal, D
 // Re-export types so existing imports don't break
 export type { DbStartup, DbMetricsHistory, DbPledge, DbAuditEntry, DbProposal, DbVote, DbFundingRound, DbTokenUnlock };
 
+/**
+ * Merge live Supabase rows with the DEMO_STARTUPS catalogue so investors
+ * always see the full ecosystem variety, even when the DB only has the
+ * 8 originally-seeded rows. DB IDs always win on collision (real data
+ * takes precedence). Removed cleanly when production seeds 33+ rows.
+ */
+function mergeWithDemo(dbRows: DbStartup[] | null | undefined): DbStartup[] {
+  const dbList = Array.isArray(dbRows) ? dbRows : [];
+  const dbIds = new Set(dbList.map((s) => s.id));
+  const fillers = DEMO_STARTUPS.filter((s) => !dbIds.has(s.id));
+  // DB first (already MRR-sorted), then demo top-up sorted by MRR descending too
+  const sortedFillers = [...fillers].sort((a, b) => (b.mrr ?? 0) - (a.mrr ?? 0));
+  return [...dbList, ...sortedFillers];
+}
+
 export function useStartups() {
   return useQuery({
     queryKey: ['startups'],
@@ -16,9 +31,12 @@ export function useStartups() {
           .from('startups')
           .select('*')
           .order('mrr', { ascending: false });
-        if (error) { logDataError(error, 'useStartups.select'); return DEMO_STARTUPS; }
-        if (!data || data.length === 0) return DEMO_STARTUPS;
-        return data as DbStartup[];
+        if (error) {
+          logDataError(error, 'useStartups.select');
+          return DEMO_STARTUPS;
+        }
+        // Always supplement with demo entries so the platform looks populated
+        return mergeWithDemo(data as DbStartup[] | null);
       } catch (err) {
         logDataError(err, 'useStartups.catch');
         return DEMO_STARTUPS;
@@ -32,18 +50,24 @@ export function useStartup(id: string | undefined) {
     queryKey: ['startup', id],
     queryFn: async () => {
       if (!id) return null;
+      // Demo startups are read-only and only live in the local catalogue,
+      // so resolve them locally before round-tripping to Supabase.
+      const demoMatch = DEMO_STARTUPS.find((s) => s.id === id);
       try {
         const { data, error } = await supabase
           .from('startups')
           .select('*')
           .eq('id', id)
           .maybeSingle();
-        if (error) { logDataError(error, 'useStartup.select'); return DEMO_STARTUPS.find(s => s.id === id) ?? null; }
-        if (!data) return DEMO_STARTUPS.find(s => s.id === id) ?? null;
+        if (error) {
+          logDataError(error, 'useStartup.select');
+          return demoMatch ?? null;
+        }
+        if (!data) return demoMatch ?? null;
         return data as DbStartup;
       } catch (err) {
         logDataError(err, 'useStartup.catch');
-        return DEMO_STARTUPS.find(s => s.id === id) ?? null;
+        return demoMatch ?? null;
       }
     },
     enabled: !!id,
@@ -55,20 +79,22 @@ export function useMetricsHistory(startupId: string | undefined) {
     queryKey: ['metrics_history', startupId],
     queryFn: async () => {
       if (!startupId) return [];
+      const demoMetrics = DEMO_METRICS.filter((m) => m.startup_id === startupId);
       try {
         const { data, error } = await supabase
           .from('metrics_history')
           .select('*')
           .eq('startup_id', startupId)
           .order('month_date', { ascending: true });
-        if (error) { logDataError(error, 'useMetricsHistory.select'); return DEMO_METRICS.filter(m => m.startup_id === startupId); }
-        if (!data || data.length === 0) {
-          return DEMO_METRICS.filter(m => m.startup_id === startupId);
+        if (error) {
+          logDataError(error, 'useMetricsHistory.select');
+          return demoMetrics;
         }
+        if (!data || data.length === 0) return demoMetrics;
         return data as DbMetricsHistory[];
       } catch (err) {
         logDataError(err, 'useMetricsHistory.catch');
-        return DEMO_METRICS.filter(m => m.startup_id === startupId);
+        return demoMetrics;
       }
     },
     enabled: !!startupId,
@@ -90,13 +116,21 @@ export function useAllMetricsMap(startupIds: string[]) {
           .in('startup_id', startupIds)
           .order('month_date', { ascending: true });
 
-        if (!error && data && data.length > 0) {
+        if (!error && data) {
           for (const m of data as DbMetricsHistory[]) {
             const arr = map.get(m.startup_id) ?? [];
             arr.push(m);
             map.set(m.startup_id, arr);
           }
-          return map;
+          // For any requested ID that wasn't in the DB response, supplement
+          // with the demo metrics so charts render across the whole list.
+          for (const id of startupIds) {
+            if (!map.has(id)) {
+              const demoForId = DEMO_METRICS.filter((m) => m.startup_id === id);
+              if (demoForId.length > 0) map.set(id, demoForId);
+            }
+          }
+          if (map.size > 0) return map;
         }
       } catch { /* fall through to demo */ }
 
