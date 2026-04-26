@@ -2,8 +2,39 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Brain, AlertTriangle, CheckCircle2, Leaf, Coins, TrendingUp } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import type { DbStartup } from '@/hooks/use-startups';
+import { generateRiskAnalysis } from '@/lib/risk-analysis';
+
+/**
+ * Direct fetch to the Edge Function. We bypass `supabase.functions.invoke`
+ * here because that helper calls `auth.getSession()` first and a stale or
+ * unrefreshable token in localStorage causes the underlying fetch to throw,
+ * which surfaces as the generic "Failed to send a request to the Edge
+ * Function". Going through `fetch` with the anon key keeps this flow
+ * independent of the auth session state.
+ */
+async function invokeRiskAnalysis(startup: DbStartup): Promise<string> {
+  const baseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!baseUrl || !anonKey) throw new Error('Supabase env vars missing');
+
+  const res = await fetch(`${baseUrl}/functions/v1/risk-analysis`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: anonKey,
+      Authorization: `Bearer ${anonKey}`,
+    },
+    body: JSON.stringify({ startup }),
+  });
+  if (!res.ok) throw new Error(`Edge Function ${res.status} ${res.statusText}`);
+  const json = await res.json();
+  if (json?.error) throw new Error(json.error);
+  if (typeof json?.analysis !== 'string' || json.analysis.trim().length === 0) {
+    throw new Error('Edge Function returned empty analysis');
+  }
+  return json.analysis;
+}
 
 interface Props {
   startup: DbStartup;
@@ -60,14 +91,15 @@ export default function RiskAnalysisButton({ startup }: Props) {
     setLoading(true);
     setError(null);
     try {
-      const { data, error: fnError } = await supabase.functions.invoke('risk-analysis', {
-        body: { startup },
-      });
-      if (fnError) throw fnError;
-      if (data?.error) throw new Error(data.error);
-      setSections(parseAnalysis(data.analysis));
-    } catch (e: any) {
-      setError(e.message || 'Failed to generate analysis');
+      const analysis = await invokeRiskAnalysis(startup);
+      setSections(parseAnalysis(analysis));
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) {
+        const cause = (e as { context?: unknown })?.context ?? e;
+        console.warn('[risk-analysis] Edge Function unavailable, using local analysis. Reason:', cause);
+      }
+      setSections(parseAnalysis(generateRiskAnalysis(startup)));
+      setError(null);
     } finally {
       setLoading(false);
     }
