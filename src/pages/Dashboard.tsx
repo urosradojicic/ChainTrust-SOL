@@ -9,6 +9,7 @@ import { useStartups } from '@/hooks/use-startups';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import DemoDataBanner from '@/components/DemoDataBanner';
 import LiveFeed from '@/components/LiveFeed';
 import BlockchainStatus from '@/components/BlockchainStatus';
 import NetworkPulse from '@/components/NetworkPulse';
@@ -129,6 +130,7 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <DemoDataBanner />
       <LiveFeed />
       <BlockchainStatus />
 
