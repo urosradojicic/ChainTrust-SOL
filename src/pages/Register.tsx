@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { explorerTxUrl } from '@/lib/solana-config';
 import { sanitizeText, sanitizeUrl, sanitizeNumber, rateLimit } from '@/lib/sanitize';
+import { getErrorMessage } from '@/lib/errors';
 import { Progress } from '@/components/ui/progress';
 import Toggle from '@/components/form/Toggle';
 import DistSlider from '@/components/form/DistSlider';
@@ -219,9 +220,8 @@ export default function Register() {
 
       setTxHash(onChainTxHash);
       setSuccess(true);
-    } catch (e: any) {
-      const msg = e?.shortMessage || e?.message || 'Registration failed';
-      toast({ title: 'Registration Failed', description: msg, variant: 'destructive' });
+    } catch (e: unknown) {
+      toast({ title: 'Registration Failed', description: getErrorMessage(e, 'Registration failed'), variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }

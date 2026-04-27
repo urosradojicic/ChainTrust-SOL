@@ -241,7 +241,7 @@ export function recordLogin(): EngagementStreak {
   const stored = localStorage.getItem(STREAK_STORAGE_KEY);
   const today = new Date().toISOString().split('T')[0];
 
-  let streak: EngagementStreak = stored ? JSON.parse(stored) : {
+  const streak: EngagementStreak = stored ? JSON.parse(stored) : {
     currentStreak: 0, longestStreak: 0, totalDaysActive: 0, lastActiveDate: '', streakReward: null,
   };
 

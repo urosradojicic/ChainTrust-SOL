@@ -146,7 +146,7 @@ function extractFilters(query: string): { filters: FilterRule[]; descriptions: s
       const numberMatch = afterOp.match(/^(\$?\d+(?:\.\d+)?(?:k|m|b)?%?)/i);
       if (!numberMatch) continue;
 
-      let valueStr = numberMatch[1].replace(/[$%]/g, '');
+      const valueStr = numberMatch[1].replace(/[$%]/g, '');
       const num = parseNumber(valueStr);
       if (num === null) continue;
 

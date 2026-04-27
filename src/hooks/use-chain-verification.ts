@@ -2,6 +2,7 @@ import { useConnection } from '@solana/wallet-adapter-react';
 import { useState, useCallback } from 'react';
 import { PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { getErrorMessage } from '@/lib/errors';
 
 // ── Types ────────────────────────────────────────────────────────
 
@@ -95,8 +96,8 @@ export function useVerifyTreasury() {
 
       setData(result);
       return result;
-    } catch (e: any) {
-      setError(e?.message || 'Failed to verify treasury');
+    } catch (e: unknown) {
+      setError(getErrorMessage(e, 'Failed to verify treasury'));
       return null;
     } finally {
       setIsLoading(false);

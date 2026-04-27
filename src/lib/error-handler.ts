@@ -25,7 +25,7 @@ export function logDataError(err: unknown, context: LogContext): void {
   if (errorBuffer.length > MAX_ERRORS_BUFFERED) errorBuffer.shift();
 
   if (import.meta.env.DEV) {
-    // eslint-disable-next-line no-console
+     
     console.warn(`[data:${context}]`, details.message, err);
   }
   // In production: window.__SENTRY?.captureException(err) hook here if wired.

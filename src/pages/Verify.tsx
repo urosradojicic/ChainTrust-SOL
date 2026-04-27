@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { getErrorMessage } from '@/lib/errors';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -197,8 +198,8 @@ export default function Verify() {
         metricsPDA: metricsPDA.toBase58(),
         badgePDA: badgePDA.toBase58(),
       });
-    } catch (e: any) {
-      setError(`Verification failed: ${e.message}`);
+    } catch (e: unknown) {
+      setError(`Verification failed: ${getErrorMessage(e)}`);
     } finally {
       setIsVerifying(false);
     }

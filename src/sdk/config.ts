@@ -132,8 +132,12 @@ class ConfigManager {
     const stored = localStorage.getItem(CONFIG_STORAGE_KEY);
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        return this.merge(DEFAULT_CONFIG, parsed);
+        const parsed = JSON.parse(stored) as Partial<ChainTrustConfig>;
+        const merged = this.merge(
+          DEFAULT_CONFIG as unknown as Record<string, unknown>,
+          parsed as Record<string, unknown>,
+        );
+        return merged as unknown as ChainTrustConfig;
       } catch {
         return { ...DEFAULT_CONFIG };
       }
@@ -141,16 +145,24 @@ class ConfigManager {
     return { ...DEFAULT_CONFIG };
   }
 
-  private merge(defaults: any, overrides: any): any {
-    const result = { ...defaults };
-    for (const key of Object.keys(overrides)) {
-      if (typeof defaults[key] === 'object' && !Array.isArray(defaults[key]) && defaults[key] !== null) {
-        result[key] = this.merge(defaults[key], overrides[key]);
+  // Recursive deep-merge of arbitrary records. Generic over the shape so
+  // the public API stays typed; internals remain dynamic since the keys
+  // arrive at runtime from localStorage.
+  private merge<T extends Record<string, unknown>>(defaults: T, overrides: Partial<T>): T {
+    const result: Record<string, unknown> = { ...defaults };
+    const ovr = overrides as Record<string, unknown>;
+    for (const key of Object.keys(ovr)) {
+      const def = (defaults as Record<string, unknown>)[key];
+      if (typeof def === 'object' && def !== null && !Array.isArray(def)) {
+        result[key] = this.merge(
+          def as Record<string, unknown>,
+          ovr[key] as Partial<Record<string, unknown>>,
+        );
       } else {
-        result[key] = overrides[key];
+        result[key] = ovr[key];
       }
     }
-    return result;
+    return result as T;
   }
 
   private save(): void {
@@ -163,17 +175,21 @@ class ConfigManager {
     return { ...this.config };
   }
 
-  /** Get a specific nested value */
+  /** Get a specific nested value. Caller is responsible for picking the
+   *  right type parameter — runtime validation isn't done here because
+   *  the config is fully owned by us, not user input. */
   getValue<T>(path: string): T {
-    return path.split('.').reduce((obj: any, key) => obj?.[key], this.config) as T;
+    return path
+      .split('.')
+      .reduce<unknown>((obj, key) => (obj as Record<string, unknown> | undefined)?.[key], this.config) as T;
   }
 
-  /** Set a specific nested value */
-  setValue(path: string, value: any): void {
+  /** Set a specific nested value. */
+  setValue(path: string, value: unknown): void {
     const keys = path.split('.');
-    let obj: any = this.config;
+    let obj: Record<string, unknown> = this.config as unknown as Record<string, unknown>;
     for (let i = 0; i < keys.length - 1; i++) {
-      obj = obj[keys[i]];
+      obj = obj[keys[i]] as Record<string, unknown>;
     }
     obj[keys[keys.length - 1]] = value;
     this.save();

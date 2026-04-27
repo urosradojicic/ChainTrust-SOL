@@ -7,6 +7,7 @@ import {
   PublicKey,
 } from '@solana/web3.js';
 import { genFallbackTxSig } from '@/lib/solana-config';
+import { getErrorMessage } from '@/lib/errors';
 import {
   PROGRAM_ID,
   getRegistryPDA,
@@ -164,8 +165,8 @@ export function usePublishMetrics() {
 
         setTxHash(sig);
         return sig;
-      } catch (e: any) {
-        if (import.meta.env.DEV) console.warn('[chain] publish fallback:', e?.message);
+      } catch (e: unknown) {
+        if (import.meta.env.DEV) console.warn('[chain] publish fallback:', getErrorMessage(e));
         const demoSig = genDemoTxSig();
         setTxHash(demoSig);
         setIsDemoMode(true);
@@ -237,8 +238,8 @@ export function useRegisterStartup() {
 
         setTxHash(sig);
         return sig;
-      } catch (e: any) {
-        if (import.meta.env.DEV) console.warn('[chain] register fallback:', e?.message);
+      } catch (e: unknown) {
+        if (import.meta.env.DEV) console.warn('[chain] register fallback:', getErrorMessage(e));
         const demoSig = genDemoTxSig();
         setTxHash(demoSig);
         setIsDemoMode(true);
@@ -330,8 +331,8 @@ export function useStake() {
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[chain] stake fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[chain] stake fallback:', getErrorMessage(e));
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -369,8 +370,8 @@ export function useUnstake() {
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[chain] unstake fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[chain] unstake fallback:', getErrorMessage(e));
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -404,8 +405,8 @@ export function useClaimRewards() {
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[chain] claim fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[chain] claim fallback:', getErrorMessage(e));
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -523,8 +524,8 @@ export function useMintBadge() {
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[chain] badge fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[chain] badge fallback:', getErrorMessage(e));
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -561,8 +562,8 @@ export function useUpgradeBadgeTier() {
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[chain] tier upgrade fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[chain] tier upgrade fallback:', getErrorMessage(e));
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -620,8 +621,8 @@ export function useCreateProposal() {
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[chain] proposal fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[chain] proposal fallback:', getErrorMessage(e));
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -664,8 +665,8 @@ export function useCastVote() {
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[chain] vote fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[chain] vote fallback:', getErrorMessage(e));
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -698,8 +699,8 @@ export function useExecuteProposal() {
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[chain] execute fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[chain] execute fallback:', getErrorMessage(e));
       return genDemoTxSig();
     } finally {
       setIsPending(false);
@@ -735,8 +736,8 @@ export function useDelegateVotes() {
       const sig = await sendTransaction(tx, connection);
       await connection.confirmTransaction(sig, 'confirmed');
       return sig;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[chain] delegate fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[chain] delegate fallback:', getErrorMessage(e));
       return genDemoTxSig();
     } finally {
       setIsPending(false);

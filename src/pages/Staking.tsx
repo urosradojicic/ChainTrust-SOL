@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getErrorMessage } from '@/lib/errors';
 import { TIERS } from '@/lib/mock-data';
 import { useStake, useUnstake, useInvestorAccount } from '@/hooks/use-blockchain';
 import { useWallet } from '@/contexts/WalletContext';
@@ -50,8 +51,8 @@ function StakeModal({ mode, onClose }: { mode: 'stake' | 'unstake'; onClose: () 
       const sig = mode === 'stake' ? await stake(val) : await unstake(val);
       setTxHash(sig);
       toast({ title: `${mode === 'stake' ? 'Staked' : 'Unstaked'} successfully`, description: `Tx: ${sig.slice(0, 12)}...` });
-    } catch (e: any) {
-      toast({ title: 'Transaction failed', description: e?.message || 'Unknown error', variant: 'destructive' });
+    } catch (e: unknown) {
+      toast({ title: 'Transaction failed', description: getErrorMessage(e), variant: 'destructive' });
     }
   };
 

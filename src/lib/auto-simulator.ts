@@ -175,7 +175,7 @@ class AutoSimulator {
       const allStartups = (job as any)._allStartups as DbStartup[];
 
       // Get or create cache entry
-      let cache = this.cache.get(job.startupId) ?? {
+      const cache = this.cache.get(job.startupId) ?? {
         startupId: job.startupId,
         monteCarlo: null,
         redFlags: null,

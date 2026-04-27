@@ -256,7 +256,7 @@ function generateEURequirements(): RegulatoryRequirement[] {
 export function generateComplianceReport(
   targetJurisdictions: Jurisdiction[] = ['us', 'eu'],
 ): ComplianceReport {
-  let requirements: RegulatoryRequirement[] = [];
+  const requirements: RegulatoryRequirement[] = [];
 
   if (targetJurisdictions.includes('us')) requirements.push(...generateUSRequirements());
   if (targetJurisdictions.includes('eu')) requirements.push(...generateEURequirements());

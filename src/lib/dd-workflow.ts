@@ -324,7 +324,7 @@ export function runAutoChecks(
   workflow: DDWorkflow,
   startup: DbStartup,
 ): DDWorkflow {
-  let updated = { ...workflow };
+  const updated = { ...workflow };
 
   for (const phase of updated.phases) {
     for (const item of phase.items) {

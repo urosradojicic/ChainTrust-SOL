@@ -2,6 +2,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useState, useCallback } from 'react';
 import { PublicKey, Transaction, TransactionInstruction, SystemProgram } from '@solana/web3.js';
 import { genFallbackTxSig } from '@/lib/solana-config';
+import { getErrorMessage } from '@/lib/errors';
 
 const BUBBLEGUM_ID = new PublicKey('BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY');
 const SPL_NOOP_ID = new PublicKey('noopb9bkMVfRPU8AsBHBnMs8nnSv8rX9FHn7a1XhDRb');
@@ -124,8 +125,8 @@ export function useMintCertificate() {
       };
       setLastMinted(result);
       return result;
-    } catch (e: any) {
-      if (import.meta.env.DEV) console.warn('[cNFT] mint fallback:', e?.message);
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) console.warn('[cNFT] mint fallback:', getErrorMessage(e));
       const demoSig = genFallbackTxSig();
       const result: MintedCertificate = {
         txSignature: demoSig,

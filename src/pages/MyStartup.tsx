@@ -13,6 +13,8 @@ import {
   Upload, X, File, Download,
 } from 'lucide-react';
 import { sanitizeText, sanitizeNumber, rateLimit } from '@/lib/sanitize';
+import { getErrorMessage } from '@/lib/errors';
+import { logDataError } from '@/lib/error-handler';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
 import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
@@ -107,31 +109,41 @@ export default function MyStartup() {
 
   const fetchStartup = async () => {
     if (!user) return;
-    const { data, error } = await supabase
-      .from('startups')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    if (error) { if (import.meta.env.DEV) console.error(error); setLoading(false); return; }
-    if (!data) { setLoading(false); return; }
-    setStartup(data as unknown as DbStartup);
-    setForm({
-      name: data.name, description: data.description || '', category: data.category,
-      blockchain: data.blockchain, website: data.website || '', team_size: String(data.team_size),
-      mrr: String(data.mrr), users: String(data.users), growth_rate: String(data.growth_rate),
-      treasury: String(data.treasury), carbon_offset_tonnes: String(data.carbon_offset_tonnes),
-      energy_per_transaction: (data.energy_per_transaction || '0.001 kWh').replace(' kWh', ''),
-      token_concentration_pct: String(data.token_concentration_pct),
-    });
-    // Fetch audit log
-    const { data: logs } = await supabase
-      .from('startup_audit_log')
-      .select('*')
-      .eq('startup_id', data.id)
-      .order('changed_at', { ascending: false })
-      .limit(50);
-    if (logs) setAuditLog(logs as DbAuditEntry[]);
-    setLoading(false);
+    try {
+      const { data, error } = await supabase
+        .from('startups')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (error) {
+        logDataError(error, 'MyStartup.fetchStartup');
+        setLoading(false);
+        return;
+      }
+      if (!data) { setLoading(false); return; }
+      setStartup(data as unknown as DbStartup);
+      setForm({
+        name: data.name, description: data.description || '', category: data.category,
+        blockchain: data.blockchain, website: data.website || '', team_size: String(data.team_size),
+        mrr: String(data.mrr), users: String(data.users), growth_rate: String(data.growth_rate),
+        treasury: String(data.treasury), carbon_offset_tonnes: String(data.carbon_offset_tonnes),
+        energy_per_transaction: (data.energy_per_transaction || '0.001 kWh').replace(' kWh', ''),
+        token_concentration_pct: String(data.token_concentration_pct),
+      });
+      // Fetch audit log
+      const { data: logs, error: logsError } = await supabase
+        .from('startup_audit_log')
+        .select('*')
+        .eq('startup_id', data.id)
+        .order('changed_at', { ascending: false })
+        .limit(50);
+      if (logsError) logDataError(logsError, 'MyStartup.auditLog');
+      if (logs) setAuditLog(logs as DbAuditEntry[]);
+    } catch (err) {
+      logDataError(err, 'MyStartup.fetchStartup.catch');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const u = (key: string, val: string) => setForm(f => ({ ...f, [key]: val }));
@@ -225,9 +237,8 @@ export default function MyStartup() {
 
       fetchStartup();
       setTimeout(() => setSaved(false), 3000);
-    } catch (e: any) {
-      const msg = e?.shortMessage || e?.message || 'Save failed';
-      toast({ title: 'Save Failed', description: msg, variant: 'destructive' });
+    } catch (e: unknown) {
+      toast({ title: 'Save Failed', description: getErrorMessage(e, 'Save failed'), variant: 'destructive' });
     } finally {
       setSaving(false);
     }
@@ -282,9 +293,8 @@ export default function MyStartup() {
       toast({ title: 'Monthly metrics published on-chain ✓', description: `Tx: ${txHash.slice(0, 10)}...` });
       setMonthForm({ month: '', revenue: '', costs: '', mau: '', carbon_offsets: '' });
       fetchStartup();
-    } catch (e: any) {
-      const msg = e?.shortMessage || e?.message || 'Transaction failed';
-      toast({ title: 'Transaction Failed', description: msg, variant: 'destructive' });
+    } catch (e: unknown) {
+      toast({ title: 'Transaction Failed', description: getErrorMessage(e, 'Transaction failed'), variant: 'destructive' });
     } finally {
       setSubmittingMonth(false);
     }

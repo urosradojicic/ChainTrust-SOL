@@ -7,6 +7,7 @@ import { Leaf, Plus, X, Shield, CheckCircle2, Loader2 } from 'lucide-react';
 import { useCreateProposal as useCreateProposalOnChain, useCastVote as useCastVoteOnChain, useDelegateVotes, useExecuteProposal as useExecuteOnChain } from '@/hooks/use-blockchain';
 import { PublicKey } from '@solana/web3.js';
 import { sanitizeText, isValidSolanaAddress, rateLimit } from '@/lib/sanitize';
+import { getErrorMessage } from '@/lib/errors';
 import { Progress } from '@/components/ui/progress';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose,
@@ -439,7 +440,7 @@ export default function Governance() {
                                 if (error) {
                                   if (import.meta.env.DEV) console.warn('[Governance] Vote persisted locally');
                                 }
-                              } catch (err: any) {
+                              } catch {
                                 toast.error('Vote recorded locally. On-chain sync pending.');
                               }
                               setVotedProposals(prev => ({ ...prev, [p.id]: b.label }));
@@ -486,8 +487,8 @@ export default function Governance() {
                   const txSig = await delegateOnChain(delegateeKey);
                   toast.success(`Voting power delegated to ${delegateAddr.slice(0, 8)}... Tx: ${txSig.slice(0, 12)}...`);
                   setDelegateAddr('');
-                } catch (e: any) {
-                  toast.error(e?.message || 'Delegation failed — check Solana address format');
+                } catch (e: unknown) {
+                  toast.error(getErrorMessage(e, 'Delegation failed — check Solana address format'));
                 } finally {
                   setDelegating(false);
                 }

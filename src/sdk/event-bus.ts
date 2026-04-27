@@ -43,17 +43,22 @@ export interface ChainTrustEventMap {
   // System events
   'system:engine:loaded': { engineId: string; loadTime: number };
   'system:error': { engineId: string; error: string };
-  'system:config:changed': { key: string; value: any };
+  'system:config:changed': { key: string; value: unknown };
 }
 
 export type ChainTrustEvent = keyof ChainTrustEventMap;
 type EventHandler<E extends ChainTrustEvent> = (data: ChainTrustEventMap[E]) => void;
+// Type-erased handler shape for the internal map. The public `on/once/emit`
+// API stays fully typed via the generic parameter; we only widen at storage.
+type AnyEventHandler = (data: unknown) => void;
+
+interface LogEntry { event: string; timestamp: number; data: unknown; }
 
 // ── Event Bus Implementation ─────────────────────────────────────────
 
 class TypedEventBus {
-  private handlers = new Map<string, Set<Function>>();
-  private eventLog: { event: string; timestamp: number; data: any }[] = [];
+  private handlers = new Map<string, Set<AnyEventHandler>>();
+  private eventLog: LogEntry[] = [];
   private maxLogSize = 100;
 
   /**
@@ -66,8 +71,9 @@ class TypedEventBus {
       set = new Set();
       this.handlers.set(event, set);
     }
-    set.add(handler);
-    return () => set!.delete(handler);
+    const erased = handler as unknown as AnyEventHandler;
+    set.add(erased);
+    return () => set!.delete(erased);
   }
 
   /**
@@ -115,7 +121,7 @@ class TypedEventBus {
   /**
    * Get recent event log (for debugging).
    */
-  getLog(limit: number = 20): { event: string; timestamp: number; data: any }[] {
+  getLog(limit: number = 20): LogEntry[] {
     return this.eventLog.slice(-limit);
   }
 

@@ -8,9 +8,16 @@
  * Plugin lifecycle: register → initialize → activate → deactivate
  */
 
-import { EventBus } from './event-bus';
+import { EventBus, type ChainTrustEvent, type ChainTrustEventMap } from './event-bus';
+import { getErrorMessage } from '@/lib/errors';
 
 // ── Types ────────────────────────────────────────────────────────────
+
+/** Generic engine signature — accepts any args, returns any value. */
+export type PluginEngine = (...args: unknown[]) => unknown;
+
+/** Per-event handler signature, weakly typed because plugins are external. */
+export type PluginEventHandler = (data: unknown) => void;
 
 export interface ChainTrustPlugin {
   /** Unique plugin ID */
@@ -32,9 +39,9 @@ export interface ChainTrustPlugin {
   /** Deactivate (called when plugin is disabled) */
   deactivate?: () => void;
   /** Custom engine functions this plugin provides */
-  engines?: Record<string, Function>;
+  engines?: Record<string, PluginEngine>;
   /** Event handlers this plugin subscribes to */
-  eventHandlers?: Record<string, Function>;
+  eventHandlers?: Partial<Record<ChainTrustEvent, PluginEventHandler>>;
 }
 
 export interface PluginState {
@@ -72,10 +79,11 @@ class PluginManagerImpl {
       this.plugins.get(plugin.id)!.status = 'initialized';
 
       EventBus.emit('system:engine:loaded', { engineId: `plugin:${plugin.id}`, loadTime: 0 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const msg = getErrorMessage(error);
       this.plugins.get(plugin.id)!.status = 'error';
-      this.plugins.get(plugin.id)!.error = error.message;
-      EventBus.emit('system:error', { engineId: `plugin:${plugin.id}`, error: error.message });
+      this.plugins.get(plugin.id)!.error = msg;
+      EventBus.emit('system:error', { engineId: `plugin:${plugin.id}`, error: msg });
     }
   }
 
@@ -88,12 +96,16 @@ class PluginManagerImpl {
     if (state.status === 'active') return;
 
     try {
-      // Subscribe to events
+      // Subscribe to events. We cast each handler to the typed shape EventBus
+      // expects; the runtime call flow is identical, plugins just enter the
+      // bus through a slightly less strict typed surface than first-party code.
       if (state.plugin.eventHandlers) {
         const unsubs: (() => void)[] = [];
         for (const [event, handler] of Object.entries(state.plugin.eventHandlers)) {
-          const unsub = EventBus.on(event as any, handler as any);
-          unsubs.push(unsub);
+          if (!handler) continue;
+          const eventName = event as ChainTrustEvent;
+          const typedHandler = handler as (data: ChainTrustEventMap[typeof eventName]) => void;
+          unsubs.push(EventBus.on(eventName, typedHandler));
         }
         this.unsubscribers.set(pluginId, unsubs);
       }
@@ -104,9 +116,9 @@ class PluginManagerImpl {
 
       state.status = 'active';
       state.activatedAt = Date.now();
-    } catch (error: any) {
+    } catch (error: unknown) {
       state.status = 'error';
-      state.error = error.message;
+      state.error = getErrorMessage(error);
     }
   }
 
@@ -155,8 +167,13 @@ class PluginManagerImpl {
 
   /**
    * Call a plugin engine function.
+   * The plugin engine signature is `(...args: unknown[]) => unknown`, so the
+   * caller is responsible for understanding what shape the chosen plugin
+   * expects and what it returns. This is the right boundary — first-party
+   * code uses dedicated typed APIs; only this generic call site needs
+   * the loose typing.
    */
-  call(pluginId: string, engineName: string, ...args: any[]): any {
+  call(pluginId: string, engineName: string, ...args: unknown[]): unknown {
     const state = this.plugins.get(pluginId);
     if (!state || state.status !== 'active') {
       throw new Error(`Plugin ${pluginId} is not active`);

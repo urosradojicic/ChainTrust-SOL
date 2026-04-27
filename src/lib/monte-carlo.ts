@@ -133,7 +133,7 @@ function estimateParams(startup: DbStartup, metrics: DbMetricsHistory[]): Estima
   const currentCash = startup.treasury;
 
   // Growth rate estimation
-  let growthRates: number[] = [];
+  const growthRates: number[] = [];
   if (sorted.length >= 2) {
     for (let i = 1; i < sorted.length; i++) {
       const prev = Number(sorted[i - 1].revenue);
@@ -151,7 +151,7 @@ function estimateParams(startup: DbStartup, metrics: DbMetricsHistory[]): Estima
     : Math.abs(monthlyGrowthRate) * 0.3; // default 30% of mean
 
   // Cost growth estimation
-  let costGrowthRates: number[] = [];
+  const costGrowthRates: number[] = [];
   if (sorted.length >= 2) {
     for (let i = 1; i < sorted.length; i++) {
       const prev = Number(sorted[i - 1].costs);
