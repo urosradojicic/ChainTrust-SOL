@@ -19,6 +19,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
 import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
 import type { DbStartup, DbAuditEntry } from '@/types/database';
+import type { Database } from '@/integrations/supabase/types';
+
+type StartupUpdate = Database['public']['Tables']['startups']['Update'];
 
 export default function MyStartup() {
   useDocumentTitle('My Startup');
@@ -161,7 +164,7 @@ export default function MyStartup() {
     setSaving(true);
     setSaved(false);
     try {
-      const updates: Record<string, any> = {
+      const updates: StartupUpdate = {
         name: form.name.trim(),
         description: form.description.trim(),
         category: form.category,
@@ -190,9 +193,9 @@ export default function MyStartup() {
       };
 
       const changes: { field: string; old_val: string; new_val: string }[] = [];
-      for (const key of Object.keys(updates)) {
+      for (const [key, value] of Object.entries(updates)) {
         const oldVal = String(oldData[key] ?? '');
-        const newVal = String(updates[key] ?? '');
+        const newVal = String(value ?? '');
         if (oldVal !== newVal) {
           changes.push({ field: key, old_val: oldVal, new_val: newVal });
         }

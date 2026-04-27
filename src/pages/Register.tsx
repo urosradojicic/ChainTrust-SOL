@@ -39,7 +39,7 @@ interface FormData {
   // Step 1
   name: string; description: string; category: string; blockchain: string; website: string; foundedDate: string;
   // Step 2
-  mrr: string; mau: string; growthRate: string; fundingRaised: string; treasury: string;
+  mrr: string; mau: string; growthRate: string; treasury: string;
   // Step 3
   chainType: 'PoS' | 'PoW'; energyPerTx: string; carbonOffsets: string; sdgs: number[]; greenProvider: boolean;
   // Step 4
@@ -52,7 +52,7 @@ interface FormData {
 
 const initForm: FormData = {
   name: '', description: '', category: 'DeFi', blockchain: 'Solana', website: '', foundedDate: '',
-  mrr: '', mau: '', growthRate: '', fundingRaised: '', treasury: '',
+  mrr: '', mau: '', growthRate: '', treasury: '',
   chainType: 'PoS', energyPerTx: '0.001', carbonOffsets: '', sdgs: [], greenProvider: false,
   tokenName: '', totalSupply: '', circulatingSupply: '',
   distTeam: 15, distInvestors: 20, distCommunity: 30, distTreasury: 20, distLiquidity: 15,
@@ -187,7 +187,6 @@ export default function Register() {
         mrr: sanitizeNumber(form.mrr, 0, 1_000_000_000),
         users: sanitizeNumber(form.mau, 0, 1_000_000_000),
         growth_rate: sanitizeNumber(form.growthRate, -100, 10000),
-        funding_raised: sanitizeNumber(form.fundingRaised, 0, 1_000_000_000_000),
         treasury: sanitizeNumber(form.treasury, 0, 100_000_000_000),
         chain_type: form.chainType,
         energy_per_transaction: `${form.energyPerTx} kWh`,
@@ -381,14 +380,9 @@ export default function Register() {
                 <input type="number" value={form.mau} onChange={e => u('mau', e.target.value)} className={inputCls} placeholder="12000" min={0} />
                 <p className="text-[11px] text-muted-foreground mt-1">Unique users who used your product in the last 30 days.</p></div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div><label className={labelCls}>Growth Rate (%)</label>
-                <input type="number" value={form.growthRate} onChange={e => u('growthRate', e.target.value)} className={inputCls} placeholder="12.5" step={0.1} />
-                <p className="text-[11px] text-muted-foreground mt-1">Month-over-month revenue or user growth percentage.</p></div>
-              <div><label className={labelCls}>Total Funding Raised ($)</label>
-                <input type="number" value={form.fundingRaised} onChange={e => u('fundingRaised', e.target.value)} className={inputCls} placeholder="5000000" min={0} />
-                <p className="text-[11px] text-muted-foreground mt-1">Total capital raised to date across all rounds.</p></div>
-            </div>
+            <div><label className={labelCls}>Growth Rate (%)</label>
+              <input type="number" value={form.growthRate} onChange={e => u('growthRate', e.target.value)} className={inputCls} placeholder="12.5" step={0.1} />
+              <p className="text-[11px] text-muted-foreground mt-1">Month-over-month revenue or user growth percentage.</p></div>
             <div><label className={labelCls}>Treasury Balance ($)</label>
               <input type="number" value={form.treasury} onChange={e => u('treasury', e.target.value)} className={inputCls} placeholder="2000000" min={0} />
               <p className="text-[11px] text-muted-foreground mt-1">Current cash + liquid assets available. Used to calculate runway.</p></div>
