@@ -22,8 +22,7 @@ blockchain/target
 blockchain/.anchor
 blockchain/test-ledger
 
-# Lock files (regenerated on install)
-package-lock.json
+# Bun lockfiles — we standardize on npm
 bun.lock
 bun.lockb
 

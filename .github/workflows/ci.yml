@@ -32,12 +32,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      # `npm ci` requires a lockfile. The repo's `.gitignore` excludes
-      # `package-lock.json`, so we fall back to `npm install --legacy-peer-deps`
-      # (matching the README's documented install command).
+      # Use `npm ci` for deterministic installs — refuses to run if
+      # `package-lock.json` is out of sync with `package.json`, which
+      # forces drift to be a deliberate commit instead of a CI surprise.
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci --legacy-peer-deps
 
       - name: Lint
         run: npm run lint
