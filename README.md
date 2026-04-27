@@ -4,6 +4,8 @@
 
 ChainTrust is a supply chain transparency and startup verification platform built on Solana. Startups publish metrics on-chain, get verified by independent oracles, and build investor confidence with cryptographic proof chains.
 
+> **Submitting to Colosseum Frontier — May 11, 2026.** Active development happens on `merged-ai-roadmap-v2`. The `backup` branch is a frozen restore point and is read-only. Run `git fetch origin backup && git reset --hard origin/backup` if you ever need to roll back.
+
 ## Live Testnet Demo
 
 **Want to see a real, signed Solana transaction in 10 seconds?** Open [`/testnet-demo`](src/pages/LiveTestnetDemo.tsx) after `npm run dev`. Connect Phantom (Devnet), click airdrop, click anchor — you get a real tx signature with a verifiable Solana Explorer link. Uses the canonical SPL Memo Program so there's nothing to deploy. See [docs/LIVE_TESTNET_DEMO.md](docs/LIVE_TESTNET_DEMO.md) for the full walkthrough.

@@ -12,3 +12,6 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Sitemap declaration (replace domain when production URL is acquired).
+Sitemap: https://chaintrust.app/sitemap.xml
