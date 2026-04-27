@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useStartups } from '@/hooks/use-startups';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { formatCurrency, formatNumber } from '@/lib/format';
 import Badge from '@/components/common/Badge';
 import { categoryColors } from '@/lib/constants';
@@ -37,6 +38,7 @@ function exportCSV(data: any[], filename: string) {
 }
 
 export default function Screener() {
+  useDocumentTitle('Screener');
   const { data: startups, isLoading } = useStartups();
   const [filters, setFilters] = useState<Filters>(initFilters);
   const [sortKey, setSortKey] = useState<SortKey>('trust_score');

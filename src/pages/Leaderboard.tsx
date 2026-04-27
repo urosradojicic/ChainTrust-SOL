@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
 import { useStartups, useAllPledges } from '@/hooks/use-startups';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 
 const BLOCKCHAINS = ['All', 'Solana Devnet'];
 
@@ -36,6 +37,7 @@ const podiumIcons: Record<number, string> = {
 };
 
 export default function Leaderboard() {
+  useDocumentTitle('Leaderboard');
   const { data: startups, isLoading } = useStartups();
   const { data: allPledges } = useAllPledges();
   const [search, setSearch] = useState('');

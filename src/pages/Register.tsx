@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -58,16 +59,63 @@ const initForm: FormData = {
   pledges: {}, customPledge: '',
 };
 
+// localStorage key for draft persistence. TTL = 7 days; older drafts are
+// silently discarded on load so a stale registration can't accidentally
+// surface months later.
+const DRAFT_KEY = 'chaintrust_register_draft_v1';
+const DRAFT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+interface SavedDraft { form: FormData; step: number; savedAt: number; }
+
+function loadDraft(): SavedDraft | null {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as SavedDraft;
+    if (!parsed?.savedAt || Date.now() - parsed.savedAt > DRAFT_TTL_MS) {
+      localStorage.removeItem(DRAFT_KEY);
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
 export default function Register() {
+  useDocumentTitle('Register');
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormData>(initForm);
+  // Restore draft on first render so users don't lose progress on refresh
+  const [draft] = useState<SavedDraft | null>(() => loadDraft());
+  const [step, setStep] = useState<number>(draft?.step ?? 0);
+  const [form, setForm] = useState<FormData>(draft?.form ?? initForm);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [txHash, setTxHash] = useState('');
+  const [draftSavedAt, setDraftSavedAt] = useState<number | null>(draft?.savedAt ?? null);
   const { register: registerOnChain } = useRegisterStartup();
   const { connected: isConnected } = useSolanaWallet();
   const { setVisible: openWalletModal } = useWalletModal();
+
+  // Debounced autosave — runs 600ms after last form/step change.
+  useEffect(() => {
+    if (success) return; // don't keep persisting after submission
+    const timer = window.setTimeout(() => {
+      try {
+        const payload: SavedDraft = { form, step, savedAt: Date.now() };
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+        setDraftSavedAt(payload.savedAt);
+      } catch { /* quota / private mode — silent */ }
+    }, 600);
+    return () => window.clearTimeout(timer);
+  }, [form, step, success]);
+
+  // Clear draft on successful submission so a refresh doesn't show stale data.
+  useEffect(() => {
+    if (success) {
+      try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
+    }
+  }, [success]);
   const u = <K extends keyof FormData>(key: K, val: FormData[K]) => setForm(f => ({ ...f, [key]: val }));
 
   const distSum = form.distTeam + form.distInvestors + form.distCommunity + form.distTreasury + form.distLiquidity;
@@ -251,8 +299,21 @@ export default function Register() {
       {/* Progress stepper */}
       <div className="mt-6">
         <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-          <span>Step {step + 1} of {STEPS.length}</span>
-          <span>{STEPS[step]}</span>
+          <span>
+            Step <span className="font-bold tabular-nums text-foreground">{step + 1}</span> of {STEPS.length}
+            <span className="ml-2 text-muted-foreground/70">
+              ({Math.round(((step + 1) / STEPS.length) * 100)}% complete)
+            </span>
+          </span>
+          <span className="flex items-center gap-3">
+            {draftSavedAt && (
+              <span className="text-[10px] text-muted-foreground inline-flex items-center gap-1">
+                <CheckCircle2 className="h-3 w-3 text-emerald-500" aria-hidden="true" />
+                Draft saved
+              </span>
+            )}
+            <span className="font-medium text-foreground">{STEPS[step]}</span>
+          </span>
         </div>
         <Progress value={((step + 1) / STEPS.length) * 100} className="h-2" />
         <div className="mt-3 flex justify-between">

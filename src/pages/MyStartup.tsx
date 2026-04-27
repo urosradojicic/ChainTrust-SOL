@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 import { usePublishMetrics } from '@/hooks/use-blockchain';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import {
@@ -18,6 +19,7 @@ import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
 import type { DbStartup, DbAuditEntry } from '@/types/database';
 
 export default function MyStartup() {
+  useDocumentTitle('My Startup');
   const { user, role } = useAuth();
   const navigate = useNavigate();
   const { connected: isConnected } = useSolanaWallet();

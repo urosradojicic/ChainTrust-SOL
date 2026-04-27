@@ -13,6 +13,7 @@ import {
   Eye, Activity, Search, Loader2, XCircle, Copy, Fingerprint,
 } from 'lucide-react';
 import { useSolPrice } from '@/hooks/use-pyth-price';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { useVerifyTreasury, useVerifyActivity, computeVerificationScore } from '@/hooks/use-chain-verification';
 import { useWalletIntelligence } from '@/hooks/use-wallet-intelligence';
 import ZKCompressionBanner from '@/components/ZKCompressionBanner';
@@ -182,6 +183,7 @@ function InlineVerifier() {
 
 /* ── Main page ── */
 export default function Hackathon() {
+  useDocumentTitle('Frontier Submission');
   const { price: solPrice } = useSolPrice();
 
   return (

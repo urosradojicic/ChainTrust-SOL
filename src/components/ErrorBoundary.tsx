@@ -21,10 +21,15 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    // Log in dev; in production this is where you'd pipe to Sentry/DataDog/etc.
+    // Log in dev; forward to telemetry in production. The telemetry shim is
+    // a no-op when VITE_SENTRY_DSN is unset, so this is safe in every env.
     if (import.meta.env.DEV) {
       console.error('[ErrorBoundary] caught:', error, info.componentStack);
     }
+    // Lazy-load to avoid creating a circular import on initial render.
+    import('@/lib/telemetry').then(({ reportError }) => {
+      reportError(error, { componentStack: info.componentStack });
+    }).catch(() => { /* telemetry unavailable — already logged in dev */ });
   }
 
   render() {

@@ -31,6 +31,7 @@ import {
   Wallet,
 } from 'lucide-react';
 import { useStartup, useMetricsHistory, useAuditLog, useFundingRounds } from '@/hooks/use-startups';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { buildEntityDossier, type EntityTag, type TimelineEvent } from '@/lib/entity-aggregator';
 import { formatCurrency, formatNumber } from '@/lib/format';
 import { chartTooltipStyle } from '@/lib/constants';
@@ -65,6 +66,7 @@ const EVENT_ICON: Record<TimelineEvent['type'], typeof Clock> = {
 export default function EntityDossier() {
   const { id } = useParams<{ id: string }>();
   const { data: startup, isLoading } = useStartup(id);
+  useDocumentTitle(startup ? `${startup.name} — Entity Dossier` : 'Entity Dossier');
   const { data: metrics = [] } = useMetricsHistory(id);
   const { data: audit = [] } = useAuditLog(id);
   const { data: rounds = [] } = useFundingRounds(id);

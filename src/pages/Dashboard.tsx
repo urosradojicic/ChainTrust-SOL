@@ -7,6 +7,7 @@ import { formatCurrency, formatNumber } from '@/lib/format';
 import Badge from '@/components/common/Badge';
 import { useStartups } from '@/hooks/use-startups';
 import { useAuth } from '@/contexts/AuthContext';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { Loader2 } from 'lucide-react';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import DemoDataBanner from '@/components/DemoDataBanner';
@@ -52,6 +53,7 @@ function exportCSV(data: any[], filename: string) {
 }
 
 export default function Dashboard() {
+  useDocumentTitle('Dashboard');
   const navigate = useNavigate();
   const { role } = useAuth();
   const { data: startups, isLoading, error } = useStartups();

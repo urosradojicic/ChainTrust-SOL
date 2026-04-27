@@ -1,7 +1,13 @@
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App.tsx";
+import { initTelemetry } from "./lib/telemetry";
 import "./index.css";
+
+// Boot telemetry as early as possible so even errors during App mount are
+// captured. No-op when VITE_SENTRY_DSN is not set; never adds to bundle
+// when the optional @sentry/react package isn't installed.
+initTelemetry();
 
 const queryClient = new QueryClient({
   defaultOptions: {

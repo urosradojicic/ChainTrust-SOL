@@ -15,15 +15,42 @@
       headers are not in effect.
     -->
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Preconnect to font CDNs so the first paint isn't blocked on DNS+TLS RTT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <title>ChainTrust — Verify Startups Against the Blockchain</title>
     <meta name="description" content="Verify startup claims against live Solana data. Treasury balances, token distribution, payment volume, wash trading detection. Cost: $0.00025 per verification.">
     <meta name="author" content="ChainTrust" />
+
+    <!--
+      Canonical URL — replace https://chaintrust.app with the deployed
+      production URL once a domain is acquired. For local development the
+      canonical resolves to the localhost origin, which is harmless because
+      crawlers won't see localhost.
+    -->
+    <link rel="canonical" href="https://chaintrust.app/" />
+
+    <!-- Open Graph / Facebook / LinkedIn -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://chaintrust.app/" />
     <meta property="og:title" content="ChainTrust — The Trust Layer for Startup Fundraising">
     <meta property="og:description" content="Verify startup claims against live Solana data. Pyth oracle pricing, cNFT certificates, 17 ML algorithms. Zero API cost.">
+    <meta property="og:image" content="https://chaintrust.app/og-image.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ChainTrust — Verify startups on-chain. $0.00025 per verify, 2s settlement, 75 ML engines, built on Solana." />
+    <meta property="og:site_name" content="ChainTrust" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@ChainTrustSOL" />
     <meta name="twitter:title" content="ChainTrust — Verify Startups On-Chain">
     <meta name="twitter:description" content="Read live Solana data to verify treasury, token distribution, payment volume. Mint verification certificates for $0.0001. Built for investors.">
+    <meta name="twitter:image" content="https://chaintrust.app/og-image.svg" />
+    <meta name="twitter:image:alt" content="ChainTrust social preview card" />
   </head>
   <body>
     <div id="root"></div>

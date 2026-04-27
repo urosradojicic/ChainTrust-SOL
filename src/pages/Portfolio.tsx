@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@/contexts/WalletContext';
 import { useStartups } from '@/hooks/use-startups';
+import { useDocumentTitle } from '@/hooks/use-document-title';
 import { Link } from 'react-router-dom';
 import { Bookmark, Bell, TrendingDown, TrendingUp, FileText, Shield, Plus, X, AlertTriangle, Info } from 'lucide-react';
 import { formatCurrency, formatNumber } from '@/lib/format';
@@ -29,6 +30,7 @@ const INITIAL_ALERTS: WatchAlert[] = [
 ];
 
 export default function Portfolio() {
+  useDocumentTitle('Portfolio');
   const { connected, address, balance, tier, stakedAmount, bookmarkedStartups, toggleBookmark } = useWallet();
   const { data: startups } = useStartups();
   const [alerts, setAlerts] = useState<WatchAlert[]>(() => {
