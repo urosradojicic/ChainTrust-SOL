@@ -429,17 +429,22 @@ export default function InvestorHub() {
             </h3>
             {(() => {
               const report = generateComplianceReport();
+              const compliantCount = report.statusCounts.compliant ?? 0;
+              const totalCount = report.requirements.length;
+              const isCompliant = compliantCount === totalCount && totalCount > 0;
               return (
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Overall</span>
-                    <span className={`font-mono font-bold ${report.overallStatus === 'compliant' ? 'text-emerald-500' : 'text-amber-500'}`}>
-                      {report.overallStatus === 'compliant' ? 'Compliant' : 'Pending'}
+                    <span className="text-muted-foreground">Score</span>
+                    <span className={`font-mono font-bold ${isCompliant ? 'text-emerald-500' : 'text-amber-500'}`}>
+                      {report.complianceScore}/100 · Grade {report.grade}
                     </span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-muted-foreground">Risk Level</span>
-                    <span className="font-mono font-bold text-foreground">{report.riskLevel}</span>
+                    <span className="text-muted-foreground">Status</span>
+                    <span className="font-mono font-bold text-foreground">
+                      {compliantCount}/{totalCount} compliant
+                    </span>
                   </div>
                 </div>
               );

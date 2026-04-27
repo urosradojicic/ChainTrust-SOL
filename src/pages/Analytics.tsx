@@ -93,7 +93,7 @@ export default function Analytics() {
     const avgTrust = startups?.length
       ? Math.round(startups.reduce((s, x) => s + x.trust_score, 0) / startups.length)
       : 0;
-    const verified = startups?.filter(x => x.is_verified).length ?? 0;
+    const verified = startups?.filter(x => x.verified).length ?? 0;
     return { count, totalMrr, avgTrust, verified };
   }, [startups]);
 

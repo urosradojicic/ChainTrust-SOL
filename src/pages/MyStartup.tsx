@@ -15,7 +15,7 @@ import { sanitizeText, sanitizeNumber, rateLimit } from '@/lib/sanitize';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
 import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
-import type { DbStartup, DbDbAuditEntry } from '@/types/database';
+import type { DbStartup, DbAuditEntry } from '@/types/database';
 
 export default function MyStartup() {
   const { user, role } = useAuth();

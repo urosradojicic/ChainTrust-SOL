@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Leaf, Zap, Coins, Vote } from 'lucide-react';
+import { Leaf, Zap, Coins, Vote, type LucideIcon } from 'lucide-react';
 
 export interface SustainabilityData {
   overall: number;
@@ -65,7 +65,7 @@ function CircularGauge({ score, size = 160, id = 'main' }: { score: number; size
 function SubScoreBar({
   label, score, maxScore, icon: Icon, detail, delay,
 }: {
-  label: string; score: number; maxScore: number; icon: React.ElementType; detail: string; delay: number;
+  label: string; score: number; maxScore: number; icon: LucideIcon; detail: string; delay: number;
 }) {
   const pct = (score / maxScore) * 100;
 

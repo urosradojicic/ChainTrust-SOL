@@ -33,11 +33,18 @@ export default function NetworkPulse() {
         setCurrentSlot(slot);
 
         if (perfSamples.length > 0) {
-          const avgTps = perfSamples.reduce((s, p) => s + p.numTransactions / p.samplePeriodSecs, 0) / perfSamples.length;
-          setTps(Math.round(avgTps));
-
-          const avgSlotTime = perfSamples.reduce((s, p) => s + (p.samplePeriodSecs / p.numSlots) * 1000, 0) / perfSamples.length;
-          setBlockTime(Math.round(avgSlotTime));
+          // Sum into a plain accumulator variable: TS chooses the wrong
+          // reduce overload when the initial value 0 is passed alongside a
+          // PerfSample[] array, inferring `s` as PerfSample. Manual loop
+          // is unambiguous and just as fast for these tiny arrays.
+          let txSum = 0;
+          let slotSum = 0;
+          for (const p of perfSamples) {
+            txSum += p.numTransactions / p.samplePeriodSecs;
+            slotSum += (p.samplePeriodSecs / p.numSlots) * 1000;
+          }
+          setTps(Math.round(txSum / perfSamples.length));
+          setBlockTime(Math.round(slotSum / perfSamples.length));
         }
 
         const now = Date.now();

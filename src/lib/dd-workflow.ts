@@ -41,12 +41,22 @@ export interface DDItem {
   completedAt: number | null;
 }
 
+/**
+ * Static template fields used to seed a workflow before runtime state is added.
+ * Once the workflow is created via `createDDWorkflow`, items become full `DDItem`s.
+ */
+export type DDItemTemplate = Omit<
+  DDItem,
+  'status' | 'autoResult' | 'notes' | 'evidence' | 'score' | 'timeSpent' | 'completedAt'
+>;
+
 export interface DDPhaseConfig {
   phase: DDPhase;
   label: string;
   description: string;
   icon: string;
-  items: Omit<DDItem, 'status' | 'autoResult' | 'notes' | 'evidence' | 'score' | 'timeSpent' | 'completedAt'>[];
+  /** Runtime items — full DDItem shape after `createDDWorkflow` initializes them. */
+  items: DDItem[];
   /** Phase verdict */
   verdict: DDVerdict | null;
   /** Phase notes */
@@ -89,7 +99,17 @@ export interface DDWorkflow {
 
 // ── Phase Templates ──────────────────────────────────────────────────
 
-const PHASE_TEMPLATES: Omit<DDPhaseConfig, 'verdict' | 'phaseNotes' | 'completionPct'>[] = [
+// Templates use the lightweight DDItemTemplate (no runtime fields).
+// `createDDWorkflow` upgrades each item into a full DDItem.
+interface DDPhaseTemplate {
+  phase: DDPhase;
+  label: string;
+  description: string;
+  icon: string;
+  items: DDItemTemplate[];
+}
+
+const PHASE_TEMPLATES: DDPhaseTemplate[] = [
   {
     phase: 'initial_screen',
     label: 'Initial Screen',

@@ -1,8 +1,11 @@
-import { Shield, AlertTriangle, Database, Link as LinkIcon } from 'lucide-react';
+import { Shield, AlertTriangle, Database, Link as LinkIcon, type LucideIcon } from 'lucide-react';
 
 export type ProvenanceType = 'on-chain' | 'self-reported' | 'computed' | 'oracle';
 
-const config: Record<ProvenanceType, { icon: React.ElementType; label: string; color: string; bg: string }> = {
+// LucideIcon (not React.ElementType) lets TS infer that <c.icon className="..." />
+// is a valid props pass-through. With React.ElementType the inferred prop type
+// collapses to `never` because the union includes intrinsic string elements.
+const config: Record<ProvenanceType, { icon: LucideIcon; label: string; color: string; bg: string }> = {
   'on-chain': { icon: Shield, label: 'On-Chain Verified', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
   'self-reported': { icon: AlertTriangle, label: 'Self-Reported', color: 'text-amber-400', bg: 'bg-amber-500/10' },
   'computed': { icon: Database, label: 'Computed', color: 'text-blue-400', bg: 'bg-blue-500/10' },

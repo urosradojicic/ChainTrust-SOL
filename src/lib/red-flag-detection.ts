@@ -351,7 +351,7 @@ function detectTrajectoryWarnings(
         metrics: ['growth_rate'],
         confidence: 0.9,
         recommendation: 'Analyze growth channels — identify which acquisition channels are saturating.',
-        evidence: { lastThree: lastThree.map(g => +g.toFixed(1)) },
+        evidence: { lastThree: lastThree.map(g => +g.toFixed(1)).join(', ') },
       });
     }
   }

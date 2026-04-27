@@ -21,7 +21,8 @@ import type { DbStartup } from '@/types/database';
 
 /** Safe dynamic field access for startup properties */
 function getField(s: DbStartup, field: string): unknown {
-  return (s as Record<string, unknown>)[field];
+  // Cast through unknown — DbStartup has no string index signature.
+  return (s as unknown as Record<string, unknown>)[field];
 }
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -149,7 +150,7 @@ function extractFilters(query: string): { filters: FilterRule[]; descriptions: s
       const num = parseNumber(valueStr);
       if (num === null) continue;
 
-      filters.push({ field: metric.field, operator, value: num });
+      filters.push({ field: metric.field as FilterRule['field'], operator, value: num });
       descriptions.push(`${metric.label} ${operator} ${num.toLocaleString()}`);
       break;
     }

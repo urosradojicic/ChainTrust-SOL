@@ -38,7 +38,12 @@ export default function Portfolio() {
     } catch { return INITIAL_ALERTS; }
   });
   const [showAddAlert, setShowAddAlert] = useState(false);
-  const [newAlert, setNewAlert] = useState({ startupName: '', metric: 'MRR', condition: 'below' as const, threshold: 0 });
+  const [newAlert, setNewAlert] = useState<{
+    startupName: string;
+    metric: string;
+    condition: 'above' | 'below';
+    threshold: number;
+  }>({ startupName: '', metric: 'MRR', condition: 'below', threshold: 0 });
 
   useEffect(() => {
     localStorage.setItem('chaintrust_alerts', JSON.stringify(alerts));

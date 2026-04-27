@@ -428,7 +428,7 @@ export default function Governance() {
                                 toast.error('Sign in to vote');
                                 return;
                               }
-                              setVotingId(p.id);
+                              setVotingId(String(p.id));
                               try {
                                 const { error } = await supabase.from('votes').insert({
                                   proposal_id: String(p.id),

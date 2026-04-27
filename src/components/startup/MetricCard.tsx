@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
+import { type LucideIcon } from 'lucide-react';
 import DataProvenance, { type ProvenanceType } from '@/components/common/DataProvenance';
 
 interface MetricCardProps {
   label: string;
   value: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   bg: string;
   provenance?: ProvenanceType;
 }

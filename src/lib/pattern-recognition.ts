@@ -300,17 +300,21 @@ export function recognizePatterns(
   const growthRates = sorted.map(m => Number(m.growth_rate));
   const revenues = sorted.map(m => Number(m.revenue));
 
-  // Detect all patterns
-  const detections: { type: PatternType; confidence: number }[] = [
-    { type: 't2d3_growth', confidence: detectT2D3(growthRates, revenues) },
-    { type: 'hockey_stick', confidence: detectHockeyStick(growthRates, revenues) },
-    { type: 'death_spiral', confidence: detectDeathSpiral(growthRates, revenues) },
-    { type: 'plateau_breakout', confidence: detectPlateauBreakout(growthRates) },
-    { type: 'steady_grower', confidence: detectSteadyGrower(growthRates) },
-    { type: 'boom_bust', confidence: detectBoomBust(growthRates) },
-    { type: 'slow_burn', confidence: detectSlowBurn(startup, growthRates, sorted) },
-    { type: 'rocket_ship', confidence: detectRocketShip(growthRates) },
-  ].filter(d => d.confidence > 0.3);
+  // Detect all patterns. Use `as const` on each literal so TS keeps the narrow
+  // PatternType union instead of widening to `string` after .filter().
+  const allDetections = [
+    { type: 't2d3_growth' as PatternType, confidence: detectT2D3(growthRates, revenues) },
+    { type: 'hockey_stick' as PatternType, confidence: detectHockeyStick(growthRates, revenues) },
+    { type: 'death_spiral' as PatternType, confidence: detectDeathSpiral(growthRates, revenues) },
+    { type: 'plateau_breakout' as PatternType, confidence: detectPlateauBreakout(growthRates) },
+    { type: 'steady_grower' as PatternType, confidence: detectSteadyGrower(growthRates) },
+    { type: 'boom_bust' as PatternType, confidence: detectBoomBust(growthRates) },
+    { type: 'slow_burn' as PatternType, confidence: detectSlowBurn(startup, growthRates, sorted) },
+    { type: 'rocket_ship' as PatternType, confidence: detectRocketShip(growthRates) },
+  ];
+  const detections: { type: PatternType; confidence: number }[] = allDetections.filter(
+    (d) => d.confidence > 0.3,
+  );
 
   const patterns: DetectedPattern[] = detections
     .map(d => {

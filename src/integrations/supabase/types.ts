@@ -326,6 +326,163 @@ export type Database = {
         }
         Relationships: []
       }
+      // ── Tables added in later migrations (votes, funding_rounds, token_unlocks, deal_rooms) ──
+      // Hand-maintained until `supabase gen types` is re-run. Column shapes match
+      // the corresponding `CREATE TABLE` statements in supabase/migrations/.
+      votes: {
+        Row: {
+          id: string
+          proposal_id: string
+          user_id: string
+          vote: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          proposal_id: string
+          user_id: string
+          vote: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          proposal_id?: string
+          user_id?: string
+          vote?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      funding_rounds: {
+        Row: {
+          id: string
+          startup_id: string
+          round_name: string
+          amount: number
+          valuation: number
+          round_date: string
+          investors: string[]
+          created_at: string
+          // Pitchbook-style additions (migration 20260422100000)
+          round_type: string | null
+          lead_investor: string | null
+          participating: Json | null
+          announcement_url: string | null
+        }
+        Insert: {
+          id?: string
+          startup_id: string
+          round_name: string
+          amount?: number
+          valuation?: number
+          round_date: string
+          investors?: string[]
+          created_at?: string
+          round_type?: string | null
+          lead_investor?: string | null
+          participating?: Json | null
+          announcement_url?: string | null
+        }
+        Update: {
+          id?: string
+          startup_id?: string
+          round_name?: string
+          amount?: number
+          valuation?: number
+          round_date?: string
+          investors?: string[]
+          created_at?: string
+          round_type?: string | null
+          lead_investor?: string | null
+          participating?: Json | null
+          announcement_url?: string | null
+        }
+        Relationships: []
+      }
+      token_unlocks: {
+        Row: {
+          id: string
+          startup_id: string
+          unlock_date: string
+          amount: number
+          category: string
+          unlocked: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          startup_id: string
+          unlock_date: string
+          amount?: number
+          category: string
+          unlocked?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          startup_id?: string
+          unlock_date?: string
+          amount?: number
+          category?: string
+          unlocked?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+      deal_rooms: {
+        Row: {
+          id: string
+          startup_id: string
+          creator_id: string
+          title: string
+          summary: string | null
+          target_amount: number
+          min_ticket: number
+          raised_amount: number
+          accepted_tokens: string[]
+          deadline: string
+          terms: Json | null
+          escrow_address: string | null
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          startup_id: string
+          creator_id: string
+          title: string
+          summary?: string | null
+          target_amount: number
+          min_ticket: number
+          raised_amount?: number
+          accepted_tokens?: string[]
+          deadline: string
+          terms?: Json | null
+          escrow_address?: string | null
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          startup_id?: string
+          creator_id?: string
+          title?: string
+          summary?: string | null
+          target_amount?: number
+          min_ticket?: number
+          raised_amount?: number
+          accepted_tokens?: string[]
+          deadline?: string
+          terms?: Json | null
+          escrow_address?: string | null
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

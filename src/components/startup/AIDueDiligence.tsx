@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Brain, Shield, AlertTriangle, TrendingUp, ChevronDown, ChevronUp, CheckCircle, XCircle, Info, Zap } from 'lucide-react';
+import { Brain, Shield, AlertTriangle, TrendingUp, ChevronDown, ChevronUp, CheckCircle, XCircle, Info, Zap, type LucideIcon } from 'lucide-react';
 import { generateDueDiligenceReport, type DueDiligenceReport, type RiskLevel, type SignalType } from '@/lib/ai-due-diligence';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
 
@@ -18,7 +18,7 @@ const riskBg: Record<RiskLevel, string> = {
   critical: 'bg-red-500/10 border-red-500/20',
 };
 
-const signalIcons: Record<SignalType, React.ElementType> = {
+const signalIcons: Record<SignalType, LucideIcon> = {
   positive: CheckCircle,
   warning: AlertTriangle,
   danger: XCircle,

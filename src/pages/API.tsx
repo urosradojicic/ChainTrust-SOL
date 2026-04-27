@@ -322,7 +322,11 @@ function EndpointCard({ endpoint }: { endpoint: Endpoint }) {
           {endpoint.method}
         </span>
         <code className="text-sm font-mono text-foreground flex-1">{endpoint.path}</code>
-        {endpoint.auth && <Lock className="h-3.5 w-3.5 text-amber-400" title="Requires authentication" />}
+        {endpoint.auth && (
+          <span title="Requires authentication" aria-label="Requires authentication" className="inline-flex">
+            <Lock className="h-3.5 w-3.5 text-amber-400" aria-hidden="true" />
+          </span>
+        )}
         {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
       </button>
 
