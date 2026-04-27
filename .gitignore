@@ -44,3 +44,5 @@ build_output.txt
 
 # Lovable (historical)
 .lovable/
+.playwright-mcp/
+audit-landing-mobile-360.png
