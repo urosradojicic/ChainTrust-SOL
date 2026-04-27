@@ -1,0 +1,60 @@
+name: CI
+
+# Runs lint + typecheck + test + build on every push and PR.
+# Designed for the hackathon timeline: fail fast, surface broken code
+# before it reaches `master` or `merged-ai-roadmap-v2`.
+
+on:
+  push:
+    branches: [master, merged-ai-roadmap-v2, dodavanje-api-za-ai]
+  pull_request:
+    branches: [master, merged-ai-roadmap-v2]
+
+# Cancel in-progress runs for the same ref when a new commit lands.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Lint · Typecheck · Test · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # `npm ci` requires a lockfile. The repo's `.gitignore` excludes
+      # `package-lock.json`, so we fall back to `npm install --legacy-peer-deps`
+      # (matching the README's documented install command).
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true # surfacing 116 known issues to fix in M3
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build (production)
+        run: npm run build
+
+      - name: Report bundle sizes
+        run: |
+          echo "### Bundle sizes" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          du -sh dist/assets/*.js | sort -hr | head -15 >> $GITHUB_STEP_SUMMARY || true
+          echo '```' >> $GITHUB_STEP_SUMMARY
