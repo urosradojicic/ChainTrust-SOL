@@ -278,7 +278,20 @@ export default function Landing() {
       {/* ── Powered by Solana ── */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img src="https://images.unsplash.com/photo-1639762681057-408e52192e55?w=1600&h=900&fit=crop&q=80" alt="" className="w-full h-full object-cover" />
+          {/* Decorative background — width/height stop CLS, fetchpriority="low"
+              keeps it from competing with hero text for early render budget,
+              loading="lazy" defers the request until close to viewport. */}
+          <img
+            src="https://images.unsplash.com/photo-1639762681057-408e52192e55?w=1600&h=900&fit=crop&q=80"
+            alt=""
+            role="presentation"
+            width={1600}
+            height={900}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-background/92" />
         </div>
 

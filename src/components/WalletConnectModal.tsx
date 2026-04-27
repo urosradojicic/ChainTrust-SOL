@@ -58,7 +58,7 @@ export default function WalletConnectModal({ open, onOpenChange }: Props) {
                 onClick={handlePick}
                 className="flex items-center gap-3 rounded-xl border border-border px-4 py-3 text-left transition hover:bg-secondary"
               >
-                <img src={w.icon} alt={w.name} className="h-8 w-8 rounded-lg object-contain" />
+                <img src={w.icon} alt={`${w.name} wallet logo`} width={32} height={32} loading="lazy" decoding="async" className="h-8 w-8 rounded-lg object-contain" />
                 <span className="text-sm font-medium text-foreground">{w.name}</span>
               </button>
             ))}
