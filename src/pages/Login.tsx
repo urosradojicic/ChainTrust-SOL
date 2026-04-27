@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useDocumentTitle } from '@/hooks/use-document-title';
+import PasswordStrengthMeter, { scorePassword } from '@/components/PasswordStrengthMeter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,6 +21,7 @@ const DEMO_ROLES = [
 ];
 
 export default function Login() {
+  useDocumentTitle('Sign in');
   const navigate = useNavigate();
   const { signIn, signUp } = useAuth();
   const [email, setEmail] = useState('');
@@ -44,13 +47,13 @@ export default function Login() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Minimum password hygiene: 8+ chars, at least one number
-    if (password.length < 8) {
-      toast.error('Password must be at least 8 characters.');
-      return;
-    }
-    if (!/\d/.test(password)) {
-      toast.error('Password must contain at least one number.');
+    // Source of truth: scorePassword() returns the same criteria the meter
+    // shows. We require ≥3 (length + a digit + a letter — "Good" or above)
+    // to accept signup so the meter and rejection criteria stay aligned.
+    const strength = scorePassword(password);
+    if (strength.score < 3) {
+      const unmet = strength.criteria.filter((c) => !c.met).slice(0, 2).map((c) => c.description);
+      toast.error(`Password too weak — please add: ${unmet.join(' and ')}.`);
       return;
     }
     setLoading(true);
@@ -182,9 +185,13 @@ export default function Login() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        aria-pressed={showPassword}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition"
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword
+                          ? <EyeOff className="h-4 w-4" aria-hidden="true" />
+                          : <Eye className="h-4 w-4" aria-hidden="true" />}
                       </button>
                     </div>
                   </div>
@@ -219,14 +226,20 @@ export default function Login() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Password</Label>
+                    <Label htmlFor="signup-password">Password</Label>
                     <Input
+                      id="signup-password"
                       type="password"
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="new-password"
                       required
+                      aria-describedby="signup-password-strength"
                     />
+                    <div id="signup-password-strength">
+                      <PasswordStrengthMeter password={password} />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label>Role</Label>

@@ -137,9 +137,20 @@ const App = () => (
             <RealtimeProvider>
               <CommandPalette />
               <KeyboardHelpOverlay />
+              {/*
+                Skip-link — visually hidden until a keyboard user tabs to it.
+                Lets screen-reader and keyboard-only users bypass the navbar
+                and jump directly to page content (WCAG 2.1 SC 2.4.1).
+              */}
+              <a
+                href="#main"
+                className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:rounded-lg focus:bg-primary focus:text-primary-foreground focus:px-3 focus:py-2 focus:text-sm focus:font-bold focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              >
+                Skip to main content
+              </a>
               <div className="flex min-h-screen flex-col">
                 <Navbar />
-                <main className="flex-1">
+                <main id="main" className="flex-1" tabIndex={-1}>
                   <AnimatedRoutes />
                 </main>
                 <Footer />
