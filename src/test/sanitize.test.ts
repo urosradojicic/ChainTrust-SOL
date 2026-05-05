@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { escapeHtml, stripHtml, sanitizeText, sanitizeUrl, sanitizeNumber, isValidEmail, isValidSolanaAddress, safeJsonParse, rateLimit } from '@/lib/sanitize';
+import { escapeHtml, stripHtml, sanitizeText, sanitizeUrl, sanitizeNumber, isValidEmail, isValidSolanaAddress, safeJsonParse, rateLimit, safeHref, sanitizeTwitterHandle } from '@/lib/sanitize';
 
 describe('escapeHtml', () => {
   it('escapes the five XSS-relevant characters', () => {
@@ -140,5 +140,56 @@ describe('rateLimit', () => {
     expect(rateLimit('test2', 1, 1_000)).toBe(false);
     vi.advanceTimersByTime(1_500);
     expect(rateLimit('test2', 1, 1_000)).toBe(true);
+  });
+});
+
+describe('safeHref', () => {
+  it('returns null for null/undefined/empty', () => {
+    expect(safeHref(null)).toBe(null);
+    expect(safeHref(undefined)).toBe(null);
+    expect(safeHref('')).toBe(null);
+    expect(safeHref('   ')).toBe(null);
+  });
+
+  it('blocks javascript:/data:/file: schemes (XSS surface)', () => {
+    expect(safeHref('javascript:alert(1)')).toBe(null);
+    expect(safeHref('JAVASCRIPT:alert(1)')).toBe(null);
+    expect(safeHref('data:text/html,<script>alert(1)</script>')).toBe(null);
+    expect(safeHref('file:///etc/passwd')).toBe(null);
+  });
+
+  it('preserves http/https URLs (canonicalised)', () => {
+    expect(safeHref('https://example.com')).toBe('https://example.com/');
+    expect(safeHref('http://x.com/a?b=1')).toBe('http://x.com/a?b=1');
+  });
+});
+
+describe('sanitizeTwitterHandle', () => {
+  it('accepts valid handles (1–15 chars, alphanumeric + underscore)', () => {
+    expect(sanitizeTwitterHandle('jack')).toBe('jack');
+    expect(sanitizeTwitterHandle('a_b_1')).toBe('a_b_1');
+    expect(sanitizeTwitterHandle('123456789012345')).toBe('123456789012345');
+  });
+
+  it('strips a single leading @', () => {
+    expect(sanitizeTwitterHandle('@elonmusk')).toBe('elonmusk');
+  });
+
+  it('rejects invalid handles', () => {
+    // Path injection
+    expect(sanitizeTwitterHandle('evil.com?x=')).toBe(null);
+    // Too long
+    expect(sanitizeTwitterHandle('a'.repeat(16))).toBe(null);
+    // Empty after trim
+    expect(sanitizeTwitterHandle('   ')).toBe(null);
+    // Non-ASCII
+    expect(sanitizeTwitterHandle('user—name')).toBe(null);
+    // Slashes
+    expect(sanitizeTwitterHandle('a/b')).toBe(null);
+  });
+
+  it('returns null for null/undefined', () => {
+    expect(sanitizeTwitterHandle(null)).toBe(null);
+    expect(sanitizeTwitterHandle(undefined)).toBe(null);
   });
 });

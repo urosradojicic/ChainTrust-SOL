@@ -9,6 +9,7 @@ import {
 } from 'recharts';
 import { formatCurrency, formatNumber } from '@/lib/format';
 import { chartTooltipStyle, categoryColors } from '@/lib/constants';
+import { safeHref } from '@/lib/sanitize';
 import Badge from '@/components/common/Badge';
 import DataProvenance from '@/components/common/DataProvenance';
 import SustainabilityScore from '@/components/SustainabilityScore';
@@ -159,12 +160,15 @@ export default function StartupDetail() {
           <div className="mt-3 flex flex-wrap gap-4 text-sm text-muted-foreground">
             {startup.founded_date && <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> Founded {startup.founded_date}</span>}
             <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {startup.team_size} team members</span>
-            {startup.website && (
-              <a href={startup.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary hover:underline">
-                <Globe className="h-3.5 w-3.5" /> {startup.website}
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            )}
+            {(() => {
+              const safe = safeHref(startup.website);
+              return safe && (
+                <a href={safe} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary hover:underline">
+                  <Globe className="h-3.5 w-3.5" /> {safe}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              );
+            })()}
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <OnChainTimestamp />

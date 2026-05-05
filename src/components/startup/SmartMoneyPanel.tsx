@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { SMART_WALLETS, lookupSmartWallet, type SmartWallet } from '@/lib/smart-wallets';
 import { getRecentCounterparties, isHeliusConfigured } from '@/lib/helius';
+import { safeHref } from '@/lib/sanitize';
 
 interface SmartMoneyPanelProps {
   walletAddress: string | null | undefined;
@@ -165,17 +166,20 @@ export default function SmartMoneyPanel({ walletAddress, startupName }: SmartMon
                           </p>
                         </div>
                       </div>
-                      {w.url && (
-                        <a
-                          href={w.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          aria-label={`Open ${w.label} external link`}
-                          className="text-primary hover:text-primary/80 transition shrink-0"
-                        >
-                          <ExternalLink className="h-3.5 w-3.5" />
-                        </a>
-                      )}
+                      {(() => {
+                        const safe = safeHref(w.url);
+                        return safe && (
+                          <a
+                            href={safe}
+                            target="_blank"
+                            rel="noreferrer"
+                            aria-label={`Open ${w.label} external link`}
+                            className="text-primary hover:text-primary/80 transition shrink-0"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </a>
+                        );
+                      })()}
                     </li>
                   );
                 })}

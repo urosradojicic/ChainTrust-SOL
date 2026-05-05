@@ -7,6 +7,7 @@
 import { motion } from 'framer-motion';
 import { ExternalLink, Users } from 'lucide-react';
 import type { DbStartup } from '@/types/database';
+import { safeHref, sanitizeTwitterHandle } from '@/lib/sanitize';
 
 interface Props {
   startup: DbStartup;
@@ -96,47 +97,55 @@ export default function FoundingTeamCard({ startup }: Props) {
                   <p className="text-sm font-medium text-foreground truncate">{member.name}</p>
                   <p className="text-[11px] text-muted-foreground truncate">{member.role}</p>
                 </div>
-                {member.linkedin && (
-                  <a
-                    href={member.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`LinkedIn profile for ${member.name}`}
-                    className="text-primary hover:text-primary/80 transition shrink-0"
-                  >
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
-                )}
+                {(() => {
+                  const safe = safeHref(member.linkedin);
+                  return safe && (
+                    <a
+                      href={safe}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`LinkedIn profile for ${member.name}`}
+                      className="text-primary hover:text-primary/80 transition shrink-0"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  );
+                })()}
               </li>
             ))}
           </ul>
         </div>
       )}
 
-      {(startup.linkedin_url || startup.twitter_handle) && (
-        <div className="mt-4 pt-3 border-t border-border/60 flex items-center gap-3 text-xs">
-          {startup.linkedin_url && (
-            <a
-              href={startup.linkedin_url}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:text-primary/80 font-medium"
-            >
-              LinkedIn ↗
-            </a>
-          )}
-          {startup.twitter_handle && (
-            <a
-              href={`https://twitter.com/${startup.twitter_handle.replace(/^@/, '')}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary hover:text-primary/80 font-medium"
-            >
-              @{startup.twitter_handle.replace(/^@/, '')} ↗
-            </a>
-          )}
-        </div>
-      )}
+      {(() => {
+        const safeLinkedin = safeHref(startup.linkedin_url);
+        const safeTwitter = sanitizeTwitterHandle(startup.twitter_handle);
+        if (!safeLinkedin && !safeTwitter) return null;
+        return (
+          <div className="mt-4 pt-3 border-t border-border/60 flex items-center gap-3 text-xs">
+            {safeLinkedin && (
+              <a
+                href={safeLinkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary hover:text-primary/80 font-medium"
+              >
+                LinkedIn ↗
+              </a>
+            )}
+            {safeTwitter && (
+              <a
+                href={`https://twitter.com/${safeTwitter}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary hover:text-primary/80 font-medium"
+              >
+                @{safeTwitter} ↗
+              </a>
+            )}
+          </div>
+        );
+      })()}
     </motion.div>
   );
 }

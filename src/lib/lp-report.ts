@@ -67,10 +67,10 @@ export function generateLPReportHTML(data: LPReportData): string {
       <div style="margin-bottom: 30px;">
         <h2 style="font-size: 22px; margin: 0 0 8px;">${escHtml(startup.name)}</h2>
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-          <span style="background: #534AB710; color: #534AB7; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${startup.category}</span>
+          <span style="background: #534AB710; color: #534AB7; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${escHtml(startup.category)}</span>
           <span style="background: ${startup.verified ? '#10B98110' : '#F59E0B10'}; color: ${startup.verified ? '#10B981' : '#F59E0B'}; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${startup.verified ? 'Verified' : 'Unverified'}</span>
-          <span style="background: #3B82F610; color: #3B82F6; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${startup.blockchain}</span>
-          <span style="background: ${report.overallRisk === 'low' ? '#10B981' : report.overallRisk === 'medium' ? '#F59E0B' : '#EF4444'}10; color: ${report.overallRisk === 'low' ? '#10B981' : report.overallRisk === 'medium' ? '#F59E0B' : '#EF4444'}; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">Grade: ${report.investmentGrade}</span>
+          <span style="background: #3B82F610; color: #3B82F6; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">${escHtml(startup.blockchain)}</span>
+          <span style="background: ${report.overallRisk === 'low' ? '#10B981' : report.overallRisk === 'medium' ? '#F59E0B' : '#EF4444'}10; color: ${report.overallRisk === 'low' ? '#10B981' : report.overallRisk === 'medium' ? '#F59E0B' : '#EF4444'}; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;">Grade: ${escHtml(report.investmentGrade)}</span>
         </div>
         <p style="margin: 12px 0 0; font-size: 13px; color: #6b7280; line-height: 1.6;">${escHtml(startup.description || 'No description available.')}</p>
       </div>
@@ -102,14 +102,14 @@ export function generateLPReportHTML(data: LPReportData): string {
       <!-- Risk Assessment -->
       <div style="margin-bottom: 30px;">
         <h3 style="font-size: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;">Risk Assessment</h3>
-        <p style="font-size: 13px; color: #374151; line-height: 1.6;">${report.summary}</p>
+        <p style="font-size: 13px; color: #374151; line-height: 1.6;">${escHtml(report.summary)}</p>
         ${report.financialHealth.map(h => `
           <div style="display: flex; align-items: center; gap: 12px; margin: 8px 0;">
-            <span style="width: 120px; font-size: 12px; color: #6b7280;">${h.label}</span>
+            <span style="width: 120px; font-size: 12px; color: #6b7280;">${escHtml(h.label)}</span>
             <div style="flex: 1; height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden;">
-              <div style="height: 100%; width: ${h.score}%; background: ${h.status === 'low' ? '#10B981' : h.status === 'medium' ? '#F59E0B' : '#EF4444'}; border-radius: 4px;"></div>
+              <div style="height: 100%; width: ${Number(h.score)}%; background: ${h.status === 'low' ? '#10B981' : h.status === 'medium' ? '#F59E0B' : '#EF4444'}; border-radius: 4px;"></div>
             </div>
-            <span style="font-size: 12px; font-weight: 600; width: 40px; text-align: right;">${h.score}%</span>
+            <span style="font-size: 12px; font-weight: 600; width: 40px; text-align: right;">${Number(h.score)}%</span>
           </div>
         `).join('')}
       </div>
@@ -131,7 +131,7 @@ export function generateLPReportHTML(data: LPReportData): string {
           <tbody>
             ${metrics.slice(-6).map(m => `
               <tr style="border-bottom: 1px solid #f3f4f6;">
-                <td style="padding: 8px;">${m.month}</td>
+                <td style="padding: 8px;">${escHtml(String(m.month))}</td>
                 <td style="padding: 8px; text-align: right; font-family: monospace;">${formatCurrency(Number(m.revenue))}</td>
                 <td style="padding: 8px; text-align: right; font-family: monospace;">${formatCurrency(Number(m.costs))}</td>
                 <td style="padding: 8px; text-align: right; font-family: monospace;">${formatNumber(m.mau)}</td>
@@ -147,11 +147,11 @@ export function generateLPReportHTML(data: LPReportData): string {
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 30px;">
         <div>
           <h3 style="font-size: 14px; color: #10B981; margin-bottom: 8px;">Strengths</h3>
-          ${report.strengths.map(s => `<p style="font-size: 12px; color: #374151; margin: 4px 0; padding-left: 12px; border-left: 2px solid #10B981;">${s}</p>`).join('') || '<p style="font-size: 12px; color: #9CA3AF;">No major strengths identified</p>'}
+          ${report.strengths.map(s => `<p style="font-size: 12px; color: #374151; margin: 4px 0; padding-left: 12px; border-left: 2px solid #10B981;">${escHtml(s)}</p>`).join('') || '<p style="font-size: 12px; color: #9CA3AF;">No major strengths identified</p>'}
         </div>
         <div>
           <h3 style="font-size: 14px; color: #EF4444; margin-bottom: 8px;">Risk Factors</h3>
-          ${report.weaknesses.map(w => `<p style="font-size: 12px; color: #374151; margin: 4px 0; padding-left: 12px; border-left: 2px solid #EF4444;">${w}</p>`).join('') || '<p style="font-size: 12px; color: #9CA3AF;">No major risks identified</p>'}
+          ${report.weaknesses.map(w => `<p style="font-size: 12px; color: #374151; margin: 4px 0; padding-left: 12px; border-left: 2px solid #EF4444;">${escHtml(w)}</p>`).join('') || '<p style="font-size: 12px; color: #9CA3AF;">No major risks identified</p>'}
         </div>
       </div>
 

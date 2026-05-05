@@ -36,6 +36,30 @@ export function sanitizeUrl(url: string): string | null {
   }
 }
 
+/**
+ * Validate a possibly-null DB-stored URL and return either a safe absolute
+ * URL string or null. Use at render time on every `href` whose value comes
+ * from user-controlled data (DB columns, query params, etc.) — guards against
+ * `javascript:` / `data:` URIs in legacy rows even if the original write path
+ * didn't sanitize.
+ */
+export function safeHref(url: string | null | undefined): string | null {
+  if (!url) return null;
+  return sanitizeUrl(url);
+}
+
+/**
+ * Validate a Twitter / X handle against the actual platform rule:
+ * letters, digits, underscores, 1–15 chars. Returns the canonical handle
+ * (no leading `@`) or null if the input doesn't match. Strips a single
+ * leading `@` if present.
+ */
+export function sanitizeTwitterHandle(handle: string | null | undefined): string | null {
+  if (!handle) return null;
+  const trimmed = handle.trim().replace(/^@/, '');
+  return /^[A-Za-z0-9_]{1,15}$/.test(trimmed) ? trimmed : null;
+}
+
 /** Validate a numeric input is within safe range */
 export function sanitizeNumber(val: unknown, min: number = 0, max: number = Number.MAX_SAFE_INTEGER): number {
   const n = Number(val);
