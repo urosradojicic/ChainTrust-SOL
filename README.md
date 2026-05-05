@@ -6,6 +6,8 @@ ChainTrust is a supply chain transparency and startup verification platform buil
 
 > **Submitting to Colosseum Frontier — May 11, 2026.** `master` is the Frontier-ready snapshot — what reviewers and investors should clone. Ongoing work continues on `merged-ai-roadmap-v2` and lands on `master` via fast-forward when stable. The `backup` branch is a frozen restore point and is read-only — run `git fetch origin backup && git reset --hard origin/backup` if you ever need to roll back.
 
+> **🏆 Hackathon judges:** start with [`JUDGES.md`](JUDGES.md) — a 3-minute guided tour with file pointers, demo credentials, and the things to look at first. For the security posture, see [`SECURITY.md`](SECURITY.md) (5 parallel audit agents, ~60 findings closed, 8 → 0 critical npm vulns).
+
 ## Live Testnet Demo
 
 **Want to see a real, signed Solana transaction in 10 seconds?** Open [`/testnet-demo`](src/pages/LiveTestnetDemo.tsx) after `npm run dev`. Connect Phantom (Devnet), click airdrop, click anchor — you get a real tx signature with a verifiable Solana Explorer link. Uses the canonical SPL Memo Program so there's nothing to deploy. See [docs/LIVE_TESTNET_DEMO.md](docs/LIVE_TESTNET_DEMO.md) for the full walkthrough.
