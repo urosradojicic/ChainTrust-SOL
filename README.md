@@ -4,7 +4,7 @@
 
 ChainTrust is a supply chain transparency and startup verification platform built on Solana. Startups publish metrics on-chain, get verified by independent oracles, and build investor confidence with cryptographic proof chains.
 
-> **Submitting to Colosseum Frontier — May 11, 2026.** Active development happens on `merged-ai-roadmap-v2`. The `backup` branch is a frozen restore point and is read-only. Run `git fetch origin backup && git reset --hard origin/backup` if you ever need to roll back.
+> **Submitting to Colosseum Frontier — May 11, 2026.** `master` is the Frontier-ready snapshot — what reviewers and investors should clone. Ongoing work continues on `merged-ai-roadmap-v2` and lands on `master` via fast-forward when stable. The `backup` branch is a frozen restore point and is read-only — run `git fetch origin backup && git reset --hard origin/backup` if you ever need to roll back.
 
 ## Live Testnet Demo
 
