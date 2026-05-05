@@ -4,11 +4,14 @@ import {
   WalletProvider,
 } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import {
-  PhantomWalletAdapter,
-  SolflareWalletAdapter,
-  CoinbaseWalletAdapter,
-} from '@solana/wallet-adapter-wallets';
+// Import each adapter from its own package rather than the
+// `@solana/wallet-adapter-wallets` meta-package: that meta dragged in Trezor
+// and Torus adapters whose deep transitive deps (protobufjs, bigint-buffer,
+// crypto-browserify) carried 8 critical npm advisories. We never instantiate
+// those adapters anyway.
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
+import { CoinbaseWalletAdapter } from '@solana/wallet-adapter-coinbase';
 import { SOLANA_RPC_URL } from '@/lib/solana-config';
 
 import '@solana/wallet-adapter-react-ui/styles.css';
