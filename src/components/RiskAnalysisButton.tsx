@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
 import {
   Brain,
   AlertTriangle,
@@ -33,7 +34,7 @@ async function invokeRiskAnalysis(startup: DbStartup, signal?: AbortSignal): Pro
   const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!baseUrl || !anonKey) throw new Error('Supabase env vars missing');
 
-  const res = await fetch(`${baseUrl}/functions/v1/risk-analysis`, {
+  const res = await fetchWithTimeout(`${baseUrl}/functions/v1/risk-analysis`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,6 +43,7 @@ async function invokeRiskAnalysis(startup: DbStartup, signal?: AbortSignal): Pro
     },
     body: JSON.stringify({ startup }),
     signal,
+    timeoutMs: 30_000, // LLM-backed Edge Function — give it room to think
   });
   if (!res.ok) throw new Error(`Edge Function ${res.status} ${res.statusText}`);
   const json = await res.json();

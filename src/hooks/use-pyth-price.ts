@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
 
 // Pyth Hermes endpoint (public, no key required)
 const HERMES_URL = 'https://hermes.pyth.network';
@@ -32,8 +33,9 @@ export interface TreasuryValuation {
 
 async function fetchPythPrice(feedId: string): Promise<PythPrice | null> {
   try {
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       `${HERMES_URL}/v2/updates/price/latest?ids[]=${feedId}&parsed=true`,
+      { timeoutMs: 8_000 },
     );
     if (!res.ok) return null;
 

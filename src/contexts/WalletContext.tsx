@@ -13,6 +13,13 @@ interface WalletState {
   stakedAmount: number;
   walletType: string | null;
   bookmarkedStartups: string[];
+  /**
+   * Non-null when at least one of the on-chain reads (SOL balance, staked
+   * amount, CMT balance) failed during the last refresh. Consumers that need
+   * to distinguish "balance is genuinely 0" from "balance read failed" should
+   * branch on this instead of treating 0 as authoritative.
+   */
+  balanceError: string | null;
 }
 
 interface WalletContextType extends WalletState {
@@ -31,13 +38,20 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   const [solBalance, setSolBalance] = useState(0);
   const [cmtBalance, setCmtBalance] = useState(0);
   const [stakedAmount, setStakedAmount] = useState(0);
+  const [balanceError, setBalanceError] = useState<string | null>(null);
 
   // Fetch SOL balance and staked CMT when wallet connects
   useEffect(() => {
     if (solanaWallet.publicKey) {
+      const failures: string[] = [];
+
       connection.getBalance(solanaWallet.publicKey).then((balance) => {
         setSolBalance(balance / LAMPORTS_PER_SOL);
-      }).catch(() => setSolBalance(0));
+      }).catch((e) => {
+        setSolBalance(0);
+        failures.push(`SOL balance: ${e instanceof Error ? e.message : 'failed'}`);
+        if (import.meta.env.DEV) console.warn('[wallet] getBalance failed:', e);
+      });
 
       // Read InvestorAccount PDA to get real staked amount
       const [investorPDA] = getInvestorPDA(solanaWallet.publicKey);
@@ -49,7 +63,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         } else {
           setStakedAmount(0);
         }
-      }).catch(() => setStakedAmount(0));
+      }).catch((e) => {
+        setStakedAmount(0);
+        failures.push(`staked amount: ${e instanceof Error ? e.message : 'failed'}`);
+        if (import.meta.env.DEV) console.warn('[wallet] getAccountInfo failed:', e);
+      });
       // Try to read CMT token balance via token accounts.
       // TODO: Filter by CMT mint address once deployed. Currently sums all
       // 6-decimal SPL tokens, which may overcount if the wallet holds other tokens.
@@ -64,11 +82,25 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           0,
         );
         setCmtBalance(Number.isFinite(total) ? total : 0);
-      }).catch(() => setCmtBalance(0));
+      }).catch((e) => {
+        setCmtBalance(0);
+        failures.push(`CMT balance: ${e instanceof Error ? e.message : 'failed'}`);
+        if (import.meta.env.DEV) console.warn('[wallet] getParsedTokenAccountsByOwner failed:', e);
+      });
+
+      // Aggregate any failures into a single user-facing error string. Stays
+      // null on the happy path. Consumers branch on this to render an
+      // "unavailable, retry" indicator rather than treating 0 as truth.
+      // Wait a tick so all three promises have settled before we read failures.
+      const t = setTimeout(() => {
+        setBalanceError(failures.length > 0 ? failures.join('; ') : null);
+      }, 0);
+      return () => clearTimeout(t);
     } else {
       setSolBalance(0);
       setCmtBalance(0);
       setStakedAmount(0);
+      setBalanceError(null);
     }
   }, [solanaWallet.publicKey, connection]);
 
@@ -86,6 +118,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     stakedAmount,
     walletType: solanaWallet.wallet?.adapter.name || null,
     bookmarkedStartups,
+    balanceError,
   };
 
   const connect = useCallback(async (_walletType: string) => {

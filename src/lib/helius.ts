@@ -14,6 +14,8 @@
  * Docs: https://docs.helius.dev/
  */
 
+import { fetchWithTimeout } from './fetch-with-timeout';
+
 const HELIUS_API_KEY = import.meta.env.VITE_HELIUS_API_KEY as string | undefined;
 const HELIUS_BASE = 'https://api.helius.xyz';
 
@@ -54,7 +56,7 @@ export async function getEnhancedTransactions(
   if (!isHeliusConfigured() || !address) return [];
   try {
     const url = `${HELIUS_BASE}/v0/addresses/${address}/transactions?api-key=${HELIUS_API_KEY}&limit=${limit}`;
-    const res = await fetch(url);
+    const res = await fetchWithTimeout(url, { timeoutMs: 8_000 });
     if (!res.ok) {
       if (import.meta.env.DEV) console.warn('[helius] tx fetch failed', res.status);
       return [];
@@ -75,7 +77,7 @@ export async function getBalances(address: string): Promise<HeliusBalances | nul
   if (!isHeliusConfigured() || !address) return null;
   try {
     const url = `${HELIUS_BASE}/v0/addresses/${address}/balances?api-key=${HELIUS_API_KEY}`;
-    const res = await fetch(url);
+    const res = await fetchWithTimeout(url, { timeoutMs: 8_000 });
     if (!res.ok) return null;
     return (await res.json()) as HeliusBalances;
   } catch {

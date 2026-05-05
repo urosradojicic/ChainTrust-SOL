@@ -68,12 +68,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchRole = async (userId: string) => {
     try {
-      const { data } = await supabase.rpc('get_user_role', { _user_id: userId });
+      const { data, error } = await supabase.rpc('get_user_role', { _user_id: userId });
+      if (error) {
+        // Real DB error (RLS misconfig, network) — distinct from "no row yet".
+        // Log to console in dev so it's visible during local development; in
+        // prod the user just stays role=null and pages fall back to their
+        // unauthorized-empty-state, which is the correct deny-by-default UX.
+        if (import.meta.env.DEV) console.warn('[auth] fetchRole error:', error);
+        return;
+      }
       if (data && VALID_ROLES.includes(data as AppRole)) {
         setRole(data as AppRole);
       }
-    } catch {
-      // Supabase not configured — role stays null for real users
+    } catch (err) {
+      // Network failure / Supabase unreachable — role stays null. We log in
+      // dev to make environment-config bugs obvious.
+      if (import.meta.env.DEV) console.warn('[auth] fetchRole threw:', err);
     }
   };
 
@@ -108,7 +118,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Try real Supabase auth
+    // Try real Supabase auth. The boot is a race between `getSession()`
+    // resolving and `onAuthStateChange` firing — whichever wins flips
+    // `loading` off and clears the safety timeout, so the unauthenticated UI
+    // never flashes for 3s while a slow getSession is still in flight.
+    let booted = false;
+    const finishBoot = () => {
+      if (booted) return;
+      booted = true;
+      clearTimeout(timeout);
+      setLoading(false);
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setSession(session);
@@ -118,8 +139,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setRole(null);
         }
-        setLoading(false);
-      }
+        finishBoot();
+      },
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -128,14 +149,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (session?.user) {
         fetchRole(session.user.id);
       }
-      setLoading(false);
-    }).catch(() => {
-      // Supabase unreachable — stop loading so pages render
-      setLoading(false);
+      finishBoot();
+    }).catch((err) => {
+      if (import.meta.env.DEV) console.warn('[auth] getSession failed:', err);
+      finishBoot();
     });
 
-    // Safety timeout — never stay loading forever
-    const timeout = setTimeout(() => setLoading(false), 3000);
+    // Safety timeout — covers full Supabase outage so pages always render.
+    const timeout = setTimeout(finishBoot, 3000);
 
     return () => {
       subscription.unsubscribe();
