@@ -15,6 +15,7 @@ import {
 import { sanitizeText, sanitizeNumber, rateLimit } from '@/lib/sanitize';
 import { getErrorMessage } from '@/lib/errors';
 import { logDataError } from '@/lib/error-handler';
+import { isDemoSignature } from '@/lib/solana-config';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
 import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
@@ -223,20 +224,31 @@ export default function MyStartup() {
       const { error } = await supabase.from('startups').update(updates).eq('id', startup.id);
       if (error) throw error;
 
-      // Insert audit log entries with tx hash
-      await supabase.from('startup_audit_log').insert(
-        changes.map(c => ({
-          startup_id: startup.id,
-          user_id: user.id,
-          field_changed: c.field,
-          old_value: c.old_val,
-          new_value: c.new_val,
-          tx_hash: txHash,
-        }))
-      );
+      // Only persist audit-log rows for real on-chain transactions. Demo
+      // signatures (DEMO_*) come from the hooks' fallback path when the
+      // program isn't deployed and would link to nonexistent explorer URLs.
+      const isDemo = isDemoSignature(txHash);
+      if (!isDemo) {
+        const { error: auditErr } = await supabase.from('startup_audit_log').insert(
+          changes.map(c => ({
+            startup_id: startup.id,
+            user_id: user.id,
+            field_changed: c.field,
+            old_value: c.old_val,
+            new_value: c.new_val,
+            tx_hash: txHash,
+          })),
+        );
+        if (auditErr) logDataError(auditErr, 'MyStartup.auditLog.bulkInsert');
+      }
 
       setSaved(true);
-      toast({ title: 'Confirmed on Solana ✓', description: `${changes.length} field(s) published. Tx: ${txHash.slice(0, 10)}...` });
+      toast({
+        title: isDemo ? 'Saved (demo mode)' : 'Confirmed on Solana ✓',
+        description: isDemo
+          ? `${changes.length} field(s) saved locally. Set VITE_SOLANA_PROGRAM_ID for on-chain anchoring.`
+          : `${changes.length} field(s) published. Tx: ${txHash.slice(0, 10)}...`,
+      });
 
       fetchStartup();
       setTimeout(() => setSaved(false), 3000);
@@ -284,16 +296,23 @@ export default function MyStartup() {
       });
       if (error) throw error;
 
-      await supabase.from('startup_audit_log').insert({
-        startup_id: startup.id,
-        user_id: user.id,
-        field_changed: 'monthly_metrics',
-        old_value: null,
-        new_value: `${monthForm.month}: Rev $${monthForm.revenue}, Costs $${monthForm.costs}, MAU ${monthForm.mau}`,
-        tx_hash: txHash,
-      });
+      const isDemo = isDemoSignature(txHash);
+      if (!isDemo) {
+        const { error: auditErr } = await supabase.from('startup_audit_log').insert({
+          startup_id: startup.id,
+          user_id: user.id,
+          field_changed: 'monthly_metrics',
+          old_value: null,
+          new_value: `${monthForm.month}: Rev $${monthForm.revenue}, Costs $${monthForm.costs}, MAU ${monthForm.mau}`,
+          tx_hash: txHash,
+        });
+        if (auditErr) logDataError(auditErr, 'MyStartup.auditLog.monthlyInsert');
+      }
 
-      toast({ title: 'Monthly metrics published on-chain ✓', description: `Tx: ${txHash.slice(0, 10)}...` });
+      toast({
+        title: isDemo ? 'Monthly metrics saved (demo mode)' : 'Monthly metrics published on-chain ✓',
+        description: isDemo ? 'Set VITE_SOLANA_PROGRAM_ID for on-chain anchoring.' : `Tx: ${txHash.slice(0, 10)}...`,
+      });
       setMonthForm({ month: '', revenue: '', costs: '', mau: '', carbon_offsets: '' });
       fetchStartup();
     } catch (e: unknown) {

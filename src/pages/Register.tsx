@@ -13,6 +13,7 @@ import {
 import { explorerTxUrl } from '@/lib/solana-config';
 import { sanitizeText, sanitizeUrl, sanitizeNumber, rateLimit } from '@/lib/sanitize';
 import { getErrorMessage } from '@/lib/errors';
+import { logDataError } from '@/lib/error-handler';
 import { Progress } from '@/components/ui/progress';
 import Toggle from '@/components/form/Toggle';
 import DistSlider from '@/components/form/DistSlider';
@@ -208,13 +209,23 @@ export default function Register() {
       if (error) throw error;
       const startupId = data.id;
 
-      // Insert pledges
+      // Insert pledges. Failure here is non-fatal — the startup row is
+      // already saved — but we surface a warning toast so the user knows the
+      // pledges weren't persisted and can re-enter them rather than assuming
+      // success.
       const pledgeTexts = PRESET_PLEDGES.filter(p => form.pledges[p.key]).map(p => p.label);
       if (form.customPledge.trim()) pledgeTexts.push(sanitizeText(form.customPledge, 255));
       if (pledgeTexts.length > 0) {
-        await supabase.from('pledges').insert(
-          pledgeTexts.map(t => ({ startup_id: startupId, pledge_text: t, status: 'active' }))
+        const { error: pledgeErr } = await supabase.from('pledges').insert(
+          pledgeTexts.map(t => ({ startup_id: startupId, pledge_text: t, status: 'active' })),
         );
+        if (pledgeErr) {
+          logDataError(pledgeErr, 'Register.pledges.insert');
+          toast({
+            title: 'Startup saved, pledges incomplete',
+            description: 'We saved your startup but couldn\'t store every pledge. You can re-add them from My Startup.',
+          });
+        }
       }
 
       setTxHash(onChainTxHash);

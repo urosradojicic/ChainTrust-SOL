@@ -89,6 +89,7 @@ export function getDelegationPDA(delegator: PublicKey): [PublicKey, number] {
 // ── Constants (must match Rust program) ───────────────────────────
 
 export const CMT_DECIMALS = 1_000_000; // 6 decimals
+export const CMT_DECIMALS_BIGINT = 1_000_000n;
 export const PRO_THRESHOLD = 5_000 * CMT_DECIMALS;
 export const WHALE_THRESHOLD = 50_000 * CMT_DECIMALS;
 export const LOCK_PERIOD_SECONDS = 30 * 24 * 60 * 60; // 30 days
@@ -98,4 +99,26 @@ export function computeTier(stakedBaseUnits: number): 'Free' | 'Basic' | 'Pro' |
   if (stakedBaseUnits >= PRO_THRESHOLD) return 'Pro';
   if (stakedBaseUnits > 0) return 'Basic';
   return 'Free';
+}
+
+/**
+ * Convert a user-typed CMT amount to BigInt base units (6 decimals) without
+ * going through floating-point. Accepts either a string ("12.345678") or a
+ * number (re-stringified at the boundary so callers can keep their existing
+ * Number-based UI inputs while we still avoid float multiplication on the
+ * critical path).
+ *
+ * Throws on invalid input (negative, non-numeric, >6 fractional digits).
+ */
+export function cmtToBaseUnits(amount: string | number): bigint {
+  const str = typeof amount === 'number' ? amount.toString() : amount.trim();
+  if (!str) throw new Error('Amount is required.');
+  if (!/^\d+(?:\.\d{1,6})?$/.test(str)) {
+    throw new Error(
+      'Invalid amount: must be a non-negative number with up to 6 decimal places.',
+    );
+  }
+  const [whole, frac = ''] = str.split('.');
+  const fracPadded = frac.padEnd(6, '0').slice(0, 6);
+  return BigInt(whole) * CMT_DECIMALS_BIGINT + BigInt(fracPadded);
 }

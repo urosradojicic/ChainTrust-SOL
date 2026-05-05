@@ -21,6 +21,7 @@ import {
   getVoteRecordPDA,
   getDelegationPDA,
   CMT_DECIMALS,
+  cmtToBaseUnits,
 } from '@/lib/contracts';
 
 // ── Helpers ──────────────────────────────────────────────────────
@@ -308,13 +309,14 @@ export function useStake() {
   const { publicKey, sendTransaction, connected } = useWallet();
   const [isPending, setIsPending] = useState(false);
 
-  const stake = useCallback(async (amount: number) => {
+  const stake = useCallback(async (amount: string | number) => {
     if (!connected || !publicKey) throw new Error('Wallet not connected');
     setIsPending(true);
     try {
       const [vaultPDA] = getVaultPDA();
       const [investorPDA] = getInvestorPDA(publicKey);
-      const baseUnits = BigInt(Math.round(amount * CMT_DECIMALS));
+      // BigInt fixed-point conversion — never multiply user input by a float.
+      const baseUnits = cmtToBaseUnits(amount);
 
       const dataBuffer = Buffer.alloc(8);
       dataBuffer.writeBigUInt64LE(baseUnits);
@@ -347,13 +349,13 @@ export function useUnstake() {
   const { publicKey, sendTransaction, connected } = useWallet();
   const [isPending, setIsPending] = useState(false);
 
-  const unstake = useCallback(async (amount: number) => {
+  const unstake = useCallback(async (amount: string | number) => {
     if (!connected || !publicKey) throw new Error('Wallet not connected');
     setIsPending(true);
     try {
       const [vaultPDA] = getVaultPDA();
       const [investorPDA] = getInvestorPDA(publicKey);
-      const baseUnits = BigInt(Math.round(amount * CMT_DECIMALS));
+      const baseUnits = cmtToBaseUnits(amount);
 
       const dataBuffer = Buffer.alloc(8);
       dataBuffer.writeBigUInt64LE(baseUnits);

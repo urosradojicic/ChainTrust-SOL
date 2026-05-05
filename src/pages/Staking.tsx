@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getErrorMessage } from '@/lib/errors';
 import { TIERS } from '@/lib/mock-data';
-import { useStake, useUnstake, useInvestorAccount } from '@/hooks/use-blockchain';
+import { useStake, useUnstake, useInvestorAccount, useClaimRewards } from '@/hooks/use-blockchain';
 import { useWallet } from '@/contexts/WalletContext';
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
@@ -45,10 +45,12 @@ function StakeModal({ mode, onClose }: { mode: 'stake' | 'unstake'; onClose: () 
   };
 
   const handleSubmit = async () => {
-    const val = Number(amount);
-    if (!val || val <= 0) return;
+    const trimmed = amount.trim();
+    if (!trimmed || Number(trimmed) <= 0) return;
     try {
-      const sig = mode === 'stake' ? await stake(val) : await unstake(val);
+      // Pass the raw string so cmtToBaseUnits does fixed-point parsing —
+      // avoids the float * 1_000_000 precision loss for fractional amounts.
+      const sig = mode === 'stake' ? await stake(trimmed) : await unstake(trimmed);
       setTxHash(sig);
       toast({ title: `${mode === 'stake' ? 'Staked' : 'Unstaked'} successfully`, description: `Tx: ${sig.slice(0, 12)}...` });
     } catch (e: unknown) {
@@ -203,19 +205,18 @@ export default function Staking() {
 
   const userTierIdx = TIERS.findIndex(t => t.name === tier);
   const pendingRewards = investorData?.pendingRewards ?? 0;
-  const [claiming, setClaiming] = useState(false);
+  const { claim, isPending: claiming } = useClaimRewards();
 
   const handleClaim = async () => {
     if (pendingRewards <= 0) return;
-    setClaiming(true);
     try {
-      // In production this calls the on-chain claim instruction
-      await new Promise(r => setTimeout(r, 1500));
-      toast({ title: 'Rewards claimed!', description: `${formatCMT(pendingRewards)} added to your wallet` });
-    } catch (e: any) {
-      toast({ title: 'Claim failed', description: e?.message || 'Unknown error', variant: 'destructive' });
-    } finally {
-      setClaiming(false);
+      const sig = await claim();
+      toast({
+        title: 'Rewards claimed!',
+        description: `${formatCMT(pendingRewards)} added — tx ${sig.slice(0, 12)}…`,
+      });
+    } catch (e: unknown) {
+      toast({ title: 'Claim failed', description: getErrorMessage(e), variant: 'destructive' });
     }
   };
 
