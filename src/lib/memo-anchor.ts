@@ -5,7 +5,22 @@ import {
   TransactionInstruction,
   LAMPORTS_PER_SOL,
 } from '@solana/web3.js';
-import { SOLANA_NETWORK } from './solana-config';
+import { SOLANA_NETWORK, verifyCluster, simulateOrThrow } from './solana-config';
+
+// SPL Memo Program enforces a hard payload limit; staying under leaves room
+// for transaction-envelope overhead.
+const MEMO_MAX_BYTES = 566;
+
+// C0 (\x00..\x1F, \x7F) + C1 (\x80..\x9F) control-char class. Built via the
+// RegExp constructor so the source contains escape sequences rather than
+// literal bytes (which break grep / commit-message tooling).
+const CONTROL_CHAR_RE = new RegExp('[\\x00-\\x1f\\x7f-\\x9f]', 'g');
+
+function sanitizeMemoText(s: string, maxChars: number): string {
+  // Strip control chars first so the truncate-by-chars step doesn't preserve
+  // hidden bytes, then trim leading/trailing whitespace.
+  return s.replace(CONTROL_CHAR_RE, '').slice(0, maxChars).trim();
+}
 
 /**
  * SPL Memo Program v2 — canonical, deployed on every Solana cluster.
@@ -79,14 +94,15 @@ export interface LiveAnchorParams {
 /**
  * Format the memo payload as a compact, self-describing JSON string.
  * Kept under 566 bytes so it fits in a single Memo-program instruction.
+ * Throws if a malicious or malformed name pushes us over the byte budget.
  */
 export function formatMemoPayload(params: LiveAnchorParams, proofHashHex: string): string {
-  return JSON.stringify({
+  const payload = JSON.stringify({
     p: 'ChainTrust',
     v: 1,
     kind: 'metrics',
     sid: params.startupId,
-    name: params.startupName.slice(0, 60),
+    name: sanitizeMemoText(params.startupName, 60),
     mrr: Math.floor(params.mrr),
     u: Math.floor(params.totalUsers),
     au: Math.floor(params.activeUsers),
@@ -97,6 +113,16 @@ export function formatMemoPayload(params: LiveAnchorParams, proofHashHex: string
     h: proofHashHex,
     t: Math.floor(Date.now() / 1000),
   });
+  // UTF-8 byte length, not .length (which counts UTF-16 code units and
+  // under-counts emoji / Cyrillic / CJK).
+  const bytes = new TextEncoder().encode(payload).length;
+  if (bytes > MEMO_MAX_BYTES) {
+    throw new Error(
+      `Memo payload is ${bytes} bytes (max ${MEMO_MAX_BYTES}). ` +
+      `Shorten the startup name or reduce metric magnitudes.`,
+    );
+  }
+  return payload;
 }
 
 /**
@@ -124,6 +150,10 @@ export async function requestDevnetAirdrop(
  * Uses the caller-supplied `sendTransaction` from `@solana/wallet-adapter-react`
  * so the transaction is signed inside the user's wallet (Phantom/Solflare/etc).
  *
+ * Verifies the wallet's RPC matches the configured cluster and simulates the
+ * transaction before requesting a signature so investors aren't charged fees
+ * for txs that would have failed on-chain.
+ *
  * Returns the confirmed transaction signature and the proof-hash hex.
  */
 export async function sendProofHashMemo(
@@ -132,6 +162,8 @@ export async function sendProofHashMemo(
   sendTransaction: (tx: Transaction, connection: Connection) => Promise<string>,
   params: LiveAnchorParams,
 ): Promise<{ signature: string; proofHashHex: string; memoPayload: string }> {
+  await verifyCluster(connection);
+
   const hash = await computeMemoProofHash(params);
   const proofHashHex = bytesToHex(hash);
   const memoPayload = formatMemoPayload(params, proofHashHex);
@@ -140,6 +172,8 @@ export async function sendProofHashMemo(
   const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
   tx.recentBlockhash = blockhash;
   tx.feePayer = payer;
+
+  await simulateOrThrow(connection, tx);
 
   const signature = await sendTransaction(tx, connection);
   await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, 'confirmed');

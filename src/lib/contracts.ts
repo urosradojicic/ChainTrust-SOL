@@ -2,11 +2,24 @@ import { PublicKey } from '@solana/web3.js';
 
 /**
  * Program ID — loaded from VITE_SOLANA_PROGRAM_ID env var.
- * Falls back to devnet placeholder during development (hooks catch failures and use demo mode).
- * After deploying: set VITE_SOLANA_PROGRAM_ID in .env to the real program address.
+ *
+ * In dev/test we fall back to a clearly-fake placeholder; hooks detect this
+ * and switch to demo mode. In production (`import.meta.env.PROD`), missing
+ * the env var is a deploy bug — fail loudly at module load instead of letting
+ * users sign and pay fees for transactions that target a non-existent program.
  */
-const PROGRAM_ID_STR = import.meta.env.VITE_SOLANA_PROGRAM_ID || 'CMTRgstry1111111111111111111111111111111111';
+const PROGRAM_ID_FALLBACK = 'CMTRgstry1111111111111111111111111111111111';
+const PROGRAM_ID_STR = import.meta.env.VITE_SOLANA_PROGRAM_ID || PROGRAM_ID_FALLBACK;
+
+if (import.meta.env.PROD && !import.meta.env.VITE_SOLANA_PROGRAM_ID) {
+  throw new Error(
+    'VITE_SOLANA_PROGRAM_ID is required for production builds. ' +
+    'Refusing to start with the placeholder program ID.',
+  );
+}
+
 export const PROGRAM_ID = new PublicKey(PROGRAM_ID_STR);
+export const IS_PLACEHOLDER_PROGRAM_ID = PROGRAM_ID_STR === PROGRAM_ID_FALLBACK;
 
 // ── PDA Seed Helpers ──────────────────────────────────────────────
 
