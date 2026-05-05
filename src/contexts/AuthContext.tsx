@@ -181,6 +181,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { error: new Error('This email is reserved. Use Sign In instead.') };
     }
 
+    // Client-side defense-in-depth: admin role can never be self-assigned at
+    // signup. RLS also rejects this server-side, but a clear early error
+    // beats a 403 round-trip and makes intent obvious to future readers.
+    if (selectedRole === 'admin') {
+      return { error: new Error('Admin role cannot be self-assigned.') };
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
