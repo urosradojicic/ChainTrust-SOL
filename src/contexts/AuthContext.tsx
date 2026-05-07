@@ -87,31 +87,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Restore demo session from localStorage on mount
+  // Restore demo session from localStorage on mount.
+  //
+  // Audit 2026-05-07 (H3): the email field is the only "credential" used
+  // for restore — anyone who knows a demo email can write the matching role
+  // to localStorage and become that role client-side. Server-side RLS
+  // rejects every write (demo user ids are non-UUID and never satisfy
+  // `auth.uid() = user_id` predicates), so blast radius is read-only access
+  // to navigation surfaces that already render mock data. Documented in
+  // SECURITY.md as intentional design for the demo-account UX.
+  //
+  // Defense in depth applied here: re-derive the role from DEMO_ACCOUNTS
+  // (the server-side allowlist in this module), never trust parsed.role.
   useEffect(() => {
     const saved = localStorage.getItem(DEMO_STORAGE_KEY);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Validate stored data structure before trusting it
-        if (typeof parsed?.email === 'string' && typeof parsed?.role === 'string') {
-          const account = DEMO_ACCOUNTS[parsed.email];
-          // Check session age — auto-expire after DEMO_SESSION_SECONDS
+        if (typeof parsed?.email === 'string') {
+          const email = parsed.email.toLowerCase();
+          const account = DEMO_ACCOUNTS[email];
+          // Session age — auto-expire after DEMO_SESSION_SECONDS.
           const signedInAt = typeof parsed?.signedInAt === 'number' ? parsed.signedInAt : 0;
           const ageSeconds = (Date.now() - signedInAt) / 1000;
           const expired = signedInAt === 0 || ageSeconds > DEMO_SESSION_SECONDS;
-          // Only restore if email matches a known demo account AND role matches AND session fresh
-          if (account && account.role === parsed.role && !expired) {
-            const demoUser = createDemoUser(parsed.email, account);
+          // Only restore if email matches a known demo account AND session fresh.
+          // Role is taken from the allowlist, NOT from parsed.role (defense
+          // against trivially-tampered localStorage payloads).
+          if (account && !expired) {
+            const demoUser = createDemoUser(email, account);
             setUser(demoUser);
             setSession(createDemoSession(demoUser));
-            setRole(account.role); // Use account.role, not user-supplied role
+            setRole(account.role);
             setIsDemo(true);
             setLoading(false);
             return;
           }
         }
-        // Invalid or expired — clear it
+        // Invalid or expired — clear it.
         localStorage.removeItem(DEMO_STORAGE_KEY);
       } catch {
         localStorage.removeItem(DEMO_STORAGE_KEY);
