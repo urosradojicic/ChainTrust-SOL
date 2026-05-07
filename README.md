@@ -2,97 +2,117 @@
 
 **The trust layer for startup fundraising on Solana.**
 
-ChainTrust is a supply chain transparency and startup verification platform built on Solana. Startups publish metrics on-chain, get verified by independent oracles, and build investor confidence with cryptographic proof chains.
+ChainTrust lets startups publish metrics on-chain, get verified by independent oracles, and lets investors browse a screener / due-diligence stack backed by real cryptographic proof chains rather than self-reported pitch decks.
 
-> **Submitting to Colosseum Frontier — May 11, 2026.** `master` is the Frontier-ready snapshot — what reviewers and investors should clone. Ongoing work continues on `merged-ai-roadmap-v2` and lands on `master` via fast-forward when stable. The `backup` branch is a frozen restore point and is read-only — run `git fetch origin backup && git reset --hard origin/backup` if you ever need to roll back.
+> **Submitting to Colosseum Frontier — May 11, 2026.** `master` is the Frontier-ready snapshot. Active development happens on `merged-ai-roadmap-v2`, lands on `master` via fast-forward when stable. `backup` is a frozen restore point — `git fetch origin backup && git reset --hard origin/backup` to roll back.
 
-> **🏆 Hackathon judges:** start with [`JUDGES.md`](JUDGES.md) — a 3-minute guided tour with file pointers, demo credentials, and the things to look at first. For the security posture, see [`SECURITY.md`](SECURITY.md) (5 parallel audit agents, ~60 findings closed, 8 → 0 critical npm vulns).
+> **Reading this for the first time?** Pick the doc that matches your goal:
+> - **Hackathon judge** → [JUDGES.md](JUDGES.md) — 3-minute guided tour with demo credentials
+> - **New contributor** → [ARCHITECTURE.md](ARCHITECTURE.md) — layers, layout, where things live
+> - **Security reviewer** → [SECURITY.md](SECURITY.md) — defenses + audit history with file pointers
+> - **Recording the demo video** → [DEMO_VIDEO.md](DEMO_VIDEO.md) — 3:00 script with verified storyboard
 
-## Live Testnet Demo
-
-**Want to see a real, signed Solana transaction in 10 seconds?** Open [`/testnet-demo`](src/pages/LiveTestnetDemo.tsx) after `npm run dev`. Connect Phantom (Devnet), click airdrop, click anchor — you get a real tx signature with a verifiable Solana Explorer link. Uses the canonical SPL Memo Program so there's nothing to deploy. See [docs/LIVE_TESTNET_DEMO.md](docs/LIVE_TESTNET_DEMO.md) for the full walkthrough.
-
-## Features
-
-- **On-Chain Verification** — SHA-256 metric hashing, Solana PDAs, soulbound verification badges
-- **23 Production Pages** — Dashboard, screener, compare, governance, staking, compliance, analytics, and more
-- **Role-Based Access** — Admin, investor, and startup roles with granular page-level permissions
-- **EU DPP Compliance** — Digital Product Passport tracker with 5 compliance modules and regulatory timeline
-- **RWA Provenance Certificates** — Tokenized supply chain records with multi-stage proof chains
-- **DAO Governance** — On-chain proposals, weighted voting, vote delegation, sustainability pledges
-- **CMT Token Staking** — Tier-based access (Free/Basic/Pro/Whale) with rewards calculator
-- **Institutional View** — Enterprise-mode toggle with dense data layout and professional terminology
-- **Real-Time Sync** — Supabase Realtime subscriptions with React Query cache invalidation
-- **PDF Reporting** — LP quarterly reports and startup detail exports via html2canvas + jsPDF
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, Framer Motion |
-| Blockchain | Solana, Anchor Framework, SPL Token, Wallet Adapter |
-| Backend | Supabase (PostgreSQL, Auth, RLS, Realtime) |
-| Charts | Recharts |
-| Fonts | Lexend (display), Inter (body), JetBrains Mono (data) |
-
-## Smart Contract
-
-The `chainmetrics` Anchor program implements 24 on-chain instructions:
-
-- **Registry** — Startup registration, metrics publication, verification, trust scoring
-- **Staking** — CMT token vault with 30-day lock, tier computation, reward distribution
-- **Governance** — Proposal creation, weighted voting, execution, delegation
-- **Badges** — Soulbound verification NFTs with trust scores
-
-See `blockchain/programs/chainmetrics/src/` for the full program source.
-
-## Getting Started
+## Quick start
 
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
+npm install --legacy-peer-deps    # see CONTRIBUTING.md for why --legacy-peer-deps
+npm run dev                        # localhost:8080
+npm test -- --run                  # 74 vitest cases
+npm run typecheck                  # tsc --noEmit
+npm run build                      # production bundle into dist/
 ```
 
-### Environment Variables
+Demo credentials (no signup, one-click on `/login`):
 
-```env
-VITE_SUPABASE_URL=<your_supabase_url>
-VITE_SUPABASE_PUBLISHABLE_KEY=<your_supabase_anon_key>
-VITE_SOLANA_PROGRAM_ID=<deployed_program_id>
-VITE_SOLANA_CLUSTER=devnet
-```
+| Role | Email | Password |
+|---|---|---|
+| Investor | `investor@chainmetrics.io` | `investor1` |
+| Startup | `startup@chainmetrics.io` | `startup1` |
+| Admin | `admin@chainmetrics.io` | `admin123` |
 
-## Security
+Sessions expire after 24 hours. RLS rejects all writes from demo users — they're read-only navigation accounts.
 
-- 3 independent smart contract audits (OtterSec, Sec3, CertiK) — zero critical findings
-- Supabase Row Level Security (RLS) on all tables
-- Role-based access control with deny-by-default route guards
-- HTML sanitization on all user-generated content exports
-- Input validation with maximum length constraints
-- Content Security Policy headers recommended for production
-
-## Architecture
+## Project layout
 
 ```
 src/
-  pages/          # 23 route pages
-  components/     # UI components (layout, startup, demo, form, common)
-  hooks/          # React hooks (blockchain, startups, realtime)
-  contexts/       # Auth, Wallet, InstitutionalView providers
-  lib/            # Utilities (contracts, format, constants, role-access)
-  types/          # TypeScript type definitions
-  integrations/   # Supabase client configuration
+├── pages/                  React Router routes (one page per file)
+├── components/             UI components — grouped by domain (audit/, dashboard/,
+│                           governance/, startup/, ui/, …)
+├── hooks/                  React hooks (data + chain side-effects)
+├── contexts/               app-wide state providers (Auth, Wallet, Realtime, …)
+├── providers/              third-party providers (Web3, Tooltip, QueryClient)
+├── integrations/supabase/  generated Supabase client + types
+├── lib/
+│   ├── security/           sanitisers, errors, telemetry, fetch timeouts
+│   ├── solana/             chain helpers (contracts, PDAs, memo, helius)
+│   ├── format/             formatters, constants, clipboard, role-access
+│   ├── mock/               demo + fixture data
+│   ├── intelligence/       domain analytics, scoring, reports (~70 modules)
+│   └── utils.ts            shadcn cn() class-merge helper
+├── sdk/                    programmatic SDK surface
+├── test/                   centralized vitest tests
+└── types/                  shared TypeScript types
 
 blockchain/
-  programs/       # Anchor smart contract (chainmetrics)
-  tests/          # Program test suite
+├── programs/chainmetrics/  Anchor smart contract (24 instructions)
+└── tests/                  program test suite
+
+supabase/
+├── migrations/             SQL migrations (RLS policies live here)
+└── functions/              Deno Edge Functions
 ```
+
+The architecture rules — what's allowed to import what, where each kind of code belongs — are in [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, TypeScript 5, Vite 5, Tailwind 3, shadcn/ui, Framer Motion |
+| Blockchain | Solana web3.js, `@coral-xyz/anchor` 0.30, SPL Token, three single-package wallet adapters (Phantom, Solflare, Coinbase) |
+| Backend (BaaS) | Supabase (PostgreSQL + RLS + Auth + Realtime + Edge Functions) |
+| Charts | Recharts |
+| PDF | html2canvas + jsPDF |
+| Test | Vitest 3, jsdom, @testing-library/react |
+| Lint / format | ESLint 9, Prettier (`.editorconfig` mirrors the rules) |
+| Deploy | Vercel (`vercel.json` ships CSP / HSTS / X-Frame-Options) |
+
+## Smart contract
+
+The `chainmetrics` Anchor program implements 24 on-chain instructions across:
+
+- **Registry** — startup registration, metrics publication, verification, trust scoring
+- **Staking** — CMT vault with 30-day lock, tier computation, reward distribution
+- **Governance** — proposals, weighted voting, execution, delegation
+- **Badges** — soulbound verification NFTs
+
+Source lives at [`blockchain/programs/chainmetrics/src/`](blockchain/programs/chainmetrics/src/).
+
+## Environment variables
+
+Copy `.env.example` to `.env.local` and fill in:
+
+```env
+VITE_SUPABASE_URL=https://<project>.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=<anon JWT — public-by-design>
+VITE_SOLANA_PROGRAM_ID=<deployed Anchor program id>
+VITE_SOLANA_CLUSTER=devnet                # or mainnet-beta
+VITE_HELIUS_API_KEY=<optional, enables Smart Money detection>
+VITE_SENTRY_DSN=<optional, telemetry>
+```
+
+The `VITE_SUPABASE_PUBLISHABLE_KEY` is intentionally public — RLS gates every read/write. See [SECURITY.md](SECURITY.md) for the full rotation policy.
+
+In production builds, missing `VITE_SOLANA_PROGRAM_ID` causes the app to throw at module load (defense-in-depth so a misconfigured deploy can't sign transactions against the placeholder program ID).
+
+## Security posture (one-paragraph version)
+
+3 independent smart-contract audits (OtterSec, Sec3, CertiK — zero critical findings) plus a 2026-05 internal deep-pass that closed **1 Critical + 4 High + 5 Medium** RLS / web / Solana issues. CSP `script-src 'self'` (no `'unsafe-inline'`), HSTS preload, frame-ancestors `'none'`. `npm audit`: 0 critical, 3 high (deliberate `bigint-buffer` chain — see SECURITY.md). The full pointer-list with file references is in [SECURITY.md](SECURITY.md). The audit reports themselves are in [SECURITY_AUDIT/](SECURITY_AUDIT/).
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for branch policy, commit message format, and the test/lint loop. Short version: branch off `merged-ai-roadmap-v2`, conventional commits, no force pushes, all PRs run CI on push.
 
 ## License
 
