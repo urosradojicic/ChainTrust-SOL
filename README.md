@@ -11,20 +11,22 @@
 
 ---
 
-## 👋 Judges & reviewers — start here
+## 👋 Judges & reviewers — open the [`judges/`](judges/) folder
 
-> **You have 3 minutes. Here's the shortest path to "is this real?":**
->
-> 1. **See a real Solana transaction** → after `npm run dev`, open [`/testnet-demo`](src/pages/LiveTestnetDemo.tsx) → connect Phantom (Devnet) → click airdrop → click anchor → click the Explorer link in the toast. **10 seconds.** No install if you skip ahead to the [demo-video script](DEMO_VIDEO.md) which embeds verified screenshots of every scene.
-> 2. **Sign in as any role with one click** → on `/login`, the "Explore as Investor / Startup / Admin" buttons handle auth. Demo creds below.
-> 3. **Read the security posture in 90 seconds** → [SECURITY.md](SECURITY.md) is a pointer-list (not an essay) — every defense maps to a real file.
+Everything you need is curated, ordered, and waiting in one place: **[`/judges/`](judges/)**.
 
-| ⚡ One-click destinations |
+That folder is the only place you need to look. Five short docs, ordered by priority, with embedded demo-scene screenshots. **3 minutes total.**
+
+> **The 30-second path** — open [`/testnet-demo`](src/pages/LiveTestnetDemo.tsx) after `npm run dev`. Connect Phantom (Devnet). Click *Airdrop*. Click *Anchor proof*. Click the Explorer link. *That is a real, signed, confirmed Solana transaction.*
+
+| ⚡ Direct links into `/judges/` |
 |---|
-| 🎥 **[3-minute demo script](DEMO_VIDEO.md)** — what to watch first, with screenshots of every scene |
-| 🛡️ **[Security posture](SECURITY.md)** — 3 prior smart-contract audits + May 2026 deep-pass, every defense linked to its file |
-| 🏗️ **[Architecture](ARCHITECTURE.md)** — layers, import rules, request lifecycle |
-| 🎯 **[Judge tour](JUDGES.md)** — long-form version of this section with file pointers |
+| 📂 **[`judges/`](judges/)** — start here, the curated landing |
+| 🏆 **[Why we win Frontier](judges/01-why-we-win.md)** — the differentiation narrative |
+| 🎯 **[3-minute tour](judges/02-three-minute-tour.md)** — file pointers for technical reviewers |
+| 🎥 **[Demo-video script](judges/03-demo-video.md)** — recording script with screenshots of every scene |
+| 🛡️ **[Security one-pager](judges/04-security-summary.md)** — every defense linked to its file |
+| 📣 **[Pitch](judges/05-pitch.md)** — founder pitch |
 
 **Demo credentials** (one-click on `/login`):
 
@@ -129,7 +131,7 @@ In production builds, missing `VITE_SOLANA_PROGRAM_ID` causes the app to throw a
 ## Security at a glance
 
 - **3 independent smart-contract audits** (OtterSec, Sec3, CertiK) — zero critical findings
-- **2026-05 internal deep-pass** — closed 1 Critical + 4 High + 5 Medium issues. Reports in [SECURITY_AUDIT/](SECURITY_AUDIT/)
+- **2026-05 internal deep-pass** — closed 1 Critical + 4 High + 5 Medium issues. Reports in [docs/internal/security-audit/](docs/internal/security-audit/)
 - **CSP `script-src 'self'`** (no `'unsafe-inline'`), HSTS preload, frame-ancestors `'none'`
 - **`npm audit`**: 0 critical, 3 high (deliberate `bigint-buffer` chain — full rationale in [SECURITY.md](SECURITY.md))
 - **74 regression tests** locking financial conversion, sanitization, and role gates

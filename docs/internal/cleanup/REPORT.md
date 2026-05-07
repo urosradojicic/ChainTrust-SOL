@@ -43,7 +43,7 @@ Total source LOC unchanged (60,056). Test count unchanged. No file outside `src/
 Each move-commit individually:
 - ran `npm run typecheck` (clean)
 - ran `npm test -- --run` (74/74)
-- preserved security-touched files byte-equivalent (verified by inspecting exports against SECURITY_AUDIT/REPORT.md)
+- preserved security-touched files byte-equivalent (verified by inspecting exports against docs/internal/security-audit/REPORT.md)
 
 ## What moved where
 
@@ -167,9 +167,9 @@ npm run dev                        # boot the app
 
 ## Files referenced
 
-- [`CLEANUP/00_baseline.md`](00_baseline.md) — start-of-pass metrics
-- [`CLEANUP/01_assessment.md`](01_assessment.md) — structural findings
-- [`CLEANUP/02_target_architecture.md`](02_target_architecture.md) — target tree + layer rules + per-commit migration plan
-- [`SECURITY_AUDIT/REPORT.md`](../SECURITY_AUDIT/REPORT.md) — referenced for security re-audit
+- [`docs/internal/cleanup/00_baseline.md`](00_baseline.md) — start-of-pass metrics
+- [`docs/internal/cleanup/01_assessment.md`](01_assessment.md) — structural findings
+- [`docs/internal/cleanup/02_target_architecture.md`](02_target_architecture.md) — target tree + layer rules + per-commit migration plan
+- [`docs/internal/security-audit/REPORT.md`](../security-audit/REPORT.md) — referenced for security re-audit
 - [`ARCHITECTURE.md`](../ARCHITECTURE.md) — new authoritative layer-rules doc
 - [`CONTRIBUTING.md`](../CONTRIBUTING.md) — new branch/commit/test policy doc

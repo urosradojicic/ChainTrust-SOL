@@ -114,7 +114,7 @@ Ordered so the project is buildable + tests pass after each commit. Each commit 
 Each move-commit must:
 1. Run `npm run typecheck` — clean.
 2. Run `npm test -- --run` — 74/74 pass.
-3. Re-read any security-touched file in the move-batch against `SECURITY_AUDIT/REPORT.md` to confirm no logic change.
+3. Re-read any security-touched file in the move-batch against `docs/internal/security-audit/REPORT.md` to confirm no logic change.
 4. Update import paths in every consumer.
 
 ## What is deliberately NOT being changed

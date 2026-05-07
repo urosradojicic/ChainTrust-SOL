@@ -92,5 +92,5 @@ GitHub Actions CI runs on every push and on every PR. Master and `merged-ai-road
 - Read [ARCHITECTURE.md](ARCHITECTURE.md) for layer rules.
 - Read the closest existing file in the same domain — when there's an established pattern, follow it.
 - For security-relevant changes, read [SECURITY.md](SECURITY.md) first.
-- For demo / hackathon polish, read [JUDGES.md](JUDGES.md) and [DEMO_VIDEO.md](DEMO_VIDEO.md).
+- For demo / hackathon polish, read the curated [`judges/`](judges/) folder.
 - For a high-confidence place to ask, open a draft PR and request review.
