@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Award, Lock, Shield, ExternalLink } from 'lucide-react';
 import { useBadge } from '@/hooks/use-blockchain';
-import { explorerAddressUrl } from '@/lib/solana-config';
+import { explorerAddressUrl } from '@/lib/solana/solana-config';
 import { formatAddress, formatTimestamp } from '@/lib/format/format';
 
 interface SoulboundBadgeProps {

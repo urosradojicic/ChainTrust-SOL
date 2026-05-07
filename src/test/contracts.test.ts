@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cmtToBaseUnits, computeTier, CMT_DECIMALS } from '@/lib/contracts';
+import { cmtToBaseUnits, computeTier, CMT_DECIMALS } from '@/lib/solana/contracts';
 
 describe('cmtToBaseUnits', () => {
   it('converts whole numbers without precision loss', () => {

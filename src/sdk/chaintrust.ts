@@ -59,7 +59,7 @@ const lazyImport = {
   esg: () => import('@/lib/esg-taxonomy'),
   geopolitical: () => import('@/lib/geopolitical-risk'),
   graph: () => import('@/lib/knowledge-graph'),
-  zkProof: () => import('@/lib/zk-range-proof'),
+  zkProof: () => import('@/lib/solana/zk-range-proof'),
 };
 
 // ── Unified Facade ───────────────────────────────────────────────────

@@ -9,7 +9,7 @@
  */
 
 import type { DbStartup, DbMetricsHistory, DbAuditEntry, DbFundingRound } from '@/types/database';
-import { explorerAddressUrl } from '@/lib/solana-config';
+import { explorerAddressUrl } from '@/lib/solana/solana-config';
 import { isValidSolanaAddress } from '@/lib/security/sanitize';
 
 export type EntityTagType = 'category' | 'stage' | 'status' | 'verification' | 'network' | 'sustainability' | 'esg';

@@ -6,7 +6,7 @@ import {
   SystemProgram,
   PublicKey,
 } from '@solana/web3.js';
-import { genFallbackTxSig } from '@/lib/solana-config';
+import { genFallbackTxSig } from '@/lib/solana/solana-config';
 import { getErrorMessage } from '@/lib/security/errors';
 import {
   PROGRAM_ID,
@@ -23,7 +23,7 @@ import {
   getDelegationPDA,
   CMT_DECIMALS,
   cmtToBaseUnits,
-} from '@/lib/contracts';
+} from '@/lib/solana/contracts';
 
 // ── Helpers ──────────────────────────────────────────────────────
 

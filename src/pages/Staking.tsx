@@ -7,7 +7,7 @@ import { useWallet } from '@/contexts/WalletContext';
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { formatCMT } from '@/lib/format/format';
-import { explorerTxUrl } from '@/lib/solana-config';
+import { explorerTxUrl } from '@/lib/solana/solana-config';
 import { toast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import StreamingRewardsDisplay from '@/components/startup/StreamingRewardsDisplay';

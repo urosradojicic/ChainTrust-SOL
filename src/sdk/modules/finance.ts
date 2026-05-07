@@ -5,9 +5,9 @@
 
 export { createSafeTemplate, createSeriesTemplate, compareToMarket, calculateDilution } from '@/lib/term-sheet';
 export { createCapTable, addPricedRound, runWaterfall, type CapTable } from '@/lib/cap-table';
-export { createEscrowDeal, checkAllMilestones, type EscrowDeal } from '@/lib/milestone-escrow';
+export { createEscrowDeal, checkAllMilestones, type EscrowDeal } from '@/lib/solana/milestone-escrow';
 export { createMarket, executeTrade, calculateTradeCost, type PredictionMarket } from '@/lib/prediction-market';
-export { createStreamingState, tickRewards, type StreamingRewardsState } from '@/lib/streaming-rewards';
+export { createStreamingState, tickRewards, type StreamingRewardsState } from '@/lib/solana/streaming-rewards';
 export { runValuationSuite, type ValuationSuiteReport } from '@/lib/valuation-suite';
 export { analyzeTimeSeries, type TimeSeriesReport } from '@/lib/time-series';
 export { analyzeDealFlow, type DealFlowReport } from '@/lib/deal-flow-analytics';

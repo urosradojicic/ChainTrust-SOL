@@ -16,7 +16,7 @@ import {
   TIER_CONFIG,
   nextTierInfo,
   type StreamingRewardsState,
-} from '@/lib/streaming-rewards';
+} from '@/lib/solana/streaming-rewards';
 
 // ── Ticking Counter Component ────────────────────────────────────────
 

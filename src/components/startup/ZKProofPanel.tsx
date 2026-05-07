@@ -24,7 +24,7 @@ import {
   type RangeProof,
   type ZKMetricsPublish,
   type ZKTierAccess,
-} from '@/lib/zk-range-proof';
+} from '@/lib/solana/zk-range-proof';
 
 // ── Proof Card ───────────────────────────────────────────────────────
 

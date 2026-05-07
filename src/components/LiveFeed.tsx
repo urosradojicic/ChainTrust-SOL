@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
-import { SOLANA_EXPLORER_URL, SOLANA_NETWORK } from '@/lib/solana-config';
+import { SOLANA_EXPLORER_URL, SOLANA_NETWORK } from '@/lib/solana/solana-config';
 import { useStartups } from '@/hooks/use-startups';
 
 interface BlockEvent {

@@ -17,7 +17,7 @@ import {
   type EscrowDeal,
   type Milestone,
   type MilestoneStatus,
-} from '@/lib/milestone-escrow';
+} from '@/lib/solana/milestone-escrow';
 
 const STATUS_CONFIG: Record<MilestoneStatus, { icon: typeof CheckCircle2; color: string; bg: string; label: string }> = {
   pending:     { icon: Clock,          color: 'text-gray-400',    bg: 'bg-gray-400/10',    label: 'Pending' },

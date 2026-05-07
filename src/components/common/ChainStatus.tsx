@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PROGRAM_ID, getRegistryPDA } from '@/lib/contracts';
-import { SOLANA_NETWORK } from '@/lib/solana-config';
+import { PROGRAM_ID, getRegistryPDA } from '@/lib/solana/contracts';
+import { SOLANA_NETWORK } from '@/lib/solana/solana-config';
 import { Wifi, WifiOff, CheckCircle2, AlertTriangle, ExternalLink } from 'lucide-react';
 
 type ProgramStatus = 'checking' | 'deployed' | 'not-deployed' | 'error';

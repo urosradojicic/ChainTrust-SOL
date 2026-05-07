@@ -1,7 +1,7 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useState, useCallback } from 'react';
 import { PublicKey, Transaction, TransactionInstruction, SystemProgram } from '@solana/web3.js';
-import { genFallbackTxSig } from '@/lib/solana-config';
+import { genFallbackTxSig } from '@/lib/solana/solana-config';
 import { getErrorMessage } from '@/lib/security/errors';
 
 const BUBBLEGUM_ID = new PublicKey('BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY');

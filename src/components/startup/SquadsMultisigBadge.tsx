@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
 import { ExternalLink, ShieldCheck } from 'lucide-react';
-import { detectSquadsVault, type SquadsDetection } from '@/lib/squads-detect';
+import { detectSquadsVault, type SquadsDetection } from '@/lib/solana/squads-detect';
 
 interface Props {
   walletAddress: string | null | undefined;

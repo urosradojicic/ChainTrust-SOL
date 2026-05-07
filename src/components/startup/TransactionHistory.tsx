@@ -3,8 +3,8 @@ import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import { motion } from 'framer-motion';
 import { ExternalLink, Loader2, Clock, ArrowUpRight } from 'lucide-react';
-import { PROGRAM_ID } from '@/lib/contracts';
-import { explorerTxUrl } from '@/lib/solana-config';
+import { PROGRAM_ID } from '@/lib/solana/contracts';
+import { explorerTxUrl } from '@/lib/solana/solana-config';
 import { formatAddress } from '@/lib/format/format';
 
 interface TxRecord {

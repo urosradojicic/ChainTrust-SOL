@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
 import { Activity, Zap, Server, Clock, Wifi } from 'lucide-react';
-import { SOLANA_NETWORK } from '@/lib/solana-config';
+import { SOLANA_NETWORK } from '@/lib/solana/solana-config';
 
 interface SlotData {
   slot: number;

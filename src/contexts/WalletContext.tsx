@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useCallback, useEffect } from 'react';
 import { useWallet as useSolanaWallet, useConnection } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import { getInvestorPDA, getTokenConfigPDA, computeTier, CMT_DECIMALS } from '@/lib/contracts';
+import { getInvestorPDA, getTokenConfigPDA, computeTier, CMT_DECIMALS } from '@/lib/solana/contracts';
 
 interface WalletState {
   connected: boolean;
