@@ -11,6 +11,7 @@
  */
 
 import type { DbStartup } from '@/types/database';
+import { escapeHtml } from '@/lib/sanitize';
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -155,7 +156,16 @@ export function generateShareableLink(startup: DbStartup, baseUrl: string): Shar
   );
   const twitterShareUrl = `https://twitter.com/intent/tweet?text=${twitterText}&url=${encodeURIComponent(verifyUrl)}`;
 
-  const embedHtml = `<a href="${detailUrl}" target="_blank" rel="noopener"><img src="${baseUrl}/api/badge/${startup.id}" alt="ChainTrust Verified: ${startup.name} — Trust Score ${startup.trust_score}/100" /></a>`;
+  // HTML attributes interpolating DB-derived strings must be escaped.
+  // No current consumer injects this raw, but the field is part of the public
+  // API surface and may be copy-pasted verbatim into third-party pages.
+  // Defense in depth: escape every interpolation slot.
+  const safeName = escapeHtml(startup.name);
+  const safeDetailUrl = escapeHtml(detailUrl);
+  const safeBaseUrl = escapeHtml(baseUrl);
+  const safeStartupId = escapeHtml(String(startup.id));
+  const safeTrustScore = Number(startup.trust_score) || 0;
+  const embedHtml = `<a href="${safeDetailUrl}" target="_blank" rel="noopener noreferrer"><img src="${safeBaseUrl}/api/badge/${safeStartupId}" alt="ChainTrust Verified: ${safeName} — Trust Score ${safeTrustScore}/100" /></a>`;
 
   const markdownBadge = `[![ChainTrust Verified](${baseUrl}/api/badge/${startup.id})](${detailUrl})`;
 

@@ -35,6 +35,7 @@ import { useDocumentTitle } from '@/hooks/use-document-title';
 import { buildEntityDossier, type EntityTag, type TimelineEvent } from '@/lib/entity-aggregator';
 import { formatCurrency, formatNumber } from '@/lib/format';
 import { chartTooltipStyle } from '@/lib/constants';
+import { explorerTxUrl } from '@/lib/solana-config';
 import SmartMoneyPanel from '@/components/startup/SmartMoneyPanel';
 import SquadsMultisigBadge from '@/components/startup/SquadsMultisigBadge';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -290,7 +291,7 @@ export default function EntityDossier() {
                   </div>
                   {ev.txHash && (
                     <a
-                      href={`https://explorer.solana.com/tx/${ev.txHash}`}
+                      href={explorerTxUrl(ev.txHash)}
                       target="_blank"
                       rel="noreferrer"
                       className="mt-1 inline-flex items-center gap-1 text-[11px] text-primary hover:text-primary/80 font-mono"

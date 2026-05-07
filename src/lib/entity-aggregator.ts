@@ -9,6 +9,8 @@
  */
 
 import type { DbStartup, DbMetricsHistory, DbAuditEntry, DbFundingRound } from '@/types/database';
+import { explorerAddressUrl } from '@/lib/solana-config';
+import { isValidSolanaAddress } from '@/lib/sanitize';
 
 export type EntityTagType = 'category' | 'stage' | 'status' | 'verification' | 'network' | 'sustainability' | 'esg';
 
@@ -128,12 +130,15 @@ function deriveWallets(s: DbStartup): EntityWallet[] {
   const rawAddr = (s as unknown as { solana_address?: string; wallet_address?: string });
   const treasury = rawAddr.solana_address || rawAddr.wallet_address;
   const wallets: EntityWallet[] = [];
-  if (treasury) {
+  // Validate as a real Solana base58 address before constructing the explorer
+  // URL; explorerAddressUrl encodeURIComponent's the path segment so even if
+  // a non-address slipped through, it can't escape the URL structure.
+  if (treasury && isValidSolanaAddress(treasury)) {
     wallets.push({
       address: treasury,
       label: 'Treasury',
       role: 'treasury',
-      explorerUrl: `https://explorer.solana.com/address/${treasury}`,
+      explorerUrl: explorerAddressUrl(treasury),
     });
   }
   return wallets;
