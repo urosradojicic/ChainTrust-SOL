@@ -78,6 +78,7 @@ This is what production looks like, not what a hackathon usually looks like.
 | 🥉 | **[03-demo-video.md](03-demo-video.md)** | 3 min | Recording script with **screenshots of every scene embedded** |
 | 4️⃣ | **[04-security-summary.md](04-security-summary.md)** | 2 min | One-page security distillation |
 | 5️⃣ | **[05-pitch.md](05-pitch.md)** | 1 min | Founder pitch |
+| 📊 | **[metrics.md](metrics.md)** | 1 min | Project health snapshot — every number that signals maturity |
 
 Need to dig in? Jump straight to:
 

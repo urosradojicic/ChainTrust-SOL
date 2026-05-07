@@ -87,6 +87,82 @@ Treat `src/lib/` as the kernel — pure logic the rest of the app composes. The 
 | Database types | `src/integrations/supabase/types.ts` (auto-generated, hand-extended for schema drift) |
 | Tests | `src/test/*.test.ts` (centralized — see "Tests" below) |
 
+## System context
+
+```mermaid
+flowchart LR
+    subgraph "🌐 Browser (the SPA)"
+      U[👤 User]
+      R[React + Vite SPA]
+    end
+
+    subgraph "☁️ Supabase BaaS"
+      P[(Postgres + RLS)]
+      A[GoTrue auth]
+      F[Edge Functions]
+      RT[Realtime channels]
+    end
+
+    subgraph "⛓ Solana"
+      W[Phantom / Solflare / Coinbase]
+      RPC[Solana RPC<br/>devnet / mainnet-beta]
+      AP[chainmetrics<br/>Anchor program]
+    end
+
+    subgraph "🌍 Public services"
+      PY[Pyth Hermes<br/>oracle]
+      HE[Helius<br/>tx history]
+    end
+
+    U -->|interacts| R
+    R -->|REST + RPC| P
+    R -->|JWT + sessions| A
+    R -->|risk-analysis| F
+    R -->|subscribe| RT
+    R -->|sign tx| W
+    W -->|broadcast| RPC
+    RPC --> AP
+    R -.->|read price| PY
+    R -.->|read tx history| HE
+
+    style P fill:#3ECF8E,stroke:#0B1437,color:#0B1437
+    style AP fill:#14F195,stroke:#0B1437,color:#0B1437
+    style W fill:#9945FF,stroke:#0B1437,color:#fff
+    style R fill:#7B61FF,stroke:#0B1437,color:#fff
+```
+
+## On-chain anchor sequence (the live testnet demo)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant App as React App
+    participant Cfg as solana-config
+    participant W as Wallet (Phantom)
+    participant Sol as Solana Devnet RPC
+    participant Mem as SPL Memo Program
+
+    U->>App: Click "Anchor proof"
+    App->>Cfg: verifyCluster(connection)
+    Cfg->>Sol: getGenesisHash()
+    Sol-->>Cfg: hash
+    Cfg-->>App: cluster matches ✓
+    App->>App: build memo payload<br/>(JSON, ≤ 566 bytes)
+    App->>Cfg: simulateOrThrow(tx)
+    Cfg->>Sol: simulateTransaction(tx)
+    Sol-->>Cfg: ok (no error)
+    App->>W: sendTransaction(tx)
+    W->>U: prompt to sign
+    U->>W: approve
+    W->>Sol: broadcast signed tx
+    Sol->>Mem: process Memo instruction
+    Sol-->>App: signature
+    App->>Sol: confirmTransaction(sig, "confirmed")
+    Sol-->>App: confirmed ✓
+    App-->>U: success toast + Explorer link
+```
+
 ## Request lifecycle (worked example)
 
 When an investor visits `/screener` and clicks a startup row:
