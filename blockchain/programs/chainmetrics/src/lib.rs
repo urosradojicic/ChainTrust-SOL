@@ -130,7 +130,12 @@ pub mod chainmetrics {
         require!(metadata_uri.len() <= 200, ChainMetricsError::UriTooLong);
 
         let registry = &mut ctx.accounts.registry;
-        registry.startup_count += 1;
+        // Audit 2026-05-07: u64 += silently wraps in BPF release builds.
+        // Hard fail on overflow instead of producing duplicate startup ids.
+        registry.startup_count = registry
+            .startup_count
+            .checked_add(1)
+            .ok_or(ChainMetricsError::ArithmeticOverflow)?;
         let startup_id = registry.startup_count;
 
         let startup = &mut ctx.accounts.startup;
@@ -195,7 +200,10 @@ pub mod chainmetrics {
         metrics.oracle_verified = false;
         metrics.bump = ctx.bumps.metrics;
 
-        startup.total_reports += 1;
+        startup.total_reports = startup
+            .total_reports
+            .checked_add(1)
+            .ok_or(ChainMetricsError::ArithmeticOverflow)?;
 
         emit!(MetricsPublished {
             id: startup.id,
@@ -577,7 +585,10 @@ pub mod chainmetrics {
         );
 
         let dao = &mut ctx.accounts.dao;
-        dao.proposal_count += 1;
+        dao.proposal_count = dao
+            .proposal_count
+            .checked_add(1)
+            .ok_or(ChainMetricsError::ArithmeticOverflow)?;
 
         let now = Clock::get()?.unix_timestamp;
         let proposal = &mut ctx.accounts.proposal;
@@ -1163,7 +1174,15 @@ pub struct CastVote<'info> {
     #[account(mut)]
     pub voter: Signer<'info>,
 
-    #[account(mut)]
+    // Audit 2026-05-07: bind proposal to its canonical PDA. Anchor was
+    // already enforcing owner+discriminator, but explicit seeds prevent
+    // future code paths from creating Proposal-typed accounts that aren't
+    // the canonical one.
+    #[account(
+        mut,
+        seeds = [b"proposal", &proposal.id.to_le_bytes()],
+        bump = proposal.bump,
+    )]
     pub proposal: Account<'info, Proposal>,
 
     /// Investor account to read staked amount for vote weight.
@@ -1197,7 +1216,11 @@ pub struct ExecuteProposal<'info> {
     #[account(seeds = [b"vault"], bump = vault.bump)]
     pub vault: Account<'info, StakingVault>,
 
-    #[account(mut)]
+    #[account(
+        mut,
+        seeds = [b"proposal", &proposal.id.to_le_bytes()],
+        bump = proposal.bump,
+    )]
     pub proposal: Account<'info, Proposal>,
 }
 
@@ -1209,7 +1232,11 @@ pub struct CancelProposal<'info> {
     #[account(seeds = [b"dao"], bump = dao.bump)]
     pub dao: Account<'info, DaoConfig>,
 
-    #[account(mut)]
+    #[account(
+        mut,
+        seeds = [b"proposal", &proposal.id.to_le_bytes()],
+        bump = proposal.bump,
+    )]
     pub proposal: Account<'info, Proposal>,
 }
 
@@ -1233,6 +1260,10 @@ pub struct CloseVoteRecord<'info> {
     #[account(mut)]
     pub voter: Signer<'info>,
 
+    #[account(
+        seeds = [b"proposal", &proposal.id.to_le_bytes()],
+        bump = proposal.bump,
+    )]
     pub proposal: Account<'info, Proposal>,
 
     #[account(

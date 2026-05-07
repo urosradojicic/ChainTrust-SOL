@@ -118,4 +118,10 @@ pub enum ChainMetricsError {
 
     #[msg("Authority cannot be the default pubkey")]
     InvalidAuthority,
+
+    #[msg("Arithmetic overflow")]
+    ArithmeticOverflow,
+
+    #[msg("Startup id mismatch between provided argument and account")]
+    StartupIdMismatch,
 }
