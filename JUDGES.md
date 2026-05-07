@@ -45,7 +45,8 @@ ChainTrust is the **trust layer for early-stage Solana startups**: founders publ
 
 1. [README.md](README.md) — the longer pitch.
 2. [SECURITY.md](SECURITY.md) — what we defend against, with file pointers.
-3. [docs/LIVE_TESTNET_DEMO.md](docs/LIVE_TESTNET_DEMO.md) — full walkthrough of the on-chain demo.
-4. [UPGRADE_NOTES.md](UPGRADE_NOTES.md) — Phase 5 senior-engineer cleanup notes.
+3. [DEMO_VIDEO.md](DEMO_VIDEO.md) — the 3-minute submission video script + storyboard (with verified screenshots of every scene).
+4. [docs/LIVE_TESTNET_DEMO.md](docs/LIVE_TESTNET_DEMO.md) — full walkthrough of the on-chain demo.
+5. [UPGRADE_NOTES.md](UPGRADE_NOTES.md) — Phase 5 senior-engineer cleanup notes.
 
 — Built for **Colosseum Frontier · May 11, 2026**.
