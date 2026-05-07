@@ -27,7 +27,7 @@ export default class ErrorBoundary extends Component<Props, State> {
       console.error('[ErrorBoundary] caught:', error, info.componentStack);
     }
     // Lazy-load to avoid creating a circular import on initial render.
-    import('@/lib/telemetry').then(({ reportError }) => {
+    import('@/lib/security/telemetry').then(({ reportError }) => {
       reportError(error, { componentStack: info.componentStack });
     }).catch(() => { /* telemetry unavailable — already logged in dev */ });
   }

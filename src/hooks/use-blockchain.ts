@@ -7,7 +7,7 @@ import {
   PublicKey,
 } from '@solana/web3.js';
 import { genFallbackTxSig } from '@/lib/solana-config';
-import { getErrorMessage } from '@/lib/errors';
+import { getErrorMessage } from '@/lib/security/errors';
 import {
   PROGRAM_ID,
   IS_PLACEHOLDER_PROGRAM_ID,

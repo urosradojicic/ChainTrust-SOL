@@ -2,7 +2,7 @@ import { useConnection } from '@solana/wallet-adapter-react';
 import { useState, useCallback } from 'react';
 import { PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { getErrorMessage } from '@/lib/errors';
+import { getErrorMessage } from '@/lib/security/errors';
 
 // ── Types ────────────────────────────────────────────────────────
 

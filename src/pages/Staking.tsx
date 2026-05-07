@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getErrorMessage } from '@/lib/errors';
+import { getErrorMessage } from '@/lib/security/errors';
 import { TIERS } from '@/lib/mock-data';
 import { useStake, useUnstake, useInvestorAccount, useClaimRewards } from '@/hooks/use-blockchain';
 import { useWallet } from '@/contexts/WalletContext';

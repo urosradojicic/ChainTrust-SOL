@@ -9,7 +9,7 @@ import {
 } from 'recharts';
 import { formatCurrency, formatNumber } from '@/lib/format';
 import { chartTooltipStyle, categoryColors } from '@/lib/constants';
-import { safeHref } from '@/lib/sanitize';
+import { safeHref } from '@/lib/security/sanitize';
 import Badge from '@/components/common/Badge';
 import DataProvenance from '@/components/common/DataProvenance';
 import SustainabilityScore from '@/components/SustainabilityScore';

@@ -11,7 +11,7 @@
  */
 
 import type { DbStartup } from '@/types/database';
-import { escapeHtml } from '@/lib/sanitize';
+import { escapeHtml } from '@/lib/security/sanitize';
 
 // ── Types ────────────────────────────────────────────────────────────
 

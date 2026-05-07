@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { getErrorMessage } from '@/lib/errors';
+import { getErrorMessage } from '@/lib/security/errors';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {

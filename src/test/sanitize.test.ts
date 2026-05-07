@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { escapeHtml, stripHtml, sanitizeText, sanitizeUrl, sanitizeNumber, isValidEmail, isValidSolanaAddress, safeJsonParse, rateLimit, safeHref, sanitizeTwitterHandle } from '@/lib/sanitize';
+import { escapeHtml, stripHtml, sanitizeText, sanitizeUrl, sanitizeNumber, isValidEmail, isValidSolanaAddress, safeJsonParse, rateLimit, safeHref, sanitizeTwitterHandle } from '@/lib/security/sanitize';
 
 describe('escapeHtml', () => {
   it('escapes the five XSS-relevant characters', () => {
