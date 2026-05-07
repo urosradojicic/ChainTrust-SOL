@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Wallet, Code, Megaphone, Server, Users, Shield, type LucideIcon } from 'lucide-react';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 
 interface FlowNode {
   label: string;

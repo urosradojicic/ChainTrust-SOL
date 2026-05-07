@@ -35,7 +35,7 @@ import {
   MEMO_PROGRAM_ID,
   type LiveAnchorParams,
 } from '@/lib/memo-anchor';
-import { fireConfetti } from '@/lib/confetti';
+import { fireConfetti } from '@/lib/format/confetti';
 import {
   readRecentAnchors,
   pushRecentAnchor,

@@ -4,7 +4,7 @@ import { useStartups } from '@/hooks/use-startups';
 import { useDocumentTitle } from '@/hooks/use-document-title';
 import { Link } from 'react-router-dom';
 import { Bookmark, Bell, TrendingDown, TrendingUp, FileText, Shield, Plus, X, AlertTriangle, Info } from 'lucide-react';
-import { formatCurrency, formatNumber } from '@/lib/format';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
 
 const TIER_COLORS: Record<string, string> = {
   Free: 'bg-muted text-muted-foreground',

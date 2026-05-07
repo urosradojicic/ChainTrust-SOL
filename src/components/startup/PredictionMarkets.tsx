@@ -9,8 +9,8 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Users, DollarSign, Clock, Target } from 'lucide-react';
-import { chartTooltipStyle } from '@/lib/constants';
-import { formatCurrency } from '@/lib/format';
+import { chartTooltipStyle } from '@/lib/format/constants';
+import { formatCurrency } from '@/lib/format/format';
 import type { DbStartup } from '@/types/database';
 import { generateDemoMarkets, type PredictionMarket } from '@/lib/prediction-market';
 

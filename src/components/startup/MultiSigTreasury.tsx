@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Lock, Users, CheckCircle, Shield, Wallet } from 'lucide-react';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 import type { DbStartup } from '@/types/database';
 
 const SIGNERS = [

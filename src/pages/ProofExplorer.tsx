@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useStartups } from '@/hooks/use-startups';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 import {
   Shield, Hash, CheckCircle2, ExternalLink, Search,
   ArrowUpRight, Globe, Lock, Copy, Check,

@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, X, GitCompareArrows, Loader2, Download } from 'lucide-react';
 import { useStartups } from '@/hooks/use-startups';
-import { formatCurrency, formatNumber } from '@/lib/format';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
 import type { DbStartup } from '@/types/database';
 import {
   Select, SelectTrigger, SelectValue, SelectContent, SelectItem,

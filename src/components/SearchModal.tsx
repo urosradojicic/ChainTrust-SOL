@@ -6,7 +6,7 @@ import {
   FileCheck, Award, Calculator, Code, Coins, Users, Globe, Eye,
 } from 'lucide-react';
 import { useStartups } from '@/hooks/use-startups';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 
 const PAGES = [
   { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },

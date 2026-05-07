@@ -9,7 +9,7 @@ import {
   PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar,
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
 } from 'recharts';
-import { chartTooltipStyle } from '@/lib/constants';
+import { chartTooltipStyle } from '@/lib/format/constants';
 
 const TOTAL_SUPPLY = 100_000_000;
 

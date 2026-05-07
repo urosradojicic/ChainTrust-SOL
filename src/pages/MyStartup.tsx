@@ -18,7 +18,7 @@ import { logDataError } from '@/lib/security/error-handler';
 import { isDemoSignature } from '@/lib/solana-config';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
-import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
+import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/format/constants';
 import type { DbStartup, DbAuditEntry } from '@/types/database';
 import type { Database } from '@/integrations/supabase/types';
 

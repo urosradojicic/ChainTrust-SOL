@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useStartups } from '@/hooks/use-startups';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 import { Loader2 } from 'lucide-react';
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string }> = {

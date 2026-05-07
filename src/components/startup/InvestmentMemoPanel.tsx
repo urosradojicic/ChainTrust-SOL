@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
 import { generateInvestmentMemo, RECOMMENDATION_CONFIG, type InvestmentMemo } from '@/lib/investment-memo';
-import { exportElementAsPDF } from '@/lib/export-pdf';
+import { exportElementAsPDF } from '@/lib/format/export-pdf';
 
 function DataPointTag({ dp }: { dp: { label: string; value: string; sentiment: 'positive' | 'neutral' | 'negative' } }) {
   const colors = {

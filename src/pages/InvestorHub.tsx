@@ -15,7 +15,7 @@ import {
   Target, Zap, Award, ChevronRight, BarChart3, Shield, Activity,
   Sparkles, Calendar, Clock, CheckCircle2, ArrowUpRight,
 } from 'lucide-react';
-import { formatCurrency, formatNumber } from '@/lib/format';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
 import { useStartups, useAllMetricsMap } from '@/hooks/use-startups';
 import { useWallet } from '@/contexts/WalletContext';
 import { scoreDeal, type DealScore } from '@/lib/deal-scoring';

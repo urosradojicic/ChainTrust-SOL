@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { ExternalLink, Loader2, Clock, ArrowUpRight } from 'lucide-react';
 import { PROGRAM_ID } from '@/lib/contracts';
 import { explorerTxUrl } from '@/lib/solana-config';
-import { formatAddress } from '@/lib/format';
+import { formatAddress } from '@/lib/format/format';
 
 interface TxRecord {
   signature: string;

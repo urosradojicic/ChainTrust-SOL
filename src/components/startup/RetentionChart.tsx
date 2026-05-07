@@ -1,5 +1,5 @@
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { chartTooltipStyle } from '@/lib/constants';
+import { chartTooltipStyle } from '@/lib/format/constants';
 import type { DbMetricsHistory } from '@/types/database';
 
 interface RetentionChartProps {

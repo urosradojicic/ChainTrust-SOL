@@ -17,7 +17,7 @@ import { logDataError } from '@/lib/security/error-handler';
 import { Progress } from '@/components/ui/progress';
 import Toggle from '@/components/form/Toggle';
 import DistSlider from '@/components/form/DistSlider';
-import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
+import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/format/constants';
 
 const STEPS = ['Basic Info', 'Metrics', 'Sustainability', 'Tokenomics', 'Pledges', 'Review'];
 

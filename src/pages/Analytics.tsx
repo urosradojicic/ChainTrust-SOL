@@ -6,12 +6,12 @@ import {
   Vote, Wallet, Clock, Zap,
 } from 'lucide-react';
 import { useStartups } from '@/hooks/use-startups';
-import { formatCurrency, formatNumber } from '@/lib/format';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts';
-import { chartTooltipStyle } from '@/lib/constants';
+import { chartTooltipStyle } from '@/lib/format/constants';
 
 /* ── Platform time-series data (last 12 months) ── */
 const MONTHS = ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];

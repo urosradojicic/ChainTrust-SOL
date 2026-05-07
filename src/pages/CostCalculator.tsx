@@ -5,7 +5,7 @@ import {
   BarChart3, CheckCircle, Globe, Shield, Package, ChevronRight,
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
-import { chartTooltipStyle } from '@/lib/constants';
+import { chartTooltipStyle } from '@/lib/format/constants';
 import { Link } from 'react-router-dom';
 
 const SOLANA_FEE = 0.00025; // USD per transaction

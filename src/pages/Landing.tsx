@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useStartups } from '@/hooks/use-startups';
-import { formatCurrency, formatNumber } from '@/lib/format';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
 import {
   ArrowRight, ArrowUpRight, Shield, BarChart3, Lock, Eye,
   Zap, Hash, Award, CheckCircle2, Globe, FileCheck,

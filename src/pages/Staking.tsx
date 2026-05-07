@@ -6,7 +6,7 @@ import { useStake, useUnstake, useInvestorAccount, useClaimRewards } from '@/hoo
 import { useWallet } from '@/contexts/WalletContext';
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
-import { formatCMT } from '@/lib/format';
+import { formatCMT } from '@/lib/format/format';
 import { explorerTxUrl } from '@/lib/solana-config';
 import { toast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';

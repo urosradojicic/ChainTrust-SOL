@@ -13,8 +13,8 @@ import {
 } from 'recharts';
 import { Users, DollarSign, TrendingUp, Layers } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
-import { formatCurrency } from '@/lib/format';
-import { chartTooltipStyle } from '@/lib/constants';
+import { formatCurrency } from '@/lib/format/format';
+import { chartTooltipStyle } from '@/lib/format/constants';
 import { createDemoCapTable, runWaterfall, type CapTable, type WaterfallAnalysis } from '@/lib/cap-table';
 
 const SHARE_CLASS_COLORS: Record<string, string> = {

@@ -8,7 +8,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Unlock, Clock, Target, DollarSign, AlertTriangle, CheckCircle2, XCircle, Timer } from 'lucide-react';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 import type { DbStartup } from '@/types/database';
 import {
   createDemoEscrowDeal,

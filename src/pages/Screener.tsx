@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useStartups } from '@/hooks/use-startups';
 import { useDocumentTitle } from '@/hooks/use-document-title';
-import { formatCurrency, formatNumber } from '@/lib/format';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
 import Badge from '@/components/common/Badge';
-import { categoryColors } from '@/lib/constants';
+import { categoryColors } from '@/lib/format/constants';
 import { Loader2, SlidersHorizontal, Download, ArrowUpDown } from 'lucide-react';
 
 type SortKey = 'mrr' | 'users' | 'growth_rate' | 'trust_score' | 'sustainability_score' | 'treasury' | 'whale_concentration';

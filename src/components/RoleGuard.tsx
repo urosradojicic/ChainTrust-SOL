@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { canAccess, getDeniedRedirect } from '@/lib/role-access';
+import { canAccess, getDeniedRedirect } from '@/lib/format/role-access';
 import { Loader2 } from 'lucide-react';
 
 interface RoleGuardProps {

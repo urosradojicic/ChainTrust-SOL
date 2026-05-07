@@ -7,8 +7,8 @@ import {
   AreaChart, Area, LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts';
-import { formatCurrency, formatNumber } from '@/lib/format';
-import { chartTooltipStyle, categoryColors } from '@/lib/constants';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
+import { chartTooltipStyle, categoryColors } from '@/lib/format/constants';
 import { safeHref } from '@/lib/security/sanitize';
 import Badge from '@/components/common/Badge';
 import DataProvenance from '@/components/common/DataProvenance';
@@ -48,7 +48,7 @@ import CapTableView from '@/components/startup/CapTableView';
 import PredictionMarkets from '@/components/startup/PredictionMarkets';
 import ZKProofPanel from '@/components/startup/ZKProofPanel';
 import InvestmentMemoPanel from '@/components/startup/InvestmentMemoPanel';
-import { exportElementAsPDF } from '@/lib/export-pdf';
+import { exportElementAsPDF } from '@/lib/format/export-pdf';
 import { exportLPReport } from '@/lib/lp-report';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar, Clock,

@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PROPOSALS, STARTUPS } from '@/lib/mock-data';
-import { formatAddress, formatNumber } from '@/lib/format';
+import { formatAddress, formatNumber } from '@/lib/format/format';
 import Badge from '@/components/common/Badge';
 import { Leaf, Plus, X, Shield, CheckCircle2, Loader2 } from 'lucide-react';
 import { useCreateProposal as useCreateProposalOnChain, useCastVote as useCastVoteOnChain, useDelegateVotes, useExecuteProposal as useExecuteOnChain } from '@/hooks/use-blockchain';
