@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { DEMO_STARTUPS, DEMO_METRICS, DEMO_PROPOSALS } from '@/lib/demo-data';
+import { DEMO_STARTUPS, DEMO_METRICS, DEMO_PROPOSALS } from '@/lib/mock/demo-data';
 import { logDataError } from '@/lib/security/error-handler';
 import type { DbStartup, DbMetricsHistory, DbPledge, DbAuditEntry, DbProposal, DbVote, DbFundingRound, DbTokenUnlock } from '@/types/database';
 

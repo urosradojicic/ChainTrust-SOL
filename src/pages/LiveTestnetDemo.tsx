@@ -41,7 +41,7 @@ import {
   pushRecentAnchor,
   clearRecentAnchors,
   type RecentAnchor,
-} from '@/lib/recent-anchors';
+} from '@/lib/mock/recent-anchors';
 import { useSolPrice } from '@/hooks/use-pyth-price';
 
 type Stage = 'idle' | 'airdropping' | 'anchoring' | 'success' | 'error';

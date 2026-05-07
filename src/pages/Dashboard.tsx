@@ -1,7 +1,7 @@
 import { useState, useMemo, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CATEGORIES, ACTIVITY_FEED } from '@/lib/mock-data';
+import { CATEGORIES, ACTIVITY_FEED } from '@/lib/mock/mock-data';
 import { categoryColors } from '@/lib/format/constants';
 import { formatCurrency, formatNumber } from '@/lib/format/format';
 import Badge from '@/components/common/Badge';

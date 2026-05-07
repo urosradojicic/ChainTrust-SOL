@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getErrorMessage } from '@/lib/security/errors';
-import { TIERS } from '@/lib/mock-data';
+import { TIERS } from '@/lib/mock/mock-data';
 import { useStake, useUnstake, useInvestorAccount, useClaimRewards } from '@/hooks/use-blockchain';
 import { useWallet } from '@/contexts/WalletContext';
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';

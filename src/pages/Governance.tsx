@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PROPOSALS, STARTUPS } from '@/lib/mock-data';
+import { PROPOSALS, STARTUPS } from '@/lib/mock/mock-data';
 import { formatAddress, formatNumber } from '@/lib/format/format';
 import Badge from '@/components/common/Badge';
 import { Leaf, Plus, X, Shield, CheckCircle2, Loader2 } from 'lucide-react';
