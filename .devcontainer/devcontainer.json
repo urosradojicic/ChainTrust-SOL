@@ -1,0 +1,61 @@
+{
+  "name": "ChainTrust Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm",
+
+  // Forward Vite's port to the host. Auto-opens in the browser when the
+  // server is ready. Port 8080 because vite.config.ts pins it (overrides
+  // Vite's 5173 default for Solana wallet-adapter compatibility).
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "ChainTrust dev server",
+      "onAutoForward": "openBrowser"
+    }
+  },
+
+  // Install dependencies the first time the container is created. Uses
+  // --legacy-peer-deps because Solana wallet-adapter peer ranges; see
+  // CONTRIBUTING.md.
+  "postCreateCommand": "npm install --legacy-peer-deps",
+
+  // After the container starts each time: print the friendly start-here.
+  // Skipped on Codespaces prebuild to keep prebuilds clean.
+  "postAttachCommand": {
+    "tour": "echo '\\n👋 Welcome to ChainTrust.\\n\\nQuick start:\\n  npm run dev      # localhost:8080\\n  npm test -- --run\\n  npm run build\\n\\nJudges: open the /judges/ folder for the curated tour.\\n'"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "rust-lang.rust-analyzer",
+        "supabase.supabase-vscode",
+        "github.vscode-pull-request-github",
+        "vitest.explorer"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        },
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "[typescript]":  { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[json]":      { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+        "[markdown]":  { "editor.defaultFormatter": "esbenp.prettier-vscode" }
+      }
+    }
+  },
+
+  "features": {
+    // Pre-install gh CLI so PRs can be opened from the Codespace terminal.
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // Default to a non-root user (security best practice + matches local dev).
+  "remoteUser": "node"
+}

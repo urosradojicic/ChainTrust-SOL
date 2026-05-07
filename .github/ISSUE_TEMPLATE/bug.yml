@@ -1,0 +1,74 @@
+name: 🐛 Bug report
+description: Something isn't working as expected
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. The more specific your reproduction, the faster we can fix it.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One sentence describing the bug.
+      placeholder: "Clicking 'Anchor proof' on /testnet-demo throws Buffer is not defined"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Numbered list of exact steps. Include the route + role if relevant.
+      placeholder: |
+        1. Sign in as `investor@chainmetrics.io`
+        2. Navigate to /screener
+        3. Click any startup row
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include console output, screenshots, or stack traces.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where does it happen?
+      multiple: true
+      options:
+        - Frontend (a page or component)
+        - Hook (data fetch / chain side-effect)
+        - Anchor program (on-chain)
+        - Supabase RLS policy
+        - Edge Function
+        - Build / CI
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: Browser + OS + wallet (if relevant)
+      placeholder: Chrome 130, macOS 15, Phantom on Devnet
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Anything else worth knowing — recent dep changes, network conditions, etc.

@@ -4,10 +4,12 @@
 
 <br/>
 
+[![Open in GitHub Codespaces](https://img.shields.io/badge/%E2%9A%A1%20Open%20in-Codespaces-0B1437?logo=github)](https://codespaces.new/urosradojicic/ChainTrust-SOL?quickstart=1)
 [![CI](https://github.com/urosradojicic/ChainTrust-SOL/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/urosradojicic/ChainTrust-SOL/actions/workflows/ci.yml)
 ![Tests](https://img.shields.io/badge/tests-74%20passing-brightgreen)
 ![Audits](https://img.shields.io/badge/audits-3%20smart%20contract%20%2B%201%20deep-blue)
 ![npm audit](https://img.shields.io/badge/npm%20audit-0%20critical-brightgreen)
+![License](https://img.shields.io/badge/license-Proprietary-lightgrey)
 ![Solana](https://img.shields.io/badge/Solana-Devnet-9945FF)
 ![Frontier](https://img.shields.io/badge/Colosseum-Frontier%20%C2%B7%20May%2011-14F195)
 
@@ -65,7 +67,10 @@ The Anchor program (24 instructions) is the canonical state. Every metric commit
 
 ## Quick start
 
+> **⚡ Zero-install path for judges**: click the [**Open in Codespaces**](https://codespaces.new/urosradojicic/ChainTrust-SOL?quickstart=1) badge above. GitHub provisions a VM, installs dependencies, opens VS Code in your browser, and forwards port 8080 with the dev server running. **~60 seconds, no local setup.** Recommended for review sessions.
+
 ```bash
+# Or run locally:
 npm install --legacy-peer-deps    # see CONTRIBUTING.md for the --legacy-peer-deps reason
 npm run dev                        # localhost:8080
 npm test -- --run                  # 74 / 74 vitest cases
