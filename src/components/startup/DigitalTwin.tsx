@@ -15,7 +15,7 @@ import { Slider } from '@/components/ui/slider';
 import { formatCurrency, formatNumber } from '@/lib/format/format';
 import { chartTooltipStyle } from '@/lib/format/constants';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { runSimulation, DEFAULT_PARAMS, type SimulationParams, type SimulationResult } from '@/lib/monte-carlo';
+import { runSimulation, DEFAULT_PARAMS, type SimulationParams, type SimulationResult } from '@/lib/intelligence/monte-carlo';
 
 // ── Stat Card ────────────────────────────────────────────────────────
 

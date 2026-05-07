@@ -18,10 +18,10 @@ import {
 import { formatCurrency, formatNumber } from '@/lib/format/format';
 import { useStartups, useAllMetricsMap } from '@/hooks/use-startups';
 import { useWallet } from '@/contexts/WalletContext';
-import { scoreDeal, type DealScore } from '@/lib/deal-scoring';
-import { optimizePortfolio } from '@/lib/portfolio-optimizer';
-import { analyzeCompetitiveLandscape } from '@/lib/competitive-intel';
-import { generateComplianceReport } from '@/lib/regulatory-compliance';
+import { scoreDeal, type DealScore } from '@/lib/intelligence/deal-scoring';
+import { optimizePortfolio } from '@/lib/intelligence/portfolio-optimizer';
+import { analyzeCompetitiveLandscape } from '@/lib/intelligence/competitive-intel';
+import { generateComplianceReport } from '@/lib/intelligence/regulatory-compliance';
 import { useSmartAlerts } from '@/hooks/use-smart-monitoring';
 import MacroRegimePanel from '@/components/startup/MacroRegimePanel';
 import {
@@ -34,7 +34,7 @@ import {
   type EngagementStreak,
   type AchievementBadge,
   type OnboardingStep,
-} from '@/lib/investor-engagement';
+} from '@/lib/intelligence/investor-engagement';
 
 // ── Sub-Components ───────────────────────────────────────────────────
 

@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, Shield, Target, Zap, Info } from 'lucide-react';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { predictSurvival, type SurvivalPrediction, type PredictionBadge } from '@/lib/survival-predictor';
+import { predictSurvival, type SurvivalPrediction, type PredictionBadge } from '@/lib/intelligence/survival-predictor';
 
 // ── Badge Colors ─────────────────────────────────────────────────────
 

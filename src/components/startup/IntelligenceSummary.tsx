@@ -21,9 +21,9 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { analyzeSentiment } from '@/lib/sentiment';
-import { detectChangePoints } from '@/lib/change-points';
-import { ensemble } from '@/lib/ensemble';
+import { analyzeSentiment } from '@/lib/intelligence/sentiment';
+import { detectChangePoints } from '@/lib/intelligence/change-points';
+import { ensemble } from '@/lib/intelligence/ensemble';
 
 interface Props {
   startup: DbStartup;

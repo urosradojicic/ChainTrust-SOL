@@ -10,8 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ArrowRight, Command, Hash, Zap, Star, Clock, Keyboard, Terminal } from 'lucide-react';
 import { useStartups } from '@/hooks/use-startups';
-import { searchCommands, getRecentPages, recordPageVisit, type Command as CommandType } from '@/lib/command-palette';
-import { parseSlashCommand, addToWatchlist, type SlashCommandMatch } from '@/lib/slash-commands';
+import { searchCommands, getRecentPages, recordPageVisit, type Command as CommandType } from '@/lib/intelligence/command-palette';
+import { parseSlashCommand, addToWatchlist, type SlashCommandMatch } from '@/lib/intelligence/slash-commands';
 import { toast } from '@/hooks/use-toast';
 
 const CATEGORY_ICONS: Record<string, typeof Search> = {

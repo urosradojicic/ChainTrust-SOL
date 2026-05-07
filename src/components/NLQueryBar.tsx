@@ -11,7 +11,7 @@ import { Search, Sparkles, ArrowRight, X, MessageSquare, Filter, SortDesc, Hash 
 import { Link } from 'react-router-dom';
 import { formatCurrency, formatNumber } from '@/lib/format/format';
 import type { DbStartup } from '@/types/database';
-import { executeQuery, EXAMPLE_QUERIES, type QueryResult } from '@/lib/nl-query';
+import { executeQuery, EXAMPLE_QUERIES, type QueryResult } from '@/lib/intelligence/nl-query';
 
 // ── Result Display ───────────────────────────────────────────────────
 

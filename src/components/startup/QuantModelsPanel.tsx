@@ -17,7 +17,7 @@ import {
   type MomentumSignal,
   type RelativeValueSignal,
   type RiskDecomposition,
-} from '@/lib/quant-models';
+} from '@/lib/intelligence/quant-models';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
 
 interface Props {

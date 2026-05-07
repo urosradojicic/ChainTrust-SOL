@@ -13,7 +13,7 @@ import {
   ChevronDown, ChevronUp, Download, DollarSign, Target, Sparkles, BarChart3,
 } from 'lucide-react';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { generateInvestmentMemo, RECOMMENDATION_CONFIG, type InvestmentMemo } from '@/lib/investment-memo';
+import { generateInvestmentMemo, RECOMMENDATION_CONFIG, type InvestmentMemo } from '@/lib/intelligence/investment-memo';
 import { exportElementAsPDF } from '@/lib/format/export-pdf';
 
 function DataPointTag({ dp }: { dp: { label: string; value: string; sentiment: 'positive' | 'neutral' | 'negative' } }) {

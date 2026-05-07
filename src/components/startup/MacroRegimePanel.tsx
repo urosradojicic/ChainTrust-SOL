@@ -10,7 +10,7 @@ import {
   Activity, TrendingUp, TrendingDown, Minus, Shield, BarChart3,
   Sun, CloudRain, Cloud, Zap, Snowflake,
 } from 'lucide-react';
-import { detectMacroRegime, type MacroRegime, type Regime } from '@/lib/quant-models';
+import { detectMacroRegime, type MacroRegime, type Regime } from '@/lib/intelligence/quant-models';
 import { useSolPrice } from '@/hooks/use-pyth-price';
 import { useStartups } from '@/hooks/use-startups';
 

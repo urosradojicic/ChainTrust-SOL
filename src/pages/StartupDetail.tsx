@@ -49,7 +49,7 @@ import PredictionMarkets from '@/components/startup/PredictionMarkets';
 import ZKProofPanel from '@/components/startup/ZKProofPanel';
 import InvestmentMemoPanel from '@/components/startup/InvestmentMemoPanel';
 import { exportElementAsPDF } from '@/lib/format/export-pdf';
-import { exportLPReport } from '@/lib/lp-report';
+import { exportLPReport } from '@/lib/intelligence/lp-report';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar, Clock,
   Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Loader2, Download, FileText, Brain, BarChart3,

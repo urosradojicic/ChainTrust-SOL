@@ -12,7 +12,7 @@ import { TrendingUp, Users, DollarSign, Clock, Target } from 'lucide-react';
 import { chartTooltipStyle } from '@/lib/format/constants';
 import { formatCurrency } from '@/lib/format/format';
 import type { DbStartup } from '@/types/database';
-import { generateDemoMarkets, type PredictionMarket } from '@/lib/prediction-market';
+import { generateDemoMarkets, type PredictionMarket } from '@/lib/intelligence/prediction-market';
 
 const CATEGORY_COLORS = {
   revenue: '#10B981', growth: '#3B82F6', survival: '#8B5CF6',
