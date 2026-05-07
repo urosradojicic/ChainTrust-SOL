@@ -1,0 +1,21 @@
+# EditorConfig — https://editorconfig.org
+# Mirrors the rules in .prettierrc.json so an editor without a Prettier plugin
+# still produces consistent files.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{md,mdx}]
+# Markdown is whitespace-sensitive; preserve hard-line-break trailing spaces.
+trim_trailing_whitespace = false
+
+[*.{rs}]
+# Rust convention: 4-space indent, matches rustfmt default.
+indent_size = 4
