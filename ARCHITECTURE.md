@@ -13,18 +13,24 @@ There is **no Node/Express backend** in this repo. The only server-side code is 
 
 ## Layering
 
-```
-ROUTE LAYER:  src/App.tsx + src/pages/*.tsx
-              (lazy-loaded routes, RoleGuard wraps protected pages)
-                              ↓
-HOOK LAYER:   src/hooks/use-*.ts
-              (data fetching via Supabase + chain side-effects via wallet)
-                              ↓
-LIB LAYER:    src/lib/{security,solana,format,mock,intelligence}/*.ts
-              (pure-function domain logic + service clients)
-                              ↓
-DATA LAYER:   supabase/migrations/*.sql  (RLS policies are the source of truth)
-              blockchain/programs/chainmetrics  (Anchor program, on-chain state)
+```mermaid
+flowchart TD
+    R["🛣 ROUTE LAYER<br/>src/App.tsx + src/pages/*.tsx<br/>(lazy-loaded routes, RoleGuard wraps protected pages)"]
+    H["🪝 HOOK LAYER<br/>src/hooks/use-*.ts<br/>(data fetching + chain side-effects)"]
+    L["📚 LIB LAYER<br/>src/lib/{security,solana,format,mock,intelligence}/*.ts<br/>(pure-function domain logic + service clients)"]
+    D1["🗄 Supabase<br/>migrations + RLS policies<br/>(source of truth)"]
+    D2["⛓ Anchor program<br/>chainmetrics<br/>(on-chain state)"]
+
+    R --> H
+    H --> L
+    L --> D1
+    L --> D2
+
+    style R fill:#7B61FF,stroke:#0B1437,color:#fff
+    style H fill:#9945FF,stroke:#0B1437,color:#fff
+    style L fill:#534AB7,stroke:#0B1437,color:#fff
+    style D1 fill:#3ECF8E,stroke:#0B1437,color:#0B1437
+    style D2 fill:#14F195,stroke:#0B1437,color:#0B1437
 ```
 
 Plus orthogonal pieces:

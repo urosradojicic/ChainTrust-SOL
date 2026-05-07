@@ -1,76 +1,150 @@
-# ChainTrust
+<div align="center">
 
-**The trust layer for startup fundraising on Solana.** Founders publish metrics on-chain, oracles verify them, investors get cryptographic proof chains instead of self-reported decks.
+<img src="judges/banner.svg" alt="ChainTrust — The trust layer for Solana startup fundraising" width="100%" />
+
+<br/>
 
 [![CI](https://github.com/urosradojicic/ChainTrust-SOL/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/urosradojicic/ChainTrust-SOL/actions/workflows/ci.yml)
 ![Tests](https://img.shields.io/badge/tests-74%20passing-brightgreen)
-![Audits](https://img.shields.io/badge/audits-3%20%C3%97%20smart%20contract%20%2B%201%20%C3%97%20deep-blue)
+![Audits](https://img.shields.io/badge/audits-3%20smart%20contract%20%2B%201%20deep-blue)
 ![npm audit](https://img.shields.io/badge/npm%20audit-0%20critical-brightgreen)
-![Solana](https://img.shields.io/badge/Solana-Devnet-purple)
-![Frontier](https://img.shields.io/badge/Colosseum-Frontier%20%C2%B7%20May%2011-blue)
+![Solana](https://img.shields.io/badge/Solana-Devnet-9945FF)
+![Frontier](https://img.shields.io/badge/Colosseum-Frontier%20%C2%B7%20May%2011-14F195)
+
+### **The trust layer for Solana startup fundraising.**
+
+Founders publish metrics on-chain. Oracles verify them. Investors get cryptographic proof chains instead of self-reported decks.
+
+[**🎯 For judges → start in `/judges/`**](judges/) · [**🛡 Security**](SECURITY.md) · [**🏗 Architecture**](ARCHITECTURE.md) · [**🎥 Demo video script**](judges/03-demo-video.md)
+
+</div>
 
 ---
 
 ## 👋 Judges & reviewers — open the [`judges/`](judges/) folder
 
-Everything you need is curated, ordered, and waiting in one place: **[`/judges/`](judges/)**.
+**One folder. Five docs. 3 minutes total.** Everything you need to evaluate this project — the differentiation narrative, the file-pointer tour, the demo-video script with screenshots of every scene, and a security one-pager — is curated and ordered there.
 
-That folder is the only place you need to look. Five short docs, ordered by priority, with embedded demo-scene screenshots. **3 minutes total.**
+> **The 30-second path:** open [`/testnet-demo`](src/pages/LiveTestnetDemo.tsx) after `npm run dev`, connect Phantom on Devnet, click *Airdrop*, click *Anchor proof*, click the **Solana Explorer** link in the toast. *That is a real, signed, confirmed Solana transaction.*
 
-> **The 30-second path** — open [`/testnet-demo`](src/pages/LiveTestnetDemo.tsx) after `npm run dev`. Connect Phantom (Devnet). Click *Airdrop*. Click *Anchor proof*. Click the Explorer link. *That is a real, signed, confirmed Solana transaction.*
-
-| ⚡ Direct links into `/judges/` |
+| ⚡ Direct entry points |
 |---|
-| 📂 **[`judges/`](judges/)** — start here, the curated landing |
-| 🏆 **[Why we win Frontier](judges/01-why-we-win.md)** — the differentiation narrative |
-| 🎯 **[3-minute tour](judges/02-three-minute-tour.md)** — file pointers for technical reviewers |
-| 🎥 **[Demo-video script](judges/03-demo-video.md)** — recording script with screenshots of every scene |
-| 🛡️ **[Security one-pager](judges/04-security-summary.md)** — every defense linked to its file |
-| 📣 **[Pitch](judges/05-pitch.md)** — founder pitch |
+| 📂 **[`/judges/`](judges/)** — start here, the curated landing |
+| 🏆 **[Why we win Frontier](judges/01-why-we-win.md)** — 6-row comparison: most hackathon projects vs ChainTrust |
+| 🎯 **[3-minute file-pointer tour](judges/02-three-minute-tour.md)** |
+| 🎥 **[Demo video script + screenshots](judges/03-demo-video.md)** |
+| 🛡️ **[Security one-pager](judges/04-security-summary.md)** |
 
-**Demo credentials** (one-click on `/login`):
+---
 
-| Role | Email | Password |
-|---|---|---|
-| Investor (recommended start) | `investor@chainmetrics.io` | `investor1` |
-| Startup | `startup@chainmetrics.io` | `startup1` |
-| Admin | `admin@chainmetrics.io` | `admin123` |
+## How the trust flow works
 
-Sessions expire after 24 hours. RLS rejects all writes from demo users.
+```mermaid
+flowchart LR
+    F[👤 Founder]
+    H["📊 Metrics<br/>SHA-256 hashed"]
+    A["⚓ Anchored<br/>Solana PDA"]
+    O[🔍 Oracle verifies]
+    I["🏦 Investor<br/>browses screener"]
+    P["📄 LP-grade PDF<br/>quarterly report"]
+
+    F -->|signs tx| H
+    H -->|via wallet| A
+    A -.->|attests| O
+    O -.->|trust score| I
+    I -->|exports| P
+
+    style A fill:#14F195,stroke:#0B1437,color:#0B1437
+    style O fill:#9945FF,stroke:#0B1437,color:#fff
+    style I fill:#7B61FF,stroke:#0B1437,color:#fff
+```
+
+The Anchor program (24 instructions) is the canonical state. Every metric committed produces a **non-repudiable** transaction signature any investor can verify on Solana Explorer. No "trust me."
 
 ---
 
 ## Quick start
 
 ```bash
-npm install --legacy-peer-deps    # see CONTRIBUTING.md for why --legacy-peer-deps
+npm install --legacy-peer-deps    # see CONTRIBUTING.md for the --legacy-peer-deps reason
 npm run dev                        # localhost:8080
 npm test -- --run                  # 74 / 74 vitest cases
 npm run typecheck                  # tsc --noEmit
 npm run build                      # production bundle
 ```
 
-> **Branch model.** `master` is the Frontier-ready snapshot. Active development happens on `merged-ai-roadmap-v2` and lands on `master` via fast-forward when stable. `backup` is a read-only restore point — `git fetch origin backup && git reset --hard origin/backup` to roll back.
+**Demo credentials** — one-click on [`/login`](src/pages/Login.tsx):
+
+| Role | Email | Password |
+|---|---|---|
+| 💼 Investor (recommended start) | `investor@chainmetrics.io` | `investor1` |
+| 🚀 Startup | `startup@chainmetrics.io` | `startup1` |
+| 🛡 Admin | `admin@chainmetrics.io` | `admin123` |
+
+Sessions expire after 24 hours. Demo users are read-only — RLS rejects all writes.
+
+> **Branch model.** `master` is the Frontier-ready snapshot. `merged-ai-roadmap-v2` is the dev branch. `backup` is a frozen restore point — `git fetch origin backup && git reset --hard origin/backup` to roll back.
 
 ---
 
 ## What's in the box
 
-- **24 on-chain Anchor instructions** — registry, staking (30-day lock + tier computation), governance (weighted voting + delegation), soulbound badges. Source: [`blockchain/programs/chainmetrics/src/`](blockchain/programs/chainmetrics/src/)
-- **Live testnet demo** that posts a real signed transaction to Solana Devnet, with cluster genesis-hash verification + simulation-before-sign hardening. Source: [`src/lib/solana/memo-anchor.ts`](src/lib/solana/memo-anchor.ts)
-- **23 production pages** — investor screener, due-diligence stack, governance, staking, compliance, deal rooms — all role-gated by Supabase RLS (server-side) plus deny-by-default route guards (UI)
-- **70+ domain-analytics modules** — Bayesian inference, Monte Carlo, isolation forest, gradient boost, change points, SHAP, deal scoring, founder score, moat analysis, ESG, geopolitical risk, scenario planning. Catalog: [`src/lib/intelligence/`](src/lib/intelligence/)
-- **LP-grade PDF reports** ([`src/lib/intelligence/lp-report.ts`](src/lib/intelligence/lp-report.ts)) and Solana Actions / Blinks shareable verification links ([`src/lib/solana/solana-actions.ts`](src/lib/solana/solana-actions.ts))
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🔗 On-chain
+- **24 Anchor instructions** — registry, staking, governance, badges
+- **Cluster genesis-hash check** before any sign request
+- **Simulate-before-send** so investors don't pay fees on doomed transactions
+- **BigInt fixed-point** token math — no float drift
+- **Soulbound badges** — verification NFTs that can't be transferred
+
+</td>
+<td width="50%" valign="top">
+
+### 🛡 Off-chain
+- **Supabase RLS** on every table; deny-by-default
+- **Server-side trigger** locks `verified` / `trust_score` from self-grant
+- **CSP `script-src 'self'`** in production (no inline-script allowance)
+- **`fetchWithTimeout`** wrapper on every external call — no socket leaks
+- **Comprehensive sanitization** — `escapeHtml`, `safeHref`, `sanitizeTwitterHandle`
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### 📊 Investor experience
+- **Bloomberg-style screener** — 42 verified startups, institutional filters
+- **14-tab due-diligence panel** per startup
+- **LP-grade quarterly PDF report**
+- **Smart Money detection** via Helius
+- **Solana Actions / Blinks** for shareable verification
+
+</td>
+<td width="50%" valign="top">
+
+### 🧠 Domain analytics (70+ modules)
+- Bayesian inference, Monte Carlo, isolation forest
+- SHAP, gradient boost, change points
+- Founder score, moat analysis, ESG taxonomy
+- Geopolitical risk, scenario planning
+- Cap table, vesting, token unlocks
+
+</td>
+</tr>
+</table>
 
 ---
 
-## Project layout
+<details>
+<summary><strong>📁 Project layout</strong> (click to expand)</summary>
 
 ```
 src/
 ├── pages/                  React Router routes
-├── components/             UI grouped by domain (audit/, dashboard/,
-│                           governance/, startup/, ui/, …)
+├── components/             UI grouped by domain (audit/, dashboard/, governance/, …)
 ├── hooks/                  data + chain side-effects
 ├── contexts/               Auth, Wallet, Realtime, InstitutionalView
 ├── providers/              Web3, Tooltip, QueryClient
@@ -88,18 +162,21 @@ src/
 blockchain/programs/chainmetrics/   Anchor program (24 instructions)
 supabase/migrations/                SQL — RLS lives here
 supabase/functions/                 Deno Edge Functions
+judges/                             curated content for hackathon judges
+docs/internal/                      historical / process docs
 ```
 
 Layer rules + import boundaries → [ARCHITECTURE.md](ARCHITECTURE.md).
 
----
+</details>
 
-## Tech stack
+<details>
+<summary><strong>🛠 Tech stack</strong></summary>
 
 | Layer | Technology |
 |---|---|
 | Frontend | React 18, TypeScript 5, Vite 5, Tailwind 3, shadcn/ui, Framer Motion |
-| Blockchain | Solana web3.js, `@coral-xyz/anchor` 0.30, SPL Token, three single-package wallet adapters (Phantom, Solflare, Coinbase) |
+| Blockchain | Solana web3.js, `@coral-xyz/anchor` 0.30, SPL Token, Phantom + Solflare + Coinbase wallet adapters |
 | Backend (BaaS) | Supabase (Postgres + RLS + Auth + Realtime + Edge Functions) |
 | Charts | Recharts |
 | PDF | html2canvas + jsPDF |
@@ -107,9 +184,10 @@ Layer rules + import boundaries → [ARCHITECTURE.md](ARCHITECTURE.md).
 | Lint / format | ESLint 9, Prettier (`.editorconfig` mirrors the rules) |
 | Deploy | Vercel (`vercel.json` ships CSP / HSTS / X-Frame-Options) |
 
----
+</details>
 
-## Environment variables
+<details>
+<summary><strong>🔧 Environment variables</strong></summary>
 
 Copy `.env.example` to `.env.local` and fill in:
 
@@ -122,9 +200,11 @@ VITE_HELIUS_API_KEY=<optional, enables Smart Money detection>
 VITE_SENTRY_DSN=<optional, telemetry>
 ```
 
-The `VITE_SUPABASE_PUBLISHABLE_KEY` is intentionally public — RLS gates every read/write. See [SECURITY.md](SECURITY.md).
+`VITE_SUPABASE_PUBLISHABLE_KEY` is intentionally public — RLS gates every read/write. See [SECURITY.md](SECURITY.md).
 
 In production builds, missing `VITE_SOLANA_PROGRAM_ID` causes the app to throw at module load (defense-in-depth so a misconfigured deploy can't sign against the placeholder program ID).
+
+</details>
 
 ---
 
@@ -132,11 +212,11 @@ In production builds, missing `VITE_SOLANA_PROGRAM_ID` causes the app to throw a
 
 - **3 independent smart-contract audits** (OtterSec, Sec3, CertiK) — zero critical findings
 - **2026-05 internal deep-pass** — closed 1 Critical + 4 High + 5 Medium issues. Reports in [docs/internal/security-audit/](docs/internal/security-audit/)
-- **CSP `script-src 'self'`** (no `'unsafe-inline'`), HSTS preload, frame-ancestors `'none'`
-- **`npm audit`**: 0 critical, 3 high (deliberate `bigint-buffer` chain — full rationale in [SECURITY.md](SECURITY.md))
+- **CSP `script-src 'self'`** (no inline-script allowance), HSTS preload, frame-ancestors `'none'`
+- **`npm audit`**: 0 critical, 3 deliberate high (full rationale in [SECURITY.md](SECURITY.md))
 - **74 regression tests** locking financial conversion, sanitization, and role gates
 
-The full pointer-list, with file references for every defense, is in [SECURITY.md](SECURITY.md).
+The full pointer-list, with file references for every defense, is in [SECURITY.md](SECURITY.md). The 1-page version for judges is [`judges/04-security-summary.md`](judges/04-security-summary.md).
 
 ---
 
