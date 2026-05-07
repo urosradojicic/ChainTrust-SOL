@@ -10,6 +10,7 @@ import { genFallbackTxSig } from '@/lib/solana-config';
 import { getErrorMessage } from '@/lib/errors';
 import {
   PROGRAM_ID,
+  IS_PLACEHOLDER_PROGRAM_ID,
   getRegistryPDA,
   getStartupPDA,
   getMetricsPDA,
@@ -28,6 +29,30 @@ import {
 
 // Re-export for backward compatibility
 const genDemoTxSig = genFallbackTxSig;
+
+/**
+ * Run an on-chain operation; if it fails AND the program ID is the
+ * placeholder (= we're in unconfigured-dev mode), return a clearly-prefixed
+ * DEMO signature. In any production-shaped environment (real program ID),
+ * RETHROW the error so the caller can surface a real toast.
+ *
+ * Audit 2026-05-07 finding M-A5: every hook used to bare-`catch → genDemoTxSig`
+ * which masked real on-chain failures (wallet rejection, simulation failure,
+ * AccountNotEnoughKeys from a wrong account list) as fake successes.
+ */
+async function runChainOrDemo(label: string, fn: () => Promise<string>): Promise<string> {
+  try {
+    return await fn();
+  } catch (e: unknown) {
+    if (import.meta.env.DEV) console.warn(`[chain] ${label} failure:`, getErrorMessage(e));
+    if (IS_PLACEHOLDER_PROGRAM_ID) {
+      // Unconfigured dev: demo fallback is the intended UX.
+      return genDemoTxSig();
+    }
+    // Production: surface the real error to the caller.
+    throw e instanceof Error ? e : new Error(getErrorMessage(e));
+  }
+}
 
 /**
  * Compute Anchor instruction discriminator.
@@ -167,11 +192,16 @@ export function usePublishMetrics() {
         setTxHash(sig);
         return sig;
       } catch (e: unknown) {
-        if (import.meta.env.DEV) console.warn('[chain] publish fallback:', getErrorMessage(e));
-        const demoSig = genDemoTxSig();
-        setTxHash(demoSig);
-        setIsDemoMode(true);
-        return demoSig;
+        if (import.meta.env.DEV) console.warn('[chain] publish failure:', getErrorMessage(e));
+        // Demo fallback only in unconfigured dev mode (placeholder program id).
+        // Production: surface the real error so the caller's toast shows it.
+        if (IS_PLACEHOLDER_PROGRAM_ID) {
+          const demoSig = genDemoTxSig();
+          setTxHash(demoSig);
+          setIsDemoMode(true);
+          return demoSig;
+        }
+        throw e instanceof Error ? e : new Error(getErrorMessage(e));
       } finally {
         setIsPending(false);
       }
@@ -240,11 +270,14 @@ export function useRegisterStartup() {
         setTxHash(sig);
         return sig;
       } catch (e: unknown) {
-        if (import.meta.env.DEV) console.warn('[chain] register fallback:', getErrorMessage(e));
-        const demoSig = genDemoTxSig();
-        setTxHash(demoSig);
-        setIsDemoMode(true);
-        return demoSig;
+        if (import.meta.env.DEV) console.warn('[chain] register failure:', getErrorMessage(e));
+        if (IS_PLACEHOLDER_PROGRAM_ID) {
+          const demoSig = genDemoTxSig();
+          setTxHash(demoSig);
+          setIsDemoMode(true);
+          return demoSig;
+        }
+        throw e instanceof Error ? e : new Error(getErrorMessage(e));
       } finally {
         setIsPending(false);
       }
@@ -335,7 +368,11 @@ export function useStake() {
       return sig;
     } catch (e: unknown) {
       if (import.meta.env.DEV) console.warn('[chain] stake fallback:', getErrorMessage(e));
-      return genDemoTxSig();
+      // Audit 2026-05-07 (M-A5): only fall back to a DEMO sig in unconfigured
+      // dev mode (placeholder program id). In any production-shaped env,
+      // rethrow so callers can show real error toasts instead of fake success.
+      if (IS_PLACEHOLDER_PROGRAM_ID) return genDemoTxSig();
+      throw e instanceof Error ? e : new Error(getErrorMessage(e));
     } finally {
       setIsPending(false);
     }
@@ -374,7 +411,11 @@ export function useUnstake() {
       return sig;
     } catch (e: unknown) {
       if (import.meta.env.DEV) console.warn('[chain] unstake fallback:', getErrorMessage(e));
-      return genDemoTxSig();
+      // Audit 2026-05-07 (M-A5): only fall back to a DEMO sig in unconfigured
+      // dev mode (placeholder program id). In any production-shaped env,
+      // rethrow so callers can show real error toasts instead of fake success.
+      if (IS_PLACEHOLDER_PROGRAM_ID) return genDemoTxSig();
+      throw e instanceof Error ? e : new Error(getErrorMessage(e));
     } finally {
       setIsPending(false);
     }
@@ -409,7 +450,11 @@ export function useClaimRewards() {
       return sig;
     } catch (e: unknown) {
       if (import.meta.env.DEV) console.warn('[chain] claim fallback:', getErrorMessage(e));
-      return genDemoTxSig();
+      // Audit 2026-05-07 (M-A5): only fall back to a DEMO sig in unconfigured
+      // dev mode (placeholder program id). In any production-shaped env,
+      // rethrow so callers can show real error toasts instead of fake success.
+      if (IS_PLACEHOLDER_PROGRAM_ID) return genDemoTxSig();
+      throw e instanceof Error ? e : new Error(getErrorMessage(e));
     } finally {
       setIsPending(false);
     }
@@ -528,7 +573,11 @@ export function useMintBadge() {
       return sig;
     } catch (e: unknown) {
       if (import.meta.env.DEV) console.warn('[chain] badge fallback:', getErrorMessage(e));
-      return genDemoTxSig();
+      // Audit 2026-05-07 (M-A5): only fall back to a DEMO sig in unconfigured
+      // dev mode (placeholder program id). In any production-shaped env,
+      // rethrow so callers can show real error toasts instead of fake success.
+      if (IS_PLACEHOLDER_PROGRAM_ID) return genDemoTxSig();
+      throw e instanceof Error ? e : new Error(getErrorMessage(e));
     } finally {
       setIsPending(false);
     }
@@ -566,7 +615,11 @@ export function useUpgradeBadgeTier() {
       return sig;
     } catch (e: unknown) {
       if (import.meta.env.DEV) console.warn('[chain] tier upgrade fallback:', getErrorMessage(e));
-      return genDemoTxSig();
+      // Audit 2026-05-07 (M-A5): only fall back to a DEMO sig in unconfigured
+      // dev mode (placeholder program id). In any production-shaped env,
+      // rethrow so callers can show real error toasts instead of fake success.
+      if (IS_PLACEHOLDER_PROGRAM_ID) return genDemoTxSig();
+      throw e instanceof Error ? e : new Error(getErrorMessage(e));
     } finally {
       setIsPending(false);
     }
@@ -625,7 +678,11 @@ export function useCreateProposal() {
       return sig;
     } catch (e: unknown) {
       if (import.meta.env.DEV) console.warn('[chain] proposal fallback:', getErrorMessage(e));
-      return genDemoTxSig();
+      // Audit 2026-05-07 (M-A5): only fall back to a DEMO sig in unconfigured
+      // dev mode (placeholder program id). In any production-shaped env,
+      // rethrow so callers can show real error toasts instead of fake success.
+      if (IS_PLACEHOLDER_PROGRAM_ID) return genDemoTxSig();
+      throw e instanceof Error ? e : new Error(getErrorMessage(e));
     } finally {
       setIsPending(false);
     }
@@ -669,7 +726,11 @@ export function useCastVote() {
       return sig;
     } catch (e: unknown) {
       if (import.meta.env.DEV) console.warn('[chain] vote fallback:', getErrorMessage(e));
-      return genDemoTxSig();
+      // Audit 2026-05-07 (M-A5): only fall back to a DEMO sig in unconfigured
+      // dev mode (placeholder program id). In any production-shaped env,
+      // rethrow so callers can show real error toasts instead of fake success.
+      if (IS_PLACEHOLDER_PROGRAM_ID) return genDemoTxSig();
+      throw e instanceof Error ? e : new Error(getErrorMessage(e));
     } finally {
       setIsPending(false);
     }
@@ -688,12 +749,19 @@ export function useExecuteProposal() {
     setIsPending(true);
     try {
       const [daoPDA] = getDaoPDA();
+      const [vaultPDA] = getVaultPDA();
       const [proposalPDA] = getProposalPDA(proposalId);
 
+      // Account order must match the on-chain ExecuteProposal struct in
+      // blockchain/programs/chainmetrics/src/lib.rs (authority, dao, vault,
+      // proposal). Previously the vault account was missing — every call
+      // failed with AccountNotEnoughKeys and the catch swallowed it into a
+      // fake DEMO_ tx hash, masking the bug.
       const discriminator = await disc('execute_proposal');
       const ix = buildInstruction(discriminator, Buffer.alloc(0), [
         { pubkey: publicKey, isSigner: true, isWritable: true },
         { pubkey: daoPDA, isSigner: false, isWritable: false },
+        { pubkey: vaultPDA, isSigner: false, isWritable: false },
         { pubkey: proposalPDA, isSigner: false, isWritable: true },
       ]);
 
@@ -703,7 +771,11 @@ export function useExecuteProposal() {
       return sig;
     } catch (e: unknown) {
       if (import.meta.env.DEV) console.warn('[chain] execute fallback:', getErrorMessage(e));
-      return genDemoTxSig();
+      // Audit 2026-05-07 (M-A5): only fall back to a DEMO sig in unconfigured
+      // dev mode (placeholder program id). In any production-shaped env,
+      // rethrow so callers can show real error toasts instead of fake success.
+      if (IS_PLACEHOLDER_PROGRAM_ID) return genDemoTxSig();
+      throw e instanceof Error ? e : new Error(getErrorMessage(e));
     } finally {
       setIsPending(false);
     }
@@ -740,7 +812,11 @@ export function useDelegateVotes() {
       return sig;
     } catch (e: unknown) {
       if (import.meta.env.DEV) console.warn('[chain] delegate fallback:', getErrorMessage(e));
-      return genDemoTxSig();
+      // Audit 2026-05-07 (M-A5): only fall back to a DEMO sig in unconfigured
+      // dev mode (placeholder program id). In any production-shaped env,
+      // rethrow so callers can show real error toasts instead of fake success.
+      if (IS_PLACEHOLDER_PROGRAM_ID) return genDemoTxSig();
+      throw e instanceof Error ? e : new Error(getErrorMessage(e));
     } finally {
       setIsPending(false);
     }
