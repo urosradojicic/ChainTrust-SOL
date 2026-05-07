@@ -1,8 +1,16 @@
+import { Buffer } from "buffer";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App.tsx";
 import { initTelemetry } from "./lib/telemetry";
 import "./index.css";
+
+// @solana/spl-token (and several Solana libs) reach for Node's Buffer global,
+// which doesn't exist in browsers by default. Vite used to inherit a polyfill
+// transitively through wallet-adapter-wallets; M6 dropped that meta-package
+// and the polyfill went with it. Reinstate it explicitly here so SPL Token
+// decode paths (used by StartupDetail's on-chain components) don't crash.
+(globalThis as { Buffer?: typeof Buffer }).Buffer ??= Buffer;
 
 // Boot telemetry as early as possible so even errors during App mount are
 // captured. No-op when VITE_SENTRY_DSN is not set; never adds to bundle
