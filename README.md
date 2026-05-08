@@ -1,11 +1,16 @@
 <div align="center">
 
-<img src="judges/banner.svg" alt="ChainTrust — The trust layer for Solana startup fundraising" width="100%" />
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="brand/banner-dark.svg">
+  <img src="brand/banner-light.svg" alt="ChainTrust — The trust layer for Solana startup fundraising" width="100%" />
+</picture>
 
 <br/>
 
 [![Open in GitHub Codespaces](https://img.shields.io/badge/%E2%9A%A1%20Open%20in-Codespaces-0B1437?logo=github)](https://codespaces.new/urosradojicic/ChainTrust-SOL?quickstart=1)
 [![CI](https://github.com/urosradojicic/ChainTrust-SOL/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/urosradojicic/ChainTrust-SOL/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/urosradojicic/ChainTrust-SOL/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/urosradojicic/ChainTrust-SOL/actions/workflows/codeql.yml)
+[![OSSF Scorecard](https://api.scorecard.dev/projects/github.com/urosradojicic/ChainTrust-SOL/badge)](https://scorecard.dev/viewer/?uri=github.com/urosradojicic/ChainTrust-SOL)
 ![Tests](https://img.shields.io/badge/tests-74%20passing-brightgreen)
 ![Audits](https://img.shields.io/badge/audits-3%20smart%20contract%20%2B%201%20deep-blue)
 ![npm audit](https://img.shields.io/badge/npm%20audit-0%20critical-brightgreen)
@@ -62,6 +67,26 @@ flowchart LR
 ```
 
 The Anchor program (24 instructions) is the canonical state. Every metric committed produces a **non-repudiable** transaction signature any investor can verify on Solana Explorer. No "trust me."
+
+---
+
+<details>
+<summary><strong>📸 Product tour</strong> — six screenshots, no scroll fatigue (click to expand)</summary>
+
+<br/>
+
+| | |
+|---|---|
+| <img src="judges/screenshots/scene-02-landing.png" alt="Landing page" /> | <img src="judges/screenshots/scene-03c-screener.png" alt="Investor screener — Bloomberg-style filters across 42 verified startups" /> |
+| **Landing** — what an investor sees first. | **Screener** — institutional filters, every row backed by an on-chain proof. |
+| <img src="judges/screenshots/scene-03d-startup-detail.png" alt="Startup due-diligence view, 14 tabs" /> | <img src="judges/screenshots/scene-01-testnet.png" alt="Live Devnet demo with Anchor proof flow" /> |
+| **Due diligence** — 14 tabs per startup, every figure traceable. | **Live Devnet** — Anchor a real transaction in <2 s. |
+| <img src="judges/screenshots/scene-05-governance.png" alt="On-chain governance" /> | <img src="judges/screenshots/scene-07-staking.png" alt="Verifier staking interface" /> |
+| **Governance** — 24 Anchor instructions, all wired into the UI. | **Staking** — economic incentives for honest verifiers. |
+
+Full demo-video script with timestamps and every scene captioned: [`judges/03-demo-video.md`](judges/03-demo-video.md).
+
+</details>
 
 ---
 
@@ -232,3 +257,13 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for branch policy, commit format, and the
 ## License
 
 Proprietary. All rights reserved.
+
+---
+
+<div align="center">
+
+<sub>Brand & design system → [BRAND.md](BRAND.md) · Architecture decisions → [docs/adr/](docs/adr/) · Audit response → [AUDIT.md](AUDIT.md)</sub>
+
+<sub>Built for [Colosseum Frontier](https://www.colosseum.org/frontier), May 2026. ChainTrust is a research preview — not a registered investment advisor.</sub>
+
+</div>
