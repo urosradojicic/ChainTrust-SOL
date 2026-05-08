@@ -78,7 +78,8 @@ This is what production looks like, not what a hackathon usually looks like.
 | 🥉 | **[03-demo-video.md](03-demo-video.md)** | 3 min | Recording script with **screenshots of every scene embedded** |
 | 4️⃣ | **[04-security-summary.md](04-security-summary.md)** | 2 min | One-page security distillation |
 | 5️⃣ | **[05-pitch.md](05-pitch.md)** | 1 min | Founder pitch |
-| 🎤 | **[pitch-2min.md](pitch-2min.md)** | 5 min | **Full 2-minute live-pitch playbook** — verbatim script, 3 hook variants, screen direction, delivery notes, practice plan |
+| 🎤 | **[pitch-2min.md](pitch-2min.md)** | 5 min | **Full 2-minute live-pitch playbook** (markdown) — verbatim script, 3 hook variants, screen direction, delivery notes, practice plan |
+| 📄 | **[pitch-deck.pdf](pitch-deck.pdf)** · **[pitch-deck.html](pitch-deck.html)** | print | **Same playbook, beautifully laid out for print** — cover page, TOC, 14 sections including Q&A prep, backup script for devnet stalls, brand voice sheet, tear-out cheat card, practice scorecard. Regenerate via `node scripts/generate-pitch-pdf.mjs`. |
 | 📊 | **[metrics.md](metrics.md)** | 1 min | Project health snapshot — every number that signals maturity |
 
 Need to dig in? Jump straight to:
