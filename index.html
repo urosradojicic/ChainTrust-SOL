@@ -16,6 +16,19 @@
     -->
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
+    <!--
+      Favicon set — masters live in /brand, raster derivatives are produced by
+      scripts/generate-favicons.mjs. Order is intentional: modern browsers pick
+      the SVG; legacy clients fall through the PNG list. Apple devices ignore
+      the manifest entirely, so apple-touch-icon is declared explicitly.
+    -->
+    <link rel="icon" type="image/svg+xml" href="/logomark.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0B1437" />
+
     <!-- Preconnect to font CDNs so the first paint isn't blocked on DNS+TLS RTT -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
