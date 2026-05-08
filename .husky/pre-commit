@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+# ChainTrust pre-commit hook.
+#
+# Runs three quick checks on staged files. Fast (≈ 2-5s on a typical
+# small change), fails closed, never silently passes.
+#
+# Skip in emergencies with: git commit --no-verify
+# (Don't make a habit of it. The whole point is to catch the slip-up.)
+
+set -e
+
+# 1) Secret scan on staged content. Catches AWS keys, private keys,
+#    API tokens, generic secret-looking lines. Free, no new binaries.
+node scripts/secret-scan.mjs
+
+# 2) Lint + format only the staged source files.
+#    lint-staged reads `lint-staged` config from package.json.
+npx --no-install lint-staged
+
+# 3) Typecheck. Fast (~3s incremental). Catches the most common
+#    "I forgot to handle a return type" mistake before it lands.
+npm run typecheck --silent
