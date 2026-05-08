@@ -4,7 +4,7 @@
 
 ## Reporting a vulnerability
 
-**Please email `security@codekillers.ai`.** Do not open a public issue.
+**Please email `urke5432@gmail.com`.** Do not open a public issue.
 
 Include:
 

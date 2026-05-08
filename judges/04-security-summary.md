@@ -72,6 +72,6 @@ We say this so reviewers don't think we missed it.
 
 ## Reporting a vulnerability
 
-Email `security@codekillers.ai`. We aim to respond within 48 hours.
+Email `urke5432@gmail.com`. We aim to respond within 48 hours.
 
 — *Built for Colosseum Frontier · May 11, 2026.*
