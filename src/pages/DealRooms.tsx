@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { useDealRooms, type DealRoom } from '@/hooks/use-deal-rooms';
 import { useStartups } from '@/hooks/use-startups';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 
 const STATUS_STYLE: Record<DealRoom['status'], string> = {
   active: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',

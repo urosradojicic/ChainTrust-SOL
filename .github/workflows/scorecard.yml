@@ -1,0 +1,54 @@
+name: OSSF Scorecard
+
+# Scores the repo across 18 supply-chain hygiene criteria — branch
+# protection, code review policy, dependency-update tooling, etc.
+# Publishes results to the Security tab. The badge in README links here.
+#
+# Reference: https://github.com/ossf/scorecard
+
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: '32 5 * * 6'  # Saturday early UTC
+  push:
+    branches: [master]
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Run Scorecard
+        uses: ossf/scorecard-action@v2.4.0
+        with:
+          results_file: scorecard-results.sarif
+          results_format: sarif
+          publish_results: true   # publishes to https://api.scorecard.dev
+
+      - name: Upload Scorecard SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: scorecard-results.sarif
+          category: ossf-scorecard
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: scorecard-results
+          path: scorecard-results.sarif
+          retention-days: 30

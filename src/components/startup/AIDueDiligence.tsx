@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, Shield, AlertTriangle, TrendingUp, ChevronDown, ChevronUp, CheckCircle, XCircle, Info, Zap, type LucideIcon } from 'lucide-react';
-import { generateDueDiligenceReport, type DueDiligenceReport, type RiskLevel, type SignalType } from '@/lib/ai-due-diligence';
+import { generateDueDiligenceReport, type DueDiligenceReport, type RiskLevel, type SignalType } from '@/lib/intelligence/ai-due-diligence';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
 
 const riskColors: Record<RiskLevel, string> = {

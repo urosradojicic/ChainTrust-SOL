@@ -18,9 +18,9 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react';
-import { SMART_WALLETS, lookupSmartWallet, type SmartWallet } from '@/lib/smart-wallets';
-import { getRecentCounterparties, isHeliusConfigured } from '@/lib/helius';
-import { safeHref } from '@/lib/sanitize';
+import { SMART_WALLETS, lookupSmartWallet, type SmartWallet } from '@/lib/solana/smart-wallets';
+import { getRecentCounterparties, isHeliusConfigured } from '@/lib/solana/helius';
+import { safeHref } from '@/lib/security/sanitize';
 
 interface SmartMoneyPanelProps {
   walletAddress: string | null | undefined;

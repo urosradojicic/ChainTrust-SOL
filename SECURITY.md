@@ -4,7 +4,7 @@ This document is the canonical reference for ChainTrust's security posture: what
 
 ## Reporting a vulnerability
 
-Please email **security@codekillers.ai** rather than opening a public issue. Include reproduction steps, impact assessment, and any suggested fix. We aim to respond within 48 hours.
+Please email **urke5432@gmail.com** rather than opening a public issue. Include reproduction steps, impact assessment, and any suggested fix. We aim to respond within 48 hours.
 
 ## Audit history
 

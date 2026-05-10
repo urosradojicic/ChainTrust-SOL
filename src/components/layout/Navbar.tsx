@@ -13,7 +13,7 @@ import {
 import SearchModal from '@/components/SearchModal';
 import ChainStatus from '@/components/common/ChainStatus';
 import { useInstitutionalView } from '@/contexts/InstitutionalViewContext';
-import { canAccess } from '@/lib/role-access';
+import { canAccess } from '@/lib/format/role-access';
 
 /* ── Header links — role-aware essentials ── */
 interface HeaderLink { path: string; label: string; live?: boolean; roles: ('investor' | 'startup' | 'admin' | null)[] }

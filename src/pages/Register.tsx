@@ -10,14 +10,14 @@ import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import {
   CheckCircle2, ChevronLeft, ChevronRight, Loader2, ExternalLink, AlertTriangle,
 } from 'lucide-react';
-import { explorerTxUrl } from '@/lib/solana-config';
-import { sanitizeText, sanitizeUrl, sanitizeNumber, rateLimit } from '@/lib/sanitize';
-import { getErrorMessage } from '@/lib/errors';
-import { logDataError } from '@/lib/error-handler';
+import { explorerTxUrl } from '@/lib/solana/solana-config';
+import { sanitizeText, sanitizeUrl, sanitizeNumber, rateLimit } from '@/lib/security/sanitize';
+import { getErrorMessage } from '@/lib/security/errors';
+import { logDataError } from '@/lib/security/error-handler';
 import { Progress } from '@/components/ui/progress';
 import Toggle from '@/components/form/Toggle';
 import DistSlider from '@/components/form/DistSlider';
-import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
+import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/format/constants';
 
 const STEPS = ['Basic Info', 'Metrics', 'Sustainability', 'Tokenomics', 'Pledges', 'Review'];
 

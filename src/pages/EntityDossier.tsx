@@ -32,10 +32,10 @@ import {
 } from 'lucide-react';
 import { useStartup, useMetricsHistory, useAuditLog, useFundingRounds } from '@/hooks/use-startups';
 import { useDocumentTitle } from '@/hooks/use-document-title';
-import { buildEntityDossier, type EntityTag, type TimelineEvent } from '@/lib/entity-aggregator';
-import { formatCurrency, formatNumber } from '@/lib/format';
-import { chartTooltipStyle } from '@/lib/constants';
-import { explorerTxUrl } from '@/lib/solana-config';
+import { buildEntityDossier, type EntityTag, type TimelineEvent } from '@/lib/intelligence/entity-aggregator';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
+import { chartTooltipStyle } from '@/lib/format/constants';
+import { explorerTxUrl } from '@/lib/solana/solana-config';
 import SmartMoneyPanel from '@/components/startup/SmartMoneyPanel';
 import SquadsMultisigBadge from '@/components/startup/SquadsMultisigBadge';
 import ErrorBoundary from '@/components/ErrorBoundary';

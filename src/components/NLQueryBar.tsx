@@ -9,9 +9,9 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Sparkles, ArrowRight, X, MessageSquare, Filter, SortDesc, Hash } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { formatCurrency, formatNumber } from '@/lib/format';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
 import type { DbStartup } from '@/types/database';
-import { executeQuery, EXAMPLE_QUERIES, type QueryResult } from '@/lib/nl-query';
+import { executeQuery, EXAMPLE_QUERIES, type QueryResult } from '@/lib/intelligence/nl-query';
 
 // ── Result Display ───────────────────────────────────────────────────
 

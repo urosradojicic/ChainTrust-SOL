@@ -10,7 +10,7 @@
 2. **Browser**: Chrome at **1920×1080** (judges watch on laptops; this is the safe default). Close every other tab. Hide bookmarks bar (`Ctrl+Shift+B`). Maximize the window.
 3. **Wallet**: Phantom on Devnet, **pre-funded with 1 SOL** (so the airdrop step in shot 1 only takes ~3 seconds, not 15).
 4. **Server**: `npm run dev` running. Visit `http://localhost:8080/` once before recording so Vite has compiled everything (subsequent navigation is instant).
-5. **Demo accounts**: already wired into the [`/login`](src/pages/Login.tsx) page as one-click "Explore as ___" buttons. No typing needed.
+5. **Demo accounts**: already wired into the [`/login`](../src/pages/Login.tsx) page as one-click "Explore as ___" buttons. No typing needed.
 6. **Practice run**: do one full take to discard, then record the keeper. Cumulative time should be under 4 minutes.
 
 ---
@@ -27,7 +27,7 @@
 
 **Why this first**: 80% of "is this vaporware?" gets answered in 30 seconds. Everything after is colour.
 
-![Scene 1 — testnet demo](docs/demo/scene-01-testnet.png)
+![Scene 1 — testnet demo](screenshots/scene-01-testnet.png)
 
 ---
 
@@ -38,7 +38,7 @@
 
 > "Investors waste $30B a year on startups that lied in the pitch deck. ChainTrust makes lying impossible — every metric is hashed, anchored on Solana, and verified by independent oracles."
 
-![Scene 2 — landing](docs/demo/scene-02-landing.png)
+![Scene 2 — landing](screenshots/scene-02-landing.png)
 
 ---
 
@@ -48,19 +48,19 @@
 
 > "As an investor, I sign in. *[click Explore as Investor]*"
 
-![Scene 3a — login](docs/demo/scene-03a-login.png)
+![Scene 3a — login](screenshots/scene-03a-login.png)
 
 **Action**: land on `/dashboard`. Pause 2s on the demo data banner so judges see we're transparent.
 
 > "I see a dashboard of 42 verified startups, $15.9M total MRR across the platform, real on-chain slot status."
 
-![Scene 3b — dashboard](docs/demo/scene-03b-dashboard.png)
+![Scene 3b — dashboard](screenshots/scene-03b-dashboard.png)
 
 **URL**: `http://localhost:8080/screener`
 
 > "The screener filters by trust score, sustainability, whale concentration, vertical. Bloomberg-terminal-for-Solana-startups."
 
-![Scene 3c — screener](docs/demo/scene-03c-screener.png)
+![Scene 3c — screener](screenshots/scene-03c-screener.png)
 
 **Action**: click any verified startup row (Tideland RWA is a good one — visible RWA category).
 
@@ -68,7 +68,7 @@
 > Fourteen tabs of due diligence: AI risk analysis, quant models, ZK proofs, cap table, escrow.
 > Every metric you see is hashed on-chain. The sustainability gauge isn't self-reported — it's oracle-verified."
 
-![Scene 3d — startup detail](docs/demo/scene-03d-startup-detail.png)
+![Scene 3d — startup detail](screenshots/scene-03d-startup-detail.png)
 
 ---
 
@@ -80,7 +80,7 @@
 
 > "As a founder, I register my startup in six guided steps. Auto-saves every 600ms, so I can leave and come back. The final step submits to Solana through my connected wallet — one signature, anchored forever."
 
-![Scene 4 — register](docs/demo/scene-04-register.png)
+![Scene 4 — register](screenshots/scene-04-register.png)
 
 ---
 
@@ -92,21 +92,21 @@
 
 > "And ChainTrust itself is governed on-chain. Token-weighted voting on every protocol change — verification fees, new categories, treasury allocations. Three live proposals here, vote tallies in real time."
 
-![Scene 5 — governance](docs/demo/scene-05-governance.png)
+![Scene 5 — governance](screenshots/scene-05-governance.png)
 
 **Quick pan**: navigate to `/staking`. 5 seconds.
 
 > "Plus CMT staking — Free, Basic, Pro, Whale tiers — that gates premium analytics."
 
-![Scene 7 — staking](docs/demo/scene-07-staking.png)
+![Scene 7 — staking](screenshots/scene-07-staking.png)
 
 ---
 
 ### SHOT 6 — Why this team (2:30 – 2:55) — *25s*
 
-**Action**: switch to a tab open on `https://github.com/urosradojicic/ChainTrust-SOL`. Click **JUDGES.md** — scroll briefly. Click **SECURITY.md** — point at "8 → 0 critical npm vulns".
+**Action**: switch to a tab open on `https://github.com/urosradojicic/ChainTrust-SOL`. Open the **`judges/`** folder. Click into **`01-why-we-win.md`**. Then click **`/SECURITY.md`** — point at "0 critical npm vulns".
 
-> "This isn't hackathon vapor. We just shipped a deep security audit — closed every critical finding, wrote 74 regression tests, locked CI to a committed lockfile. Three independent smart contract audits before that. The repo's JUDGES dot M D walks you through in 3 minutes. Submitting to Colosseum Frontier."
+> "This isn't hackathon vapor. We just shipped a deep security audit — closed every critical finding, wrote 74 regression tests, locked CI to a committed lockfile. Three independent smart contract audits before that. The repo's `judges` folder walks you through everything in 3 minutes. Submitting to Colosseum Frontier."
 
 ---
 
@@ -157,7 +157,7 @@ The current 3:00 script gives all three roles ~25-50 seconds each — proven eno
 | 4 | `http://localhost:8080/login` → **Explore as Startup** → `http://localhost:8080/register` |
 | 5 | `http://localhost:8080/login` → **Explore as Admin** → `http://localhost:8080/governance` |
 | 5 | `http://localhost:8080/staking` |
-| 6 | `https://github.com/urosradojicic/ChainTrust-SOL` (browse [JUDGES.md](JUDGES.md), [SECURITY.md](SECURITY.md)) |
+| 6 | `https://github.com/urosradojicic/ChainTrust-SOL` (browse [02-three-minute-tour.md](02-three-minute-tour.md), [../SECURITY.md](../SECURITY.md)) |
 
 ### What a take looks like
 
@@ -170,7 +170,7 @@ You're hitting these milestones at these timestamps. If you blow past one, abort
 | 1:35 | Tideland RWA detail page |
 | 2:05 | Register-Startup wizard step 1 |
 | 2:30 | Governance page with proposal tallies |
-| 2:55 | GitHub repo, on JUDGES.md or SECURITY.md |
+| 2:55 | GitHub repo, on 02-three-minute-tour.md or ../SECURITY.md |
 
 ---
 

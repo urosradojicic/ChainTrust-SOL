@@ -5,8 +5,8 @@
  */
 
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { formatCurrency, formatNumber } from '@/lib/format';
-import { generateDueDiligenceReport } from '@/lib/ai-due-diligence';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
+import { generateDueDiligenceReport } from '@/lib/intelligence/ai-due-diligence';
 
 /** Escape HTML entities to prevent XSS in generated reports */
 function escHtml(str: string): string {

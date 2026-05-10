@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getErrorMessage } from '@/lib/errors';
-import { TIERS } from '@/lib/mock-data';
+import { getErrorMessage } from '@/lib/security/errors';
+import { TIERS } from '@/lib/mock/mock-data';
 import { useStake, useUnstake, useInvestorAccount, useClaimRewards } from '@/hooks/use-blockchain';
 import { useWallet } from '@/contexts/WalletContext';
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
-import { formatCMT } from '@/lib/format';
-import { explorerTxUrl } from '@/lib/solana-config';
+import { formatCMT } from '@/lib/format/format';
+import { explorerTxUrl } from '@/lib/solana/solana-config';
 import { toast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import StreamingRewardsDisplay from '@/components/startup/StreamingRewardsDisplay';

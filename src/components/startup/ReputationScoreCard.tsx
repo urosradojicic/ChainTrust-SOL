@@ -13,7 +13,7 @@ import {
   ShieldCheck, DollarSign, FileText, Coins, Vote, Leaf, Sparkles, ArrowUpRight,
 } from 'lucide-react';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { computeReputationScore, type ReputationScore, type ScoreComponent, type Improvement } from '@/lib/reputation-score';
+import { computeReputationScore, type ReputationScore, type ScoreComponent, type Improvement } from '@/lib/intelligence/reputation-score';
 
 // ── Config ───────────────────────────────────────────────────────────
 

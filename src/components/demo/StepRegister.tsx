@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { FileText } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { PROGRAM_ID } from '@/lib/contracts';
+import { PROGRAM_ID } from '@/lib/solana/contracts';
 import SimulatedTerminal from './SimulatedTerminal';
 
 const MOCK_STARTUP = {

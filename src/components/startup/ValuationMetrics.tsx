@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { TrendingUp, DollarSign, Activity, Target } from 'lucide-react';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 
 interface ValuationMetricsProps {
   startup: DbStartup;

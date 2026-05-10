@@ -1,0 +1,50 @@
+# Dependabot — automatic dependency PRs.
+# Conservative cadence: weekly grouped updates, security alerts always immediate.
+
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "needs-review"
+    # Group routine bumps to keep the PR queue tidy. Security advisories
+    # always open standalone PRs (Dependabot handles this automatically).
+    groups:
+      radix-ui:
+        patterns: ["@radix-ui/*"]
+      solana-core:
+        patterns: ["@solana/*", "@coral-xyz/*"]
+      metaplex:
+        patterns: ["@metaplex-foundation/*"]
+      tanstack:
+        patterns: ["@tanstack/*"]
+      dev-tooling:
+        dependency-type: "development"
+    # Ignore the wallet-adapter-wallets meta-package — banned in Phase 6/M6
+    # of the May 2026 audit. See ADR-0006 and SECURITY.md.
+    ignore:
+      - dependency-name: "@solana/wallet-adapter-wallets"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(ci)"
+    labels:
+      - "ci"
+      - "needs-review"

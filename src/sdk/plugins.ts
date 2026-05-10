@@ -9,7 +9,7 @@
  */
 
 import { EventBus, type ChainTrustEvent, type ChainTrustEventMap } from './event-bus';
-import { getErrorMessage } from '@/lib/errors';
+import { getErrorMessage } from '@/lib/security/errors';
 
 // ── Types ────────────────────────────────────────────────────────────
 

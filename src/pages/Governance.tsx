@@ -1,13 +1,13 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PROPOSALS, STARTUPS } from '@/lib/mock-data';
-import { formatAddress, formatNumber } from '@/lib/format';
+import { PROPOSALS, STARTUPS } from '@/lib/mock/mock-data';
+import { formatAddress, formatNumber } from '@/lib/format/format';
 import Badge from '@/components/common/Badge';
 import { Leaf, Plus, X, Shield, CheckCircle2, Loader2 } from 'lucide-react';
 import { useCreateProposal as useCreateProposalOnChain, useCastVote as useCastVoteOnChain, useDelegateVotes, useExecuteProposal as useExecuteOnChain } from '@/hooks/use-blockchain';
 import { PublicKey } from '@solana/web3.js';
-import { sanitizeText, isValidSolanaAddress, rateLimit } from '@/lib/sanitize';
-import { getErrorMessage } from '@/lib/errors';
+import { sanitizeText, isValidSolanaAddress, rateLimit } from '@/lib/security/sanitize';
+import { getErrorMessage } from '@/lib/security/errors';
 import { Progress } from '@/components/ui/progress';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose,

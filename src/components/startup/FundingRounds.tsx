@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 import { useFundingRounds } from '@/hooks/use-startups';
 import type { DbFundingRound } from '@/types/database';
 

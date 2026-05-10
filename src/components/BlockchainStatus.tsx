@@ -1,7 +1,7 @@
 import { useConnection } from '@solana/wallet-adapter-react';
 import { useEffect, useState } from 'react';
-import { getRegistryPDA, getVaultPDA, getDaoPDA, PROGRAM_ID } from '@/lib/contracts';
-import { SOLANA_NETWORK } from '@/lib/solana-config';
+import { getRegistryPDA, getVaultPDA, getDaoPDA, PROGRAM_ID } from '@/lib/solana/contracts';
+import { SOLANA_NETWORK } from '@/lib/solana/solana-config';
 import { AlertTriangle, Wifi, WifiOff } from 'lucide-react';
 
 export default function BlockchainStatus() {

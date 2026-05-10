@@ -40,6 +40,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      - name: Secret scan (regex pre-flight, see scripts/secret-scan.mjs)
+        run: node scripts/secret-scan.mjs --all
+
       - name: Lint
         run: npm run lint
         continue-on-error: true # surfacing 116 known issues to fix in M3
@@ -52,6 +55,21 @@ jobs:
 
       - name: Build (production)
         run: npm run build
+
+      - name: Generate SBOM (CycloneDX)
+        run: |
+          node scripts/generate-sbom.mjs
+          echo "### SBOM" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          jq '{components: (.components | length), generated: .metadata.timestamp}' sbom.cyclonedx.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx-${{ github.sha }}
+          path: sbom.cyclonedx.json
+          retention-days: 90
 
       - name: Report bundle sizes
         run: |

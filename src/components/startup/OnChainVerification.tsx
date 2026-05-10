@@ -17,7 +17,7 @@ import { useSolPrice } from '@/hooks/use-pyth-price';
 import { useVerifyPaymentVolume } from '@/hooks/use-payment-verification';
 import { useMintCertificate, type MintedCertificate } from '@/hooks/use-cnft-certificate';
 import { useWalletIntelligence, useVolumeFilter } from '@/hooks/use-wallet-intelligence';
-import { SOLANA_NETWORK, explorerAddressUrl } from '@/lib/solana-config';
+import { SOLANA_NETWORK, explorerAddressUrl } from '@/lib/solana/solana-config';
 import { toast } from '@/hooks/use-toast';
 
 interface Props {

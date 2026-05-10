@@ -7,9 +7,9 @@ import {
   AreaChart, Area, LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts';
-import { formatCurrency, formatNumber } from '@/lib/format';
-import { chartTooltipStyle, categoryColors } from '@/lib/constants';
-import { safeHref } from '@/lib/sanitize';
+import { formatCurrency, formatNumber } from '@/lib/format/format';
+import { chartTooltipStyle, categoryColors } from '@/lib/format/constants';
+import { safeHref } from '@/lib/security/sanitize';
 import Badge from '@/components/common/Badge';
 import DataProvenance from '@/components/common/DataProvenance';
 import SustainabilityScore from '@/components/SustainabilityScore';
@@ -48,8 +48,8 @@ import CapTableView from '@/components/startup/CapTableView';
 import PredictionMarkets from '@/components/startup/PredictionMarkets';
 import ZKProofPanel from '@/components/startup/ZKProofPanel';
 import InvestmentMemoPanel from '@/components/startup/InvestmentMemoPanel';
-import { exportElementAsPDF } from '@/lib/export-pdf';
-import { exportLPReport } from '@/lib/lp-report';
+import { exportElementAsPDF } from '@/lib/format/export-pdf';
+import { exportLPReport } from '@/lib/intelligence/lp-report';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar, Clock,
   Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Loader2, Download, FileText, Brain, BarChart3,

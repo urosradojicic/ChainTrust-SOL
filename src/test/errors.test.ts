@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getErrorMessage, getErrorCode, isNetworkError } from '@/lib/errors';
+import { getErrorMessage, getErrorCode, isNetworkError } from '@/lib/security/errors';
 
 describe('getErrorMessage', () => {
   it('returns the message of an Error instance', () => {

@@ -7,7 +7,7 @@
 import { motion } from 'framer-motion';
 import { ExternalLink, Users } from 'lucide-react';
 import type { DbStartup } from '@/types/database';
-import { safeHref, sanitizeTwitterHandle } from '@/lib/sanitize';
+import { safeHref, sanitizeTwitterHandle } from '@/lib/security/sanitize';
 
 interface Props {
   startup: DbStartup;

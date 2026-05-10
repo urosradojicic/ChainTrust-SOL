@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
+import { fetchWithTimeout } from '@/lib/security/fetch-with-timeout';
 import {
   Brain,
   AlertTriangle,
@@ -15,13 +15,13 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import type { DbStartup } from '@/types/database';
-import { generateRiskAnalysis } from '@/lib/risk-analysis';
+import { generateRiskAnalysis } from '@/lib/intelligence/risk-analysis';
 import {
   computeRiskSeverity,
   riskPercentile,
   type CategorySeverity,
   type SeverityLabel,
-} from '@/lib/risk-severity';
+} from '@/lib/intelligence/risk-severity';
 import { useStartups } from '@/hooks/use-startups';
 
 /**

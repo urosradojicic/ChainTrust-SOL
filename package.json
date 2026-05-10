@@ -1,6 +1,7 @@
 {
   "name": "chaintrust",
   "private": true,
+  "license": "UNLICENSED",
   "version": "1.0.0",
   "description": "On-chain startup verification platform built on Solana.",
   "type": "module",
@@ -12,7 +13,17 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "secret-scan": "node scripts/secret-scan.mjs",
+    "sbom": "node scripts/generate-sbom.mjs",
+    "verify": "npm run typecheck && npm run lint && npm run test -- --run && npm run secret-scan",
+    "prepare": "husky || true"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,mjs,cjs,jsx}": [
+      "eslint --max-warnings=999"
+    ],
+    "*.{md,json,yml,yaml,html,css}": []
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
@@ -102,7 +113,9 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
+    "husky": "^9.1.7",
     "jsdom": "^20.0.3",
+    "lint-staged": "^15.5.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",

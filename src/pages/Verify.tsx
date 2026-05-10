@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { getErrorMessage } from '@/lib/errors';
+import { getErrorMessage } from '@/lib/security/errors';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -11,9 +11,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { getStartupPDA, getMetricsPDA, getBadgePDA, PROGRAM_ID } from '@/lib/contracts';
+import { getStartupPDA, getMetricsPDA, getBadgePDA, PROGRAM_ID } from '@/lib/solana/contracts';
 import { computeProofHash } from '@/hooks/use-blockchain';
-import { SOLANA_NETWORK } from '@/lib/solana-config';
+import { SOLANA_NETWORK } from '@/lib/solana/solana-config';
 import ChainStatus from '@/components/common/ChainStatus';
 
 interface OnChainStartup {

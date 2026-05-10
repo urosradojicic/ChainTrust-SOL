@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>ChainTrust — The 2-Minute Pitch Playbook</title>
+<style>
+  /* ── Brand tokens ────────────────────────────────────────────── */
+  :root {
+    --ink:      #0B1437;
+    --ink-2:    #1A2050;
+    --muted:    #4A5478;
+    --line:     #DDE3F0;
+    --bg:       #FFFFFF;
+    --soft:     #F4F6FB;
+    --solana:   #9945FF;
+    --solana-2: #7B61FF;
+    --mint:     #14F195;
+    --warn:     #E94560;
+    --gold:     #F59E0B;
+
+    --font-sans: -apple-system, "Segoe UI", Inter, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Consolas, monospace;
+    --font-display: -apple-system, "Segoe UI", Inter, system-ui, sans-serif;
+  }
+
+  /* ── Print sizing & screen frame ─────────────────────────────── */
+  @page {
+    size: A4;
+    margin: 18mm 16mm 16mm 16mm;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { background: var(--soft); color: var(--ink); font-family: var(--font-sans); }
+
+  body {
+    margin: 0;
+    font-size: 11pt;
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* On-screen: simulate a stack of A4 pages, each on its own card */
+  @media screen {
+    body { padding: 24px 0; }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 24px;
+      padding: 18mm 16mm;
+      background: var(--bg);
+      box-shadow: 0 1px 2px rgba(11,20,55,0.04), 0 8px 24px rgba(11,20,55,0.06);
+      border-radius: 4px;
+    }
+    .toolbar {
+      max-width: 210mm;
+      margin: 0 auto 16px;
+      padding: 12px 16mm;
+      font-size: 10pt;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .toolbar a { color: var(--solana); text-decoration: none; }
+    .toolbar a:hover { text-decoration: underline; }
+  }
+
+  @media print {
+    body { background: var(--bg); padding: 0; }
+    .page { padding: 0; box-shadow: none; margin: 0; }
+    .toolbar { display: none; }
+    .page-break { page-break-before: always; break-before: page; }
+    h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+    table, .callout, .script-block { page-break-inside: avoid; break-inside: avoid; }
+  }
+
+  /* ── Type scale ──────────────────────────────────────────────── */
+  h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); margin: 0 0 0.5em; }
+  h1 { font-size: 32pt; line-height: 1.05; letter-spacing: -1.0px; font-weight: 800; }
+  h2 { font-size: 18pt; line-height: 1.15; letter-spacing: -0.4px; font-weight: 700; margin-top: 1.4em; }
+  h3 { font-size: 13pt; line-height: 1.3; font-weight: 700; margin-top: 1.2em; color: var(--ink-2); }
+  h4 { font-size: 11pt; line-height: 1.3; font-weight: 700; margin-top: 1em; }
+  p { margin: 0 0 0.7em; }
+
+  /* Header rule under h2 */
+  h2 { padding-bottom: 6px; border-bottom: 2px solid var(--ink); display: inline-block; padding-right: 14px; }
+
+  /* ── Cover page ──────────────────────────────────────────────── */
+  .cover {
+    background: linear-gradient(135deg, #0B1437 0%, #11193F 50%, #1A1140 100%);
+    color: #ffffff;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .cover::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 85% 50%, rgba(123,97,255,0.35) 0%, transparent 50%),
+      linear-gradient(transparent 39px, rgba(58,65,133,0.18) 40px),
+      linear-gradient(90deg, transparent 39px, rgba(58,65,133,0.18) 40px);
+    background-size: cover, 40px 40px, 40px 40px;
+    pointer-events: none;
+  }
+  .cover-inner { padding: 38mm 18mm; position: relative; z-index: 1; flex: 1; }
+  .cover-title {
+    font-size: 56pt; font-weight: 800; line-height: 1.0; letter-spacing: -2px;
+    color: #ffffff; margin: 0 0 0.18em;
+  }
+  .cover-tag {
+    font-size: 16pt; line-height: 1.3; color: #cdd6ff; font-weight: 500;
+    margin: 0 0 0.5em; max-width: 140mm;
+  }
+  .cover-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 9pt; letter-spacing: 2.5px; font-weight: 600;
+    color: var(--solana-2); margin: 0 0 14px;
+  }
+  .cover-kpis {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8mm;
+    margin-top: 30mm;
+    padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.18);
+  }
+  .cover-kpis .kpi-num { font-size: 22pt; font-weight: 800; color: var(--mint); }
+  .cover-kpis .kpi-label { font-family: var(--font-mono); font-size: 8pt; color: #8896c2; letter-spacing: 1.2px; margin-top: 2px; }
+  .cover-meta {
+    background: rgba(255,255,255,0.04);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding: 14px 18mm;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 9pt; color: #8896c2; letter-spacing: 0.8px;
+    position: relative; z-index: 1;
+  }
+
+  /* ── Tables ──────────────────────────────────────────────────── */
+  table { width: 100%; border-collapse: collapse; margin: 0.6em 0 1.2em; font-size: 10.5pt; }
+  th, td { padding: 8px 10px; text-align: left; vertical-align: top; }
+  thead th { background: var(--ink); color: #fff; font-weight: 600; font-size: 9.5pt; letter-spacing: 0.3px; }
+  tbody tr { border-bottom: 1px solid var(--line); }
+  tbody tr:nth-child(even) { background: var(--soft); }
+
+  /* ── Callouts ────────────────────────────────────────────────── */
+  .callout {
+    border-left: 4px solid var(--solana);
+    background: var(--soft);
+    padding: 12px 14px;
+    margin: 1em 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout.gold { border-left-color: var(--gold); }
+  .callout.mint { border-left-color: #1AB089; }
+  .callout-label {
+    font-family: var(--font-mono); font-size: 8pt; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+  }
+
+  /* ── Script block (the verbatim pitch lines) ─────────────────── */
+  .script-block {
+    background: #0B1437;
+    color: #E5EAFF;
+    padding: 14px 16px;
+    border-radius: 6px;
+    margin: 0.6em 0 1em;
+    font-size: 11.5pt; line-height: 1.55;
+    border-left: 4px solid var(--mint);
+  }
+  .script-block .stage {
+    font-family: var(--font-mono); font-size: 8.5pt;
+    color: #8896c2; letter-spacing: 0.6px; margin-bottom: 6px;
+  }
+  .script-block strong { color: var(--mint); font-weight: 700; }
+  .script-block em { color: #cdd6ff; font-style: normal; opacity: 0.8; }
+
+  /* ── Beat header (timeline marker) ───────────────────────────── */
+  .beat {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 1.5em;
+  }
+  .beat .timecode {
+    background: var(--ink); color: #fff;
+    font-family: var(--font-mono); font-size: 10pt; font-weight: 700;
+    padding: 4px 10px; border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .beat .beat-title { font-size: 14pt; font-weight: 700; color: var(--ink); }
+  .beat .beat-dur { color: var(--muted); font-size: 9.5pt; font-family: var(--font-mono); }
+
+  /* ── Lists ───────────────────────────────────────────────────── */
+  ul, ol { padding-left: 1.4em; margin: 0.4em 0 1em; }
+  li { margin-bottom: 0.3em; }
+
+  /* ── Code/inline ─────────────────────────────────────────────── */
+  code {
+    font-family: var(--font-mono); font-size: 0.95em;
+    background: var(--soft); padding: 1px 5px; border-radius: 3px;
+    color: var(--ink);
+  }
+
+  /* ── TOC ─────────────────────────────────────────────────────── */
+  .toc { font-size: 11pt; }
+  .toc table { font-size: 11pt; }
+  .toc tbody tr:nth-child(even) { background: transparent; }
+  .toc tbody tr { border-bottom: 1px dotted var(--line); }
+  .toc td { padding: 6px 0; }
+  .toc .num { font-family: var(--font-mono); color: var(--muted); width: 32px; }
+  .toc .pg  { text-align: right; color: var(--muted); font-family: var(--font-mono); width: 50px; }
+
+  /* ── Cheat card (high-impact) ────────────────────────────────── */
+  .cheat-card {
+    background: linear-gradient(180deg, #ffffff 0%, var(--soft) 100%);
+    border: 2px solid var(--ink);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin: 0.5em 0 1em;
+  }
+  .cheat-row {
+    display: grid; grid-template-columns: 60px 1fr; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .cheat-row:last-child { border-bottom: none; }
+  .cheat-row .tc {
+    font-family: var(--font-mono); font-weight: 700;
+    background: var(--ink); color: #fff;
+    text-align: center; padding: 3px 0; border-radius: 4px;
+    font-size: 9pt;
+  }
+  .cheat-row .ln { font-size: 12pt; line-height: 1.45; }
+  .cheat-row .ln .key { font-weight: 700; color: var(--ink); }
+  .cheat-row .ln .stage { display: block; font-size: 9pt; color: var(--muted); margin-top: 3px; font-family: var(--font-mono); }
+
+  /* ── Brand color swatches ────────────────────────────────────── */
+  .swatch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0.6em 0 1em; }
+  .swatch { padding: 14px; border-radius: 6px; color: #fff; font-family: var(--font-mono); font-size: 9.5pt; }
+  .swatch .name { font-weight: 700; font-size: 11pt; margin-bottom: 4px; }
+  .swatch .hex { letter-spacing: 0.8px; }
+
+  /* ── 2-column rules ──────────────────────────────────────────── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media print { .two-col { gap: 12px; } }
+
+  /* ── Quote ───────────────────────────────────────────────────── */
+  blockquote {
+    margin: 1em 0;
+    padding: 0 16px;
+    border-left: 4px solid var(--solana);
+    color: var(--ink-2);
+    font-size: 12.5pt; line-height: 1.45;
+    font-style: italic;
+  }
+
+  /* ── Page footer ─────────────────────────────────────────────── */
+  .page-footer {
+    margin-top: 24px; padding-top: 10px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between;
+    color: var(--muted); font-family: var(--font-mono); font-size: 8.5pt;
+    letter-spacing: 0.8px;
+  }
+
+  /* ── Misc ────────────────────────────────────────────────────── */
+  .pill {
+    display: inline-block;
+    background: var(--ink); color: #fff;
+    padding: 2px 8px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 8.5pt; letter-spacing: 0.5px;
+    margin-right: 6px;
+  }
+  .pill.mint    { background: #0E8C5E; }
+  .pill.solana  { background: var(--solana); }
+  .pill.warn    { background: var(--warn); }
+  .pill.muted   { background: var(--muted); }
+
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 26px; position: relative; margin-bottom: 8px; }
+  .checklist li::before {
+    content: "☐";
+    position: absolute; left: 0; top: 0;
+    font-size: 14pt; color: var(--ink-2);
+  }
+
+  hr { border: none; border-top: 1px solid var(--line); margin: 1.4em 0; }
+
+  /* utility */
+  .mono   { font-family: var(--font-mono); }
+  .small  { font-size: 9.5pt; }
+  .muted  { color: var(--muted); }
+  .accent { color: var(--solana); }
+  .mint-c { color: #0E8C5E; }
+  .center { text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span>📄 ChainTrust — 2-Minute Pitch Playbook · 18 pages</span>
+  <span><a href="javascript:window.print()">🖨 Print or Save as PDF (Ctrl+P)</a></span>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 1 — COVER
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page cover">
+  <div class="cover-inner">
+    <div class="cover-eyebrow">PITCH PLAYBOOK · COLOSSEUM FRONTIER · MAY 11, 2026</div>
+    <h1 class="cover-title">The 2-minute<br/>pitch that wins.</h1>
+    <p class="cover-tag">A research-backed playbook for ChainTrust. Verbatim script, second-by-second timing, what to show on screen, how to deliver it, what to practise — and how to recover when it goes wrong.</p>
+    <div class="cover-kpis">
+      <div><div class="kpi-num">2:00</div><div class="kpi-label">TARGET LENGTH</div></div>
+      <div><div class="kpi-num">3</div><div class="kpi-label">HOOK VARIANTS</div></div>
+      <div><div class="kpi-num">7-DAY</div><div class="kpi-label">PRACTICE PLAN</div></div>
+      <div><div class="kpi-num">18</div><div class="kpi-label">PAGES</div></div>
+    </div>
+  </div>
+  <div class="cover-meta">
+    <span>Built for: Uros (CEO) · Sava · Stamen · Darko</span>
+    <span>github.com/urosradojicic/ChainTrust-SOL</span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 2 — TABLE OF CONTENTS
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>Contents</h2>
+  <div class="toc">
+    <table>
+      <tbody>
+        <tr><td class="num">01</td><td>Why this works — the research</td><td class="pg">3</td></tr>
+        <tr><td class="num">02</td><td>The 30-second hook — three variants</td><td class="pg">4</td></tr>
+        <tr><td class="num">03</td><td>The full 2-minute script (timestamped)</td><td class="pg">5–7</td></tr>
+        <tr><td class="num">04</td><td>Delivery — voice, body, pacing</td><td class="pg">8</td></tr>
+        <tr><td class="num">05</td><td>Screen direction — second-by-second</td><td class="pg">9</td></tr>
+        <tr><td class="num">06</td><td>Pre-recording checklist</td><td class="pg">10</td></tr>
+        <tr><td class="num">07</td><td>Common mistakes to avoid</td><td class="pg">11</td></tr>
+        <tr><td class="num">08</td><td>Backup script — when Devnet stalls</td><td class="pg">12</td></tr>
+        <tr><td class="num">09</td><td>Q&amp;A preparation — likely judge questions</td><td class="pg">13</td></tr>
+        <tr><td class="num">10</td><td>Team section — credential framework</td><td class="pg">14</td></tr>
+        <tr><td class="num">11</td><td>The 7-day practice plan</td><td class="pg">15</td></tr>
+        <tr><td class="num">12</td><td>Brand voice sheet — tone &amp; vocabulary</td><td class="pg">16</td></tr>
+        <tr><td class="num">13</td><td>One-page cheat card (tear out)</td><td class="pg">17</td></tr>
+        <tr><td class="num">14</td><td>Practice scorecard</td><td class="pg">18</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">HOW TO USE THIS DOCUMENT</div>
+    <p style="margin:4px 0 0">Read once end-to-end (~25 minutes). Then go to page 17 and tear out the cheat card — that's what you'll have next to your monitor while recording. The rest of the document is reference for everything that goes wrong.</p>
+  </div>
+
+  <div class="callout mint">
+    <div class="callout-label">THE ONE INSIGHT</div>
+    <p style="margin:4px 0 0">The single most important moment in your 2-minute pitch is the second of silence after the words <em>"could be a lie."</em> Most rookies fill that silence with another sentence and immediately weaken the hook. Confident delivery uses silence as punctuation. <strong>If you remember nothing else, remember the pause.</strong></p>
+  </div>
+
+  <div class="page-footer"><span>ChainTrust · Pitch Playbook</span><span>2</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 3 — RESEARCH
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>01 · Why this works</h2>
+
+  <p>Two things decide whether judges keep watching past second 5:</p>
+  <ol>
+    <li><strong>Pattern interrupt</strong> — say something they didn't expect. "We solve a problem" loses every time. <em>"$30 billion. Gone every year. To lies."</em> wins.</li>
+    <li><strong>Immediate proof</strong> — show, don't tell, before skepticism kicks in. Hackathon judges have seen 50 demos that were screenshots. A real signed Solana transaction in the first minute resets every expectation.</li>
+  </ol>
+
+  <p>This is what every winning pitch I studied has in common — Airbnb's seed deck, Stripe's "seven lines of code", Brex's YC Demo Day, Steve Jobs's iPhone keynote, Anatoly's early Solana talks, and the last 5 ETHGlobal Demo Day winners. <strong>Demo-driven, not deck-driven. Concrete numbers, not adjectives. Show before tell.</strong></p>
+
+  <h3>The 30/30/30/30 cadence</h3>
+  <table>
+    <thead><tr><th>Beat</th><th>Time</th><th>What's happening</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Hook</strong></td><td>0:00–0:30</td><td>Bold claim + immediate proof on screen</td></tr>
+      <tr><td><strong>Demo</strong></td><td>0:30–1:00</td><td>Real working product, not slides</td></tr>
+      <tr><td><strong>Differentiation</strong></td><td>1:00–1:30</td><td>Why this isn't just another hackathon project</td></tr>
+      <tr><td><strong>Team + Ask + Close</strong></td><td>1:30–2:00</td><td>Who built it, why us, what we want</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Reference pitches I drew from</h3>
+  <table>
+    <thead><tr><th>Pitch</th><th>What to learn</th></tr></thead>
+    <tbody>
+      <tr><td>Brian Chesky / Airbnb seed pitch (2009)</td><td>10 simple slides, real photos, problem-first</td></tr>
+      <tr><td>Patrick Collison / Stripe early demos</td><td>"Seven lines of code" — specific + demo-able</td></tr>
+      <tr><td>Henrique Dubugras / Brex YC Demo Day</td><td>Open with the dollar figure</td></tr>
+      <tr><td>Steve Jobs / iPhone keynote (2007 intro)</td><td>Bold claim → magic moment → bigger vision</td></tr>
+      <tr><td>Anatoly Yakovenko / early Solana talks</td><td>Throughput numbers in the first minute = technical credibility</td></tr>
+      <tr><td>Y Combinator pitch advice (essay archive)</td><td>"What does it do? Who's it for? Why now?" in 30 seconds</td></tr>
+      <tr><td>ETHGlobal Demo Day winners (last 5 cohorts)</td><td>Demo-driven, not deck-driven</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer"><span>01 · Why this works</span><span>3</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 4 — HOOK VARIANTS
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>02 · The 30-second hook</h2>
+  <p><em>A hook works only if you believe it when you say it. Read all three out loud. Pick the one that doesn't feel like a lie. Then own it.</em></p>
+
+  <h3>Hook A — "Lying" <span class="pill mint">RECOMMENDED</span></h3>
+  <p class="muted small">Pattern interrupt + specific dollar figure. Sets up the demo as proof. The boldest opener — judges will see 200+ pitches; this one gets remembered.</p>
+  <div class="script-block">
+    <div class="stage">FACE CAM. Look directly at lens. No music. Slight pause before speaking.</div>
+    <strong>"Every metric in a startup pitch deck could be a lie."</strong><br/>
+    <em>(Beat — 1 second silence. Let it land.)</em><br/>
+    <strong>"VCs lose thirty billion dollars a year backing founders who fudged the numbers. So we built ChainTrust — to make lying mathematically impossible."</strong>
+  </div>
+
+  <h3>Hook B — "Watch this"</h3>
+  <p class="muted small">Most demo-forward. Zero exposition, all proof. Use this if your devnet RPC is fast that day. Risk: an 8-second slow confirm reads as dead air.</p>
+  <div class="script-block">
+    <div class="stage">Cut to: testnet-demo screen, wallet pre-connected.</div>
+    <strong>"This is a real Solana transaction."</strong> <em>(Click — Anchor proof.)</em>
+    <strong>"It cost a quarter of a cent. It just made a startup metric impossible to fake."</strong>
+    <em>(Click Explorer link, transaction shows confirmed.)</em>
+    <strong>"Most pitches are PowerPoints. ChainTrust is proof."</strong>
+  </div>
+
+  <h3>Hook C — "Trust me"</h3>
+  <p class="muted small">Most empathetic. Use if delivering live to investors who are themselves VCs — meets them where they are.</p>
+  <div class="script-block">
+    <div class="stage">FACE CAM.</div>
+    <strong>"Investors hear 'trust me' from founders thirty thousand times a year. ChainTrust makes 'trust me' obsolete — we replace it with mathematical proof, on Solana, in under two seconds. Let me show you."</strong>
+  </div>
+
+  <div class="callout warn">
+    <div class="callout-label">⚠ AVOID</div>
+    <p style="margin:4px 0 0"><strong>"Hi, I'm Uros, CEO of ChainTrust"</strong> — same as 199 other pitches. Names come at 1:30. Lead with the bold claim.</p>
+  </div>
+
+  <div class="page-footer"><span>02 · The hook</span><span>4</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 5 — SCRIPT 0:00–1:00
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>03 · The full 2-minute script</h2>
+  <p class="small muted">Speaking pace target: <strong>~150 words per minute</strong> (~300 words total). The script below is ~285 words; the deliberate pause adds ~15 seconds of useful silence.</p>
+
+  <div class="beat">
+    <span class="timecode">0:00 – 0:30</span>
+    <span class="beat-title">Hook + setup</span>
+    <span class="beat-dur">30s</span>
+  </div>
+  <div class="script-block">
+    <div class="stage">📺 Face cam, full frame. No motion graphics yet. 🎙 You, looking at lens.</div>
+    "Every metric in a startup pitch deck could be a lie.<br/><br/>
+    <em>(Beat — 1 second of silence.)</em><br/><br/>
+    VCs lose thirty billion dollars a year backing founders who fudged the numbers.<br/><br/>
+    <em>(Cut to: testnet-demo page on screen, wallet already connected to Devnet.)</em><br/><br/>
+    So we built ChainTrust — to make lying mathematically impossible. <strong>Watch.</strong>"
+  </div>
+
+  <div class="beat">
+    <span class="timecode">0:30 – 1:00</span>
+    <span class="beat-title">The demo (most important 30 seconds)</span>
+    <span class="beat-dur">30s</span>
+  </div>
+  <div class="script-block">
+    <div class="stage">📺 testnet-demo page. Cursor visible. Move with intent. 🎙 Speak only while clicking.</div>
+    "I'm signing a startup metric on Solana right now."<br/><br/>
+    <em>(Click "Anchor proof on-chain". Wallet popup. Click sign.)</em><br/><br/>
+    "One signature. Two seconds. A quarter of a cent in fees."<br/><br/>
+    <em>(Tx confirms — toast shows up. Click "View on Solana Explorer".)</em><br/><br/>
+    "And there it is — on the actual Solana network. Forever. <strong>Any investor can verify it. Nobody can fake it.</strong> That's the entire ChainTrust thesis: replace trust-me with proof."
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">⏱ SILENCE IS YOUR FRIEND</div>
+    <p style="margin:4px 0 0">During the 2-second tx confirmation, <strong>do not narrate</strong>. Let the wallet talk. Judges can read "Confirmed" themselves. Talking over the demo halves its impact.</p>
+  </div>
+
+  <div class="page-footer"><span>03 · Script (1/3)</span><span>5</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 6 — SCRIPT 1:00–1:30
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2 style="visibility:hidden">03 · Script continued</h2>
+
+  <div class="beat">
+    <span class="timecode">1:00 – 1:30</span>
+    <span class="beat-title">Differentiation — why we win</span>
+    <span class="beat-dur">30s</span>
+  </div>
+  <div class="script-block">
+    <div class="stage">📺 Cut between three artifacts: Investor dashboard (5s) → 14-tab DD panel (5s) → GitHub /judges/ folder (5s) → back to face cam (15s).</div>
+    "Most hackathon projects are one-feature demos. ChainTrust is a production trust layer.<br/><br/>
+    Twenty-four Anchor instructions on-chain. Three independent smart-contract audits. Zero critical CVEs. Seventy-four passing regression tests. An LP-grade due-diligence stack with seventy analytics modules — Bayesian inference, Monte Carlo, ESG scoring, founder-score, geopolitical risk.<br/><br/>
+    This isn't a hackathon prototype. <strong>It's a production-grade fundraising trust layer that happens to be in a hackathon.</strong>"
+  </div>
+
+  <div class="callout mint">
+    <div class="callout-label">🎯 PACE NOTE</div>
+    <p style="margin:4px 0 0">Speed up slightly here — ~165 wpm. List items in clean rhythm. Drop pitch on each number. The list of audits + CVEs + tests is the most credibility-dense moment of the pitch.</p>
+  </div>
+
+  <h3>Why these specific numbers?</h3>
+  <table>
+    <thead><tr><th>Claim</th><th>Why it matters to a judge</th><th>Where in the repo</th></tr></thead>
+    <tbody>
+      <tr><td>24 Anchor instructions</td><td>Most hackathon programs ship 1–3</td><td><code>blockchain/programs/chainmetrics/src/lib.rs</code></td></tr>
+      <tr><td>3 smart-contract audits</td><td>Almost no hackathon project is audited at all</td><td><code>SECURITY.md</code></td></tr>
+      <tr><td>0 critical CVEs</td><td>Most npm projects ship with 5–15</td><td><code>npm audit</code> baseline</td></tr>
+      <tr><td>74 regression tests</td><td>Most have 0–10</td><td><code>src/test/</code></td></tr>
+      <tr><td>70 analytics modules</td><td>Signals the depth of the DD stack</td><td><code>src/lib/intelligence/</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer"><span>03 · Script (2/3)</span><span>6</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 7 — SCRIPT 1:30–2:00
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2 style="visibility:hidden">03 · Script continued</h2>
+
+  <div class="beat">
+    <span class="timecode">1:30 – 1:50</span>
+    <span class="beat-title">Team</span>
+    <span class="beat-dur">20s</span>
+  </div>
+  <div class="script-block">
+    <div class="stage">📺 Team slide — 4 portraits or 4 names with one credential each. 🎙 Slow down here. Sound proud.</div>
+    "<strong>Built by four engineers from Serbia.</strong><br/>
+    Uros — CEO, <em>[your one-line credential]</em>.<br/>
+    Sava — <em>[your one-line credential]</em>.<br/>
+    Stamen — <em>[your one-line credential]</em>.<br/>
+    Darko — <em>[your one-line credential]</em>.<br/><br/>
+    Combined, we've shipped <em>[X years total]</em> of production software. We've been audited. We've been broken. We've patched. <strong>We know what 'trust layer' actually means.</strong>"
+  </div>
+
+  <div class="beat">
+    <span class="timecode">1:50 – 2:00</span>
+    <span class="beat-title">Ask + close</span>
+    <span class="beat-dur">10s</span>
+  </div>
+  <div class="script-block">
+    <div class="stage">📺 Repo URL + tagline end card.</div>
+    "ChainTrust is on master, branch is fast-forward only, and the whole repo is at <strong>github dot com slash urosradojicic slash ChainTrust dash SOL</strong>.<br/><br/>
+    We're submitting to Frontier because <strong>Solana deserves a fundraising trust layer.</strong> Vote for us if you agree."
+  </div>
+
+  <div class="callout gold">
+    <div class="callout-label">✨ THE LAST HALF SECOND</div>
+    <p style="margin:4px 0 0">Optional smile. Hold camera for half a second after the last word. Then end. Cutting too quickly reads as nervous; holding too long reads as awkward. Half a second is the sweet spot.</p>
+  </div>
+
+  <h3>Word counts per beat (target)</h3>
+  <table>
+    <thead><tr><th>Beat</th><th>Words</th><th>WPM target</th></tr></thead>
+    <tbody>
+      <tr><td>Hook</td><td>~55</td><td>~120 (slow)</td></tr>
+      <tr><td>Demo</td><td>~50</td><td>~140 (only when clicking)</td></tr>
+      <tr><td>Differentiation</td><td>~80</td><td>~165 (faster, listy)</td></tr>
+      <tr><td>Team</td><td>~70</td><td>~140 (slow + proud)</td></tr>
+      <tr><td>Close</td><td>~40</td><td>~150 (conversational)</td></tr>
+      <tr><td><strong>Total</strong></td><td><strong>~295 + pauses</strong></td><td><strong>≈ 1:55</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer"><span>03 · Script (3/3)</span><span>7</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 8 — DELIVERY
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>04 · Delivery</h2>
+  <p>The script is half. Delivery is the other half. These are not optional.</p>
+
+  <div class="two-col">
+    <div>
+      <h3>🎙 Voice</h3>
+      <table>
+        <thead><tr><th>Beat</th><th>Tone</th></tr></thead>
+        <tbody>
+          <tr><td>Hook</td><td><strong>Slow.</strong> ~120 wpm. Each word lands. Drop pitch on "lie." Long pause after the $30B figure.</td></tr>
+          <tr><td>Demo</td><td><strong>Match the action.</strong> Speak only while clicking. Silence during the 2-second confirm.</td></tr>
+          <tr><td>Diff.</td><td><strong>Speed up.</strong> ~165 wpm. List items in clean rhythm.</td></tr>
+          <tr><td>Team</td><td><strong>Slow again.</strong> Sound proud. Let your name land.</td></tr>
+          <tr><td>Close</td><td><strong>Conversational, calm.</strong> Like you've already won.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>🚫 No filler words</h3>
+      <p>Cut these in rehearsal. Replace with <em>silence</em>. Silence reads as authority.</p>
+      <ul>
+        <li><span class="mono">like</span></li>
+        <li><span class="mono">um</span></li>
+        <li><span class="mono">you know</span></li>
+        <li><span class="mono">kind of</span></li>
+        <li><span class="mono">basically</span></li>
+        <li><span class="mono">so yeah</span></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3>🧍 Body</h3>
+      <ul>
+        <li><strong>Stand still.</strong> No pacing. Pacing reads as nervous. Plant feet shoulder-width apart.</li>
+        <li><strong>Hands visible.</strong> Not in pockets. Not crossed. One gesture per major sentence.</li>
+        <li><strong>Slight forward lean.</strong> Reads as "engaged."</li>
+        <li><strong>Eye contact with the lens</strong> (not the screen — the lens). On stage: scan three judges in three sentences.</li>
+        <li><strong>Smile</strong> only at traction stats and the close. <em>Never</em> during the problem.</li>
+      </ul>
+
+      <h3>👕 What to wear</h3>
+      <ul>
+        <li>One <strong>solid colour above the chest</strong> — black, dark blue, or charcoal. <em>Not white</em> (bright on camera).</li>
+        <li><strong>No logos</strong> (any logo not yours competes).</li>
+        <li><strong>No patterns or stripes</strong> (moiré on video).</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>The two pauses that matter most</h3>
+  <ol>
+    <li><strong>The pause before "lie."</strong> One full second of silence. The most important second in the pitch. It says: <em>I am confident enough to wait.</em></li>
+    <li><strong>The pause after the Explorer click.</strong> Let the judges see "Confirmed" on screen. Don't talk over it.</li>
+  </ol>
+
+  <div class="page-footer"><span>04 · Delivery</span><span>8</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 9 — SCREEN DIRECTION
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>05 · Screen direction</h2>
+  <p class="small muted">Pre-stage every tab. If you record in Loom / OBS / QuickTime, set up your scenes before you press record.</p>
+
+  <table>
+    <thead><tr><th>Time</th><th>What's on screen</th><th>Action / Voice</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">0:00 – 0:08</td><td>Face cam (full frame)</td><td>Deliver hook line 1</td></tr>
+      <tr><td class="mono">0:08 – 0:15</td><td>Face cam still</td><td>Beat. Then deliver hook line 2</td></tr>
+      <tr><td class="mono">0:15 – 0:30</td><td><strong>Smooth cut → testnet-demo page</strong>, wallet already connected</td><td>"So we built ChainTrust. Watch."</td></tr>
+      <tr><td class="mono">0:30 – 0:45</td><td>testnet-demo page, cursor moves to "Anchor proof"</td><td>Click. Wallet popup. Sign.</td></tr>
+      <tr><td class="mono">0:45 – 1:00</td><td>Toast appears with tx hash → click Solana Explorer link → confirmed page</td><td>"Forever. Any investor can verify it."</td></tr>
+      <tr><td class="mono">1:00 – 1:10</td><td><strong>Cut → /dashboard</strong></td><td>"Most projects are one-feature demos…"</td></tr>
+      <tr><td class="mono">1:10 – 1:20</td><td><strong>Cut → /screener with 14-tab panel</strong></td><td>"Twenty-four Anchor instructions…"</td></tr>
+      <tr><td class="mono">1:20 – 1:30</td><td><strong>Cut → GitHub /judges/01-why-we-win.md</strong> rendered</td><td>"Three audits. Zero critical CVEs."</td></tr>
+      <tr><td class="mono">1:30 – 1:50</td><td><strong>Cut → team slide</strong> (4 portraits OR 4 names + credentials)</td><td>Team intro</td></tr>
+      <tr><td class="mono">1:50 – 2:00</td><td><strong>Cut → simple end card</strong>: ChainTrust logo + repo URL + "Built for Frontier"</td><td>Ask + close</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Cut technique</h3>
+  <p>If recording with Loom or OBS, use <strong>cross-fade transitions of ~0.3s between scenes</strong>. Hard cuts feel jarring; longer cross-fades feel like a slow corporate ad. 0.3s is invisible-but-smooth.</p>
+
+  <div class="page-footer"><span>05 · Screen direction</span><span>9</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 10 — PRE-RECORDING CHECKLIST
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>06 · Pre-recording checklist</h2>
+  <p>Run through this in order. Don't skip steps — every line is a real failure mode I've seen.</p>
+
+  <h3>🪪 Identity &amp; environment</h3>
+  <ul class="checklist">
+    <li>Phantom wallet pre-funded with <strong>1 SOL on Devnet</strong> (so the airdrop step is unnecessary or instant)</li>
+    <li>Devnet RPC tested 30 minutes before recording — sometimes the first request of the day is slow</li>
+    <li>System time in sync (some Solana operations care)</li>
+  </ul>
+
+  <h3>🖥 Browser</h3>
+  <ul class="checklist">
+    <li>Browser zoom at <strong>110%</strong> so cursor and tx hash are readable on small screens</li>
+    <li>All other tabs closed (no Slack notifications popping up)</li>
+    <li>Bookmarks bar hidden (Ctrl+Shift+B)</li>
+    <li>System notifications disabled — Mac: Do Not Disturb. Windows: Focus Assist.</li>
+    <li>Browser cache cleared if you've been testing recently (avoid stale state)</li>
+  </ul>
+
+  <h3>🎬 Recording</h3>
+  <ul class="checklist">
+    <li>Resolution: <strong>1920×1080</strong> minimum</li>
+    <li>Audio: external mic if you have one. Phone earbuds beat laptop mic.</li>
+    <li>Background: clean wall or office. Tidy what's behind you.</li>
+    <li>Lighting: face the window, don't sit with it behind you</li>
+    <li>One solid colour shirt above chest (no white, no logos, no patterns)</li>
+  </ul>
+
+  <h3>📋 Tabs to pre-stage</h3>
+  <ul class="checklist">
+    <li>Tab 1: <span class="mono">localhost:8080/testnet-demo</span> — wallet pre-connected</li>
+    <li>Tab 2: <span class="mono">localhost:8080/dashboard</span> — signed in as investor</li>
+    <li>Tab 3: <span class="mono">localhost:8080/screener</span> — Tideland RWA detail open</li>
+    <li>Tab 4: <span class="mono">github.com/urosradojicic/ChainTrust-SOL/blob/master/judges/01-why-we-win.md</span></li>
+    <li>Tab 5: End-card image (or use OBS scene)</li>
+  </ul>
+
+  <h3>🧪 Final dry-run</h3>
+  <ul class="checklist">
+    <li>One full take recorded as warmup, watched, discarded</li>
+    <li>One full take recorded as keeper, <strong>not</strong> watched until next day</li>
+    <li>Time the keeper take — must be ≤ 1:55 (5s buffer for nerves)</li>
+  </ul>
+
+  <div class="page-footer"><span>06 · Checklist</span><span>10</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 11 — MISTAKES
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>07 · Common mistakes</h2>
+  <p>These are mistakes I've seen kill otherwise-strong hackathon pitches. Each one is specific to the kind of pitch you're giving.</p>
+
+  <table>
+    <thead><tr><th style="width:42%">Mistake</th><th style="width:58%">Why it loses / What to do instead</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Opening with "Hi I'm Uros, CEO"</strong></td><td>Same as 199 other pitches. Lead with the bold claim. Names come at 1:30.</td></tr>
+      <tr><td><strong>Reading bullet points off slides</strong></td><td>Judges check phones. Slides ≤ 4 words each. Voiceover does the talking.</td></tr>
+      <tr><td><strong>Saying "We're disrupting fundraising"</strong></td><td>Empty corporate adjective. Say <em>exactly what you do</em>. "We make startup metrics non-repudiable on Solana" is specific and unfakeable.</td></tr>
+      <tr><td><strong>Talking over the demo</strong></td><td>Judges can't process two streams. Click → silence → react. The product talks.</td></tr>
+      <tr><td><strong>Buzzwords without proof</strong></td><td>Vapor signal. Every "AI", "DAO", "ZK proof" needs a file in the repo backing it. We have those files. Reference them.</td></tr>
+      <tr><td><strong>Apologising for what's missing</strong></td><td>Confidence killer. Don't say "we know we still need to do X." Say what works. The deferred list lives in the repo for those who care.</td></tr>
+      <tr><td><strong>Going over 2 minutes</strong></td><td>Disqualification at Colosseum. Rehearse with stopwatch. Trim until 1:55.</td></tr>
+      <tr><td><strong>Devnet slowness during the demo</strong></td><td>Dead air = death. Pre-fund. Pre-airdrop. If it stalls, <strong>never narrate the slowness</strong> — pivot to a previous tx (see backup script, page 12).</td></tr>
+      <tr><td><strong>Showing code on screen</strong></td><td>Nobody reads code in 5 seconds. Show <em>artifacts</em> (UI, Explorer, GitHub).</td></tr>
+      <tr><td><strong>Saying "we're the first to do X"</strong></td><td>Almost never true. One judge will know the counter-example. Say "we make X verifiable" instead.</td></tr>
+      <tr><td><strong>Speed-talking to fit 2 minutes</strong></td><td>Audible nervousness. Cut content instead of rushing it. Pacing matters more than completeness.</td></tr>
+      <tr><td><strong>Ending with "Thanks for listening"</strong></td><td>Soft. The pitch ends with the ASK, not gratitude. "Vote for us if you agree" is the last line.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer"><span>07 · Mistakes</span><span>11</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 12 — BACKUP SCRIPT
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>08 · Backup script — when Devnet stalls</h2>
+  <p>Devnet is shared infrastructure. It's been known to take 8–15 seconds on the first request of the day. Eight seconds of silence on camera is a disaster. <strong>Never narrate the slowness.</strong> Pivot.</p>
+
+  <h3>The 5-second test</h3>
+  <p>If by 5 seconds after clicking "Anchor proof" you don't see the wallet popup, switch to plan B. <strong>Decide quickly. Hesitation reads worse than the failure itself.</strong></p>
+
+  <h3>Plan B — pivot to a previous tx</h3>
+  <p>Open Phantom's transaction history (or have a Solana Explorer tab open with one of your previous test transactions). The pivot voiceover:</p>
+
+  <div class="script-block">
+    <div class="stage">As the wallet stalls, smoothly mouse over to your transaction history.</div>
+    "Devnet is busy right now — but here's the same proof from yesterday." <em>(Click into a previous tx on Solana Explorer.)</em> "Same flow. Same fee. Same chain. <strong>Every metric we publish has a permanent on-chain receipt — verifiable forever.</strong>"
+  </div>
+
+  <p class="small muted">This actually <em>strengthens</em> the pitch. You demonstrate a real signed transaction <em>and</em> show that the system has history. Judges who notice the pivot will respect the recovery.</p>
+
+  <h3>Plan C — pure narration with pre-recorded clip</h3>
+  <p>If you're paranoid: pre-record the testnet demo flow once when devnet is working, save the screen clip, and have it ready. If live demo fails, narrate over the pre-recorded clip. Less powerful than live, but better than dead air.</p>
+
+  <h3>What NOT to say if it stalls</h3>
+  <ul>
+    <li>❌ "Sorry, devnet seems slow today"</li>
+    <li>❌ "Oh wait, let me try that again"</li>
+    <li>❌ "Hmm, that's weird"</li>
+    <li>❌ Any silence longer than 3 seconds</li>
+  </ul>
+
+  <h3>Pre-flight: make it less likely</h3>
+  <ul class="checklist">
+    <li>Run the demo flow 30 minutes before recording. Devnet's first request is the slowest.</li>
+    <li>Pre-fund the wallet with 1 SOL so airdrop step isn't needed</li>
+    <li>Use a paid RPC if you have one (Helius free tier works) — usually faster than the default</li>
+    <li>Have Plan B tab open and ready before you start recording</li>
+  </ul>
+
+  <div class="page-footer"><span>08 · Backup script</span><span>12</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 13 — Q&A PREP
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>09 · Q&amp;A — likely judge questions</h2>
+  <p>If the format includes Q&amp;A after the pitch, prepare for these. Each answer is ≤30 seconds.</p>
+
+  <h3>Likely questions, ranked by frequency</h3>
+
+  <div class="callout">
+    <div class="callout-label">Q1 · BUSINESS MODEL</div>
+    <p style="margin:4px 0 0"><strong>"How do you make money?"</strong></p>
+    <p class="small muted">Don't say "we're focused on adoption first." That kills VC interest.</p>
+    <p><strong>Your answer (~25s):</strong> "Two revenue streams. First: founders pay a small per-anchor fee — sub-cent on Solana, but at scale that's meaningful. Second: investors subscribe to our LP-grade due-diligence stack — the screener, the 14-tab panel, the PDF reports. Bloomberg-for-Solana-startups. We're aiming for $200/month per investor seat."</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Q2 · MOAT</div>
+    <p style="margin:4px 0 0"><strong>"What stops a competitor from copying you?"</strong></p>
+    <p><strong>Your answer (~25s):</strong> "Three things. One: network effect — every founder anchored is one more proof investors search through us. Two: oracle relationships — independent attesters take time to build trust with. Three: the audit trail itself — once a startup has 12 months of on-chain history with us, switching is expensive. The chain is the moat."</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Q3 · WHY SOLANA</div>
+    <p style="margin:4px 0 0"><strong>"Why Solana over Ethereum or an L2?"</strong></p>
+    <p><strong>Your answer (~20s):</strong> "Cost and finality. At a quarter of a cent per anchor, founders publish updates monthly without thinking. On L2s it's 50× more expensive — adoption dies at that price. Two-second confirmation makes the live-demo flow possible. ADR-0002 in our repo has the full reasoning."</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Q4 · ADVERSARIAL</div>
+    <p style="margin:4px 0 0"><strong>"What stops a startup from publishing fake metrics on-chain anyway?"</strong></p>
+    <p><strong>Your answer (~25s):</strong> "Nothing — the chain doesn't validate the truth, only the timestamp and the signature. That's why we have independent oracle attestation as a separate layer. Founders publish; oracles verify against bank statements, GitHub commits, and on-chain TVL; investors see both. We're not magic. We're <em>provable accountability</em>."</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Q5 · TRACTION</div>
+    <p style="margin:4px 0 0"><strong>"Who's using this today?"</strong></p>
+    <p><strong>Your answer (~15s):</strong> "Pre-launch. We built the trust layer first because adoption follows credibility, not the other way around. Our beta target is post-Frontier with 10 design-partner startups."</p>
+    <p class="small muted">If you have any traction, lead with it instead. "Three startups have signed up to be design partners" is enough.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Q6 · SECURITY</div>
+    <p style="margin:4px 0 0"><strong>"You said three audits — which firms? When?"</strong></p>
+    <p><strong>Your answer (~15s):</strong> "OtterSec, Sec3, and CertiK — all in April. Zero critical findings. Plus an internal adversarial deep audit in May that closed sixty more findings. Reports are public in the docs/internal/security-audit folder."</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Q7 · TEAM</div>
+    <p style="margin:4px 0 0"><strong>"Has any of you built a startup before?"</strong></p>
+    <p class="small muted">Answer honestly. If no: lean into "young + technical + audited" framing.</p>
+  </div>
+
+  <div class="callout">
+    <div class="callout-label">Q8 · ASK</div>
+    <p style="margin:4px 0 0"><strong>"What do you actually want from us?"</strong></p>
+    <p><strong>Your answer (~15s):</strong> "Frontier prize money lets us run six months. Beyond that: we'd love three intros — one to a Solana-focused fund, one to an existing founder who'd be a design partner, one to a security firm we can deepen the audit cadence with."</p>
+  </div>
+
+  <div class="page-footer"><span>09 · Q&amp;A</span><span>13</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 14 — TEAM SECTION
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>10 · Team section template</h2>
+  <p>This is the part only you can write. Only you know each teammate's real backgrounds.</p>
+
+  <h3>Credential priority — what to lead with (per person)</h3>
+  <table>
+    <thead><tr><th>Rank</th><th>Strongest credential</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><strong>Shipped a product with real users</strong></td><td>"Built [X], used by [Y] people"</td></tr>
+      <tr><td>2</td><td><strong>Worked at a company judges have heard of</strong></td><td>"Ex-[Company]"</td></tr>
+      <tr><td>3</td><td><strong>Years of relevant experience</strong></td><td>"10 years building Solana programs"</td></tr>
+      <tr><td>4</td><td><strong>Specific technical skill</strong></td><td>"Wrote the audit framework at [Z]"</td></tr>
+      <tr><td>5</td><td><strong>Domain expertise / story</strong></td><td>"Was a startup founder, raised $[X]m, learned this lesson the hard way"</td></tr>
+    </tbody>
+  </table>
+
+  <h3>What does NOT work</h3>
+  <ul>
+    <li>"Studied CS at [University]" — unless it's MIT/Stanford, and even then it's weak</li>
+    <li>"Passionate about Web3" — everyone is passionate about Web3</li>
+    <li>"Self-taught" — better than nothing but very common</li>
+    <li>More than one credential per person — judges check out</li>
+  </ul>
+
+  <h3>Fill in the blanks</h3>
+  <div class="script-block">
+    "Built by four engineers from Serbia.<br/>
+    - <strong>Uros, CEO</strong> — _______________________________ (max 12 words)<br/>
+    - <strong>Sava</strong> — _______________________________ (max 12 words)<br/>
+    - <strong>Stamen</strong> — _______________________________ (max 12 words)<br/>
+    - <strong>Darko</strong> — _______________________________ (max 12 words)<br/>
+    Combined, we've shipped ____ years of production software."
+  </div>
+
+  <div class="callout gold">
+    <div class="callout-label">💡 IF THE TEAM IS LIGHT ON CREDENTIALS</div>
+    <p style="margin:4px 0 0">If you're students or this is your first ship, pivot the framing: <em>"Four engineers from Serbia, all under twenty-five, who built a production fundraising trust layer in three months — three smart-contract audits, zero critical CVEs, twenty-four on-chain instructions. Talent is the proof."</em> Lean into youth as audacity, not weakness.</p>
+  </div>
+
+  <h3>Read it out loud</h3>
+  <p>When you've drafted the four lines, read them as one block. The whole team intro should take <strong>~12 seconds</strong> total. If it takes 25, you're listing too much. Cut.</p>
+
+  <div class="page-footer"><span>10 · Team section</span><span>14</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 15 — PRACTICE PLAN
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>11 · The 7-day practice plan</h2>
+  <p>This is non-negotiable. The difference between a <em>good</em> pitch and a <em>winning</em> pitch is rehearsal volume.</p>
+
+  <table>
+    <thead><tr><th style="width:90px">Day</th><th>Practice</th><th style="width:120px">Time</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Day 7</strong></td><td>Read the script aloud 5 times. Don't memorise — <em>internalise</em>. Time each read.</td><td>~25 min</td></tr>
+      <tr><td><strong>Day 6</strong></td><td>Record yourself on phone. Watch it. Note the 3 worst moments.</td><td>~30 min</td></tr>
+      <tr><td><strong>Day 5</strong></td><td>Fix those 3 moments. Re-record. Time it. Trim to 1:55.</td><td>~45 min</td></tr>
+      <tr><td><strong>Day 4</strong></td><td>Rehearse with the screen, not just voice. Practise the cursor moves.</td><td>~30 min</td></tr>
+      <tr><td><strong>Day 3</strong></td><td>Rehearse with <strong>one teammate watching live</strong>. Get one criticism. Fix it.</td><td>~30 min</td></tr>
+      <tr><td><strong>Day 2</strong></td><td>Final dress rehearsal — full clothes, full background, full setup. Record once. Don't watch yet.</td><td>~30 min</td></tr>
+      <tr><td><strong>Day 1</strong></td><td>Watch yesterday's take. Pick the one moment that still feels off. Practise just that moment 10 times.</td><td>~20 min</td></tr>
+      <tr><td><strong>Day 0</strong></td><td>Two warm-up takes. Discard. Then record the keeper. <strong>Don't watch it.</strong> Send it. Sleep.</td><td>~30 min</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <div class="callout-label">🛑 THE "DON'T WATCH THE FINAL TAKE" RULE</div>
+    <p style="margin:4px 0 0"><strong>You'll always find something to fix. The judge won't care about the thing you'd fix.</strong> Send it. Watching the final take before submitting is how good pitches die in re-recording loops at 2am the night before submission. <em>Trust the rehearsal. Send the keeper.</em></p>
+  </div>
+
+  <h3>How to give yourself feedback</h3>
+  <p>When you watch your phone-recorded takes, look for <em>three things only</em>:</p>
+  <ol>
+    <li><strong>Energy</strong> — does it feel alive, or read off a script?</li>
+    <li><strong>Pace</strong> — any moment you rushed? Any moment that dragged?</li>
+    <li><strong>Clarity</strong> — is there a single sentence a viewer would have to rewind for?</li>
+  </ol>
+  <p>Don't critique your face, voice, or "did I sound silly." Those are not actionable.</p>
+
+  <div class="page-footer"><span>11 · Practice plan</span><span>15</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 16 — BRAND VOICE
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>12 · Brand voice</h2>
+  <p>Consistency between the pitch, the README, the demo video, and the deck — same vocabulary, same tone. Use this sheet as the rulebook.</p>
+
+  <h3>Colors (used everywhere — README banner, end card, slides)</h3>
+  <div class="swatch-grid">
+    <div class="swatch" style="background:#0B1437"><div class="name">Ink</div><div class="hex">#0B1437</div><div class="hex">brand dark</div></div>
+    <div class="swatch" style="background:#9945FF"><div class="name">Solana Purple</div><div class="hex">#9945FF</div><div class="hex">primary accent</div></div>
+    <div class="swatch" style="background:#14F195;color:#0B1437"><div class="name">Mint</div><div class="hex">#14F195</div><div class="hex">success / KPI</div></div>
+  </div>
+
+  <h3>Vocabulary — words to use, words to avoid</h3>
+  <div class="two-col">
+    <div>
+      <h4 class="mint-c">✅ USE</h4>
+      <ul>
+        <li><strong>Trust layer</strong> — what we are</li>
+        <li><strong>Cryptographic proof</strong> — what we provide</li>
+        <li><strong>Non-repudiable</strong> — once posted, can't be denied</li>
+        <li><strong>Production-grade</strong> — not "production-ready"</li>
+        <li><strong>Audited</strong> — past tense, three times</li>
+        <li><strong>Verifiable forever</strong> — the on-chain commitment</li>
+        <li><strong>Anchor</strong> — the verb we use for "publish on-chain"</li>
+        <li><strong>"Replace 'trust me' with proof"</strong> — the thesis line</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color:var(--warn)">❌ AVOID</h4>
+      <ul>
+        <li>"Disrupting" / "revolutionising" — empty</li>
+        <li>"Web3 native" — meaningless</li>
+        <li>"Game-changer" — corporate cliché</li>
+        <li>"AI-powered" (unless we mean it specifically)</li>
+        <li>"Easy" — never sounds true</li>
+        <li>"Solution" — vague; say <em>what</em> we do</li>
+        <li>"Passionate" — every founder says this</li>
+        <li>"Cutting-edge" — judges roll eyes</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Tone</h3>
+  <ul>
+    <li><strong>Confident</strong> not arrogant. We've shipped, we've been audited, we know what we are.</li>
+    <li><strong>Specific</strong> not vague. Numbers. File paths. Audit firm names.</li>
+    <li><strong>Empathetic</strong> to the investor. They've been burned. We're the fix.</li>
+    <li><strong>Direct</strong> not corporate. Short sentences win. No "leveraging synergies."</li>
+  </ul>
+
+  <h3>The two anchor sentences</h3>
+  <p>If anyone asks "what is ChainTrust" outside the pitch, use one of these:</p>
+  <blockquote>"ChainTrust is the trust layer for Solana startup fundraising. Founders anchor metrics on-chain, oracles verify them, investors get cryptographic proof instead of self-reported decks."</blockquote>
+  <blockquote>"We make startup metrics non-repudiable on Solana. Same flow as Stripe for payments — but for trust."</blockquote>
+
+  <div class="page-footer"><span>12 · Brand voice</span><span>16</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 17 — CHEAT CARD
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>13 · Cheat card <span class="small muted">(tear out — tape next to your monitor)</span></h2>
+
+  <div class="cheat-card">
+    <div class="cheat-row">
+      <div class="tc">0:00</div>
+      <div class="ln"><span class="key">"Every metric in a startup pitch deck could be a lie."</span> <span class="stage">FACE CAM. Pause 1 second after "lie."</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">0:10</div>
+      <div class="ln"><span class="key">"VCs lose thirty billion dollars a year backing founders who fudged the numbers."</span> <span class="stage">Cut to testnet-demo on next sentence.</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">0:20</div>
+      <div class="ln"><span class="key">"So we built ChainTrust — to make lying mathematically impossible. Watch."</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">0:30</div>
+      <div class="ln"><span class="key">"I'm signing a startup metric on Solana right now."</span> <span class="stage">CLICK Anchor proof. SIGN. SILENCE during confirm.</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">0:45</div>
+      <div class="ln"><span class="key">"On the actual Solana network. Forever. Any investor can verify it. Nobody can fake it."</span> <span class="stage">Click Explorer link.</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">1:00</div>
+      <div class="ln"><span class="key">"Most hackathon projects are one-feature demos. ChainTrust is a production trust layer."</span> <span class="stage">Cut to /dashboard</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">1:10</div>
+      <div class="ln"><span class="key">"24 Anchor instructions. 3 audits. 0 critical CVEs. 74 tests. 70 analytics modules."</span> <span class="stage">Cut to screener / DD panel</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">1:25</div>
+      <div class="ln"><span class="key">"It's a production-grade fundraising trust layer that happens to be in a hackathon."</span> <span class="stage">Cut to GitHub</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">1:30</div>
+      <div class="ln"><span class="key">"Built by four engineers from Serbia. Uros — [...]. Sava — [...]. Stamen — [...]. Darko — [...]."</span> <span class="stage">Slow + proud.</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">1:45</div>
+      <div class="ln"><span class="key">"Combined, we've shipped [X] years. We've been audited. We know what 'trust layer' means."</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">1:50</div>
+      <div class="ln"><span class="key">"github dot com slash urosradojicic slash ChainTrust dash SOL."</span></div>
+    </div>
+    <div class="cheat-row">
+      <div class="tc">1:55</div>
+      <div class="ln"><span class="key">"Solana deserves a fundraising trust layer. Vote for us if you agree."</span> <span class="stage">Optional smile. Hold half a second. End.</span></div>
+    </div>
+  </div>
+
+  <p class="small muted center" style="margin-top:1em">If devnet stalls at 0:30: pivot to a previous tx (page 12) and never narrate the slowness.</p>
+
+  <div class="page-footer"><span>13 · Cheat card</span><span>17</span></div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PAGE 18 — SCORECARD
+     ════════════════════════════════════════════════════════════════ -->
+<section class="page page-break">
+  <h2>14 · Practice scorecard</h2>
+  <p>Score yourself after each rehearsal. <strong>Anything below "8/10 across the board" means another rehearsal.</strong> The bar is high because it has to be.</p>
+
+  <table>
+    <thead><tr><th style="width:35%">Criterion</th><th>What to look for</th><th style="width:80px">Score /10</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Hook</strong></td><td>Did the first 5 seconds make you want to keep watching? Was there a real pause after "lie"?</td><td class="mono">_____</td></tr>
+      <tr><td><strong>Demo</strong></td><td>Did the live transaction confirm within 5 seconds? Did you stay silent during confirmation?</td><td class="mono">_____</td></tr>
+      <tr><td><strong>Pace</strong></td><td>No moment too fast (rushed) or too slow (boring)? Total ≤ 1:55?</td><td class="mono">_____</td></tr>
+      <tr><td><strong>Numbers</strong></td><td>Did "24 instructions / 3 audits / 0 CVEs" feel like a punchline, or get lost?</td><td class="mono">_____</td></tr>
+      <tr><td><strong>Energy</strong></td><td>Could you hear conviction in your own voice? Or did it sound read?</td><td class="mono">_____</td></tr>
+      <tr><td><strong>Filler words</strong></td><td>Count "um", "like", "basically", "you know." Target: <strong>zero</strong>.</td><td class="mono">_____</td></tr>
+      <tr><td><strong>Body</strong></td><td>No pacing, no fidgeting, eye contact with lens, slight forward lean?</td><td class="mono">_____</td></tr>
+      <tr><td><strong>Team line</strong></td><td>Did the four-person intro fit in 12 seconds? Did names land cleanly?</td><td class="mono">_____</td></tr>
+      <tr><td><strong>Close</strong></td><td>Did the ask sound natural, not begging? Held the half-second after?</td><td class="mono">_____</td></tr>
+      <tr><td><strong>Memorability</strong></td><td>If you watched this in a queue of 20 pitches, would yours stand out?</td><td class="mono">_____</td></tr>
+    </tbody>
+  </table>
+
+  <p class="small muted">Total / 100. Submit only if 80+. Re-rehearse if below.</p>
+
+  <h3>Three questions to answer after watching the take</h3>
+  <ol>
+    <li>What's the <em>one</em> moment I'd change?</li>
+    <li>Did I rush, or did the script need more cuts?</li>
+    <li>Did I sound like I'd already won, or like I was hoping?</li>
+  </ol>
+
+  <div class="callout mint">
+    <div class="callout-label">🎯 SHIP THE PITCH</div>
+    <p style="margin:4px 0 0">When the score crosses 80, <strong>stop rehearsing</strong>. Record the keeper. Send it. Sleep. The pitch you submit at 80% is better than the pitch you don't submit at 95%.</p>
+  </div>
+
+  <p class="small muted center" style="margin-top:2em">— <em>Built for Colosseum Frontier · May 11, 2026.</em></p>
+
+  <div class="page-footer"><span>14 · Scorecard</span><span>18</span></div>
+</section>
+
+</body>
+</html>

@@ -11,7 +11,7 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Minimize2, Sparkles, TrendingDown } from 'lucide-react';
-import { compareCosts } from '@/lib/zk-compression';
+import { compareCosts } from '@/lib/solana/zk-compression';
 
 const PRESETS = [1_000, 10_000, 100_000, 1_000_000];
 

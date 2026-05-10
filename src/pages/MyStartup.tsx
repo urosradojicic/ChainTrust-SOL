@@ -12,13 +12,13 @@ import {
   Building2, BarChart3, Leaf, FileText, AlertTriangle, Award, Lock, Shield,
   Upload, X, File, Download,
 } from 'lucide-react';
-import { sanitizeText, sanitizeNumber, rateLimit } from '@/lib/sanitize';
-import { getErrorMessage } from '@/lib/errors';
-import { logDataError } from '@/lib/error-handler';
-import { isDemoSignature } from '@/lib/solana-config';
+import { sanitizeText, sanitizeNumber, rateLimit } from '@/lib/security/sanitize';
+import { getErrorMessage } from '@/lib/security/errors';
+import { logDataError } from '@/lib/security/error-handler';
+import { isDemoSignature } from '@/lib/solana/solana-config';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AuditLogTable } from '@/components/audit/AuditLogTable';
-import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/constants';
+import { inputCls, labelCls, CATEGORIES, BLOCKCHAINS } from '@/lib/format/constants';
 import type { DbStartup, DbAuditEntry } from '@/types/database';
 import type { Database } from '@/integrations/supabase/types';
 

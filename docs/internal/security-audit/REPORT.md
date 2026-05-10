@@ -3,7 +3,7 @@
 **Branch**: `security/audit-2026-05-07`
 **Auditor**: senior application-security + offensive-research methodology, autonomous
 **Scope**: full repository — frontend (React/Vite), Supabase RLS + migrations + Edge Function, Anchor program, CI/CD, dependencies, git history
-**Threat model**: see [`SECURITY_AUDIT/00_threat_model.md`](00_threat_model.md)
+**Threat model**: see [`docs/internal/security-audit/00_threat_model.md`](00_threat_model.md)
 
 ---
 
@@ -215,7 +215,7 @@ A `git log --all -p` scan for `eyJ`, `sk_live`, `sk_test`, `AKIA`, `-----BEGIN`,
 3. **Audit log tamper-evidence** — write a `tx_hash` Merkle tree trigger that hashes each new audit row + previous root into a chain stored on `startup` rows; a client can later re-derive the chain to detect tampering.
 4. **Profiles `email` column scope** — long-term, drop `email` from RLS-readable columns; expose a `profiles_public` view that omits it. Postgres doesn't support per-column RLS, so this needs a view + REVOKE on the base table.
 5. **WAF / CDN rate limit** in front of the Vercel deploy and Edge Function for bot/scrape protection.
-6. **Quarterly threat-model review** — `SECURITY_AUDIT/00_threat_model.md` is a living doc; treat it as such.
+6. **Quarterly threat-model review** — `docs/internal/security-audit/00_threat_model.md` is a living doc; treat it as such.
 7. **Pen test by an external firm** before mainnet program deploy.
 
 ---
@@ -232,8 +232,8 @@ src/hooks/use-blockchain.ts                                        [edit]  H1, H
 src/contexts/AuthContext.tsx                                       [edit]  I1
 blockchain/programs/chainmetrics/src/lib.rs                        [edit]  M5, L1
 blockchain/programs/chainmetrics/src/errors.rs                     [edit]  M5
-SECURITY_AUDIT/00_threat_model.md                                  [new]   threat model
-SECURITY_AUDIT/REPORT.md                                           [new]   this report
+docs/internal/security-audit/00_threat_model.md                                  [new]   threat model
+docs/internal/security-audit/REPORT.md                                           [new]   this report
 ```
 
 All findings have at minimum a code change, a regression-resistant defense, or a documentation pointer. Tests pass: 74/74 vitest, typecheck clean.

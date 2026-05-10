@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { canAccess, getDeniedRedirect, PAGE_ACCESS } from '@/lib/role-access';
+import { canAccess, getDeniedRedirect, PAGE_ACCESS } from '@/lib/format/role-access';
 
 describe('canAccess', () => {
   describe('public routes', () => {

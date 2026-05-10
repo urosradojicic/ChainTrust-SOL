@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Info } from 'lucide-react';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { chartTooltipStyle } from '@/lib/constants';
+import { chartTooltipStyle } from '@/lib/format/constants';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
 
 const CARBON_PRICE = 50;

@@ -8,9 +8,9 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { logDataError } from '@/lib/error-handler';
+import { logDataError } from '@/lib/security/error-handler';
 import type { DbStartup } from '@/types/database';
-import { DEMO_STARTUPS } from '@/lib/demo-data';
+import { DEMO_STARTUPS } from '@/lib/mock/demo-data';
 
 export interface DealRoom {
   id: string;

@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Database, Hash, Link2, CheckCircle2, ArrowRight, Lock, Cpu, Globe } from 'lucide-react';
 import type { DbStartup } from '@/types/database';
 import { computeProofHash } from '@/hooks/use-blockchain';
-import { PROGRAM_ID } from '@/lib/contracts';
-import { explorerAddressUrl } from '@/lib/solana-config';
+import { PROGRAM_ID } from '@/lib/solana/contracts';
+import { explorerAddressUrl } from '@/lib/solana/solana-config';
 
 interface ProofChainVisualizerProps {
   startup: DbStartup;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, Lock } from 'lucide-react';
-import { PROGRAM_ID } from '@/lib/contracts';
+import { PROGRAM_ID } from '@/lib/solana/contracts';
 import SimulatedTerminal from './SimulatedTerminal';
 
 const MOCK_WALLET = '7Kp2…xQ4f';

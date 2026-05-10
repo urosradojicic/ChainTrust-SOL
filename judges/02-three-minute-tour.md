@@ -13,15 +13,15 @@ ChainTrust is the **trust layer for early-stage Solana startups**: founders publ
 | What | How long | Link |
 |---|---|---|
 | **Live on-chain transaction** — connect Phantom (Devnet), click airdrop, click anchor; you get a real signed Solana tx with an Explorer link. | 10 seconds | [`/testnet-demo`](src/pages/LiveTestnetDemo.tsx) — full walkthrough in [docs/LIVE_TESTNET_DEMO.md](docs/LIVE_TESTNET_DEMO.md) |
-| **Run locally** | 60 seconds | `npm install && npm run dev` → localhost:8080 |
-| **Demo accounts** (no signup) | instant | `admin@chainmetrics.io` / `admin123` · `investor@chainmetrics.io` / `investor1` · `startup@chainmetrics.io` / `startup1` |
+| **Run locally** | 60 seconds | `npm install --legacy-peer-deps && npm run dev` → localhost:8080 |
+| **Demo accounts** (one-click on `/login`) | instant | `admin@chainmetrics.io` / `admin123` · `investor@chainmetrics.io` / `investor1` · `startup@chainmetrics.io` / `startup1` |
 
 ## What to look at first (in this order)
 
 1. **The smart contract** — [blockchain/programs/chainmetrics/src/](blockchain/programs/chainmetrics/src/). 24 Anchor instructions across registry, staking (30-day lock + tier computation), governance (weighted voting + delegation), and soulbound badges.
-2. **The proof flow** — [src/lib/memo-anchor.ts](src/lib/memo-anchor.ts) shows the live SPL-Memo path used by the testnet demo. Includes cluster verification + transaction simulation before the wallet ever sees a sign request.
-3. **The investor screener** — `/dashboard` or `/screener` after sign-in as investor. PDF export uses [src/lib/lp-report.ts](src/lib/lp-report.ts) (LP-grade quarterly report).
-4. **The architecture** — [src/](src/): `pages/` (23 routes, role-gated), `hooks/` (blockchain + Supabase), `contexts/` (Auth + Wallet + InstitutionalView), `lib/` (sanitize, errors, telemetry, fetch-with-timeout, contracts).
+2. **The proof flow** — [src/lib/solana/memo-anchor.ts](src/lib/solana/memo-anchor.ts) shows the live SPL-Memo path used by the testnet demo. Includes cluster verification + transaction simulation before the wallet ever sees a sign request.
+3. **The investor screener** — `/dashboard` or `/screener` after sign-in as investor. PDF export uses [src/lib/intelligence/lp-report.ts](src/lib/intelligence/lp-report.ts) (LP-grade quarterly report).
+4. **The architecture** — [ARCHITECTURE.md](ARCHITECTURE.md) documents the layers + import rules. Briefly: [`src/pages/`](src/pages/) (23 routes), [`src/hooks/`](src/hooks/) (data + chain), [`src/contexts/`](src/contexts/) (Auth + Wallet), [`src/lib/`](src/lib/) split into `security/`, `solana/`, `format/`, `mock/`, `intelligence/`.
 
 ## Why this team is different
 
@@ -43,10 +43,10 @@ ChainTrust is the **trust layer for early-stage Solana startups**: founders publ
 
 ## Questions? Read these next, in order
 
-1. [README.md](README.md) — the longer pitch.
-2. [SECURITY.md](SECURITY.md) — what we defend against, with file pointers.
-3. [DEMO_VIDEO.md](DEMO_VIDEO.md) — the 3-minute submission video script + storyboard (with verified screenshots of every scene).
-4. [docs/LIVE_TESTNET_DEMO.md](docs/LIVE_TESTNET_DEMO.md) — full walkthrough of the on-chain demo.
-5. [UPGRADE_NOTES.md](UPGRADE_NOTES.md) — Phase 5 senior-engineer cleanup notes.
+1. [`/README.md`](../README.md) — the longer pitch.
+2. [`/SECURITY.md`](../SECURITY.md) — what we defend against, with file pointers.
+3. [`03-demo-video.md`](03-demo-video.md) — the 3-minute submission video script + storyboard (with verified screenshots of every scene).
+4. [`/docs/LIVE_TESTNET_DEMO.md`](../docs/LIVE_TESTNET_DEMO.md) — full walkthrough of the on-chain demo.
+5. [`/docs/internal/upgrade-notes.md`](../docs/internal/upgrade-notes.md) — Phase 5 senior-engineer cleanup notes.
 
 — Built for **Colosseum Frontier · May 11, 2026**.

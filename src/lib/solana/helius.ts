@@ -14,7 +14,7 @@
  * Docs: https://docs.helius.dev/
  */
 
-import { fetchWithTimeout } from './fetch-with-timeout';
+import { fetchWithTimeout } from '@/lib/security/fetch-with-timeout';
 
 const HELIUS_API_KEY = import.meta.env.VITE_HELIUS_API_KEY as string | undefined;
 const HELIUS_BASE = 'https://api.helius.xyz';

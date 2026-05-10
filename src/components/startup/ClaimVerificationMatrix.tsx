@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, ShieldAlert, ShieldQuestion, ShieldX, ShieldOff, ChevronDown, ChevronUp, Search, AlertCircle } from 'lucide-react';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { verifyAllClaims, CLAIM_STATUS_CONFIG, type ClaimVerificationReport, type Claim, type ClaimStatus } from '@/lib/claim-verification';
+import { verifyAllClaims, CLAIM_STATUS_CONFIG, type ClaimVerificationReport, type Claim, type ClaimStatus } from '@/lib/intelligence/claim-verification';
 
 const STATUS_ICONS: Record<ClaimStatus, typeof ShieldCheck> = {
   verified: ShieldCheck,

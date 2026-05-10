@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ChainTrust logomark">
+  <title>ChainTrust</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1437"/>
+      <stop offset="0.55" stop-color="#11193F"/>
+      <stop offset="1" stop-color="#1A1140"/>
+    </linearGradient>
+    <linearGradient id="check-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#14F195"/>
+      <stop offset="1" stop-color="#7ED9B7"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.7" cy="0.35" r="0.55">
+      <stop offset="0" stop-color="#7B61FF" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#7B61FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Rounded-square brand surface -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="96" fill="url(#glow)"/>
+
+  <!-- Three-block chain — visual metaphor for the trust chain. -->
+  <!-- Block 1 (purple stroke, hollow) -->
+  <rect x="80"  y="208" width="96" height="96" rx="20"
+        fill="none" stroke="#7B61FF" stroke-width="6"/>
+  <!-- Block 2 (purple stroke, hollow) -->
+  <rect x="208" y="208" width="96" height="96" rx="20"
+        fill="none" stroke="#7B61FF" stroke-width="6"/>
+  <!-- Block 3 (mint solid — the verified anchor) -->
+  <rect x="336" y="208" width="96" height="96" rx="20"
+        fill="url(#check-grad)"/>
+
+  <!-- Connectors -->
+  <line x1="176" y1="256" x2="208" y2="256" stroke="#7B61FF" stroke-width="6" stroke-linecap="round"/>
+  <line x1="304" y1="256" x2="336" y2="256" stroke="#14F195" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Verification check inside Block 3 -->
+  <path d="M 360 258 L 380 278 L 412 234"
+        fill="none" stroke="#0B1437" stroke-width="10"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

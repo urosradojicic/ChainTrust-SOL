@@ -8,7 +8,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, Unlock, Clock, Target, DollarSign, AlertTriangle, CheckCircle2, XCircle, Timer } from 'lucide-react';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency } from '@/lib/format/format';
 import type { DbStartup } from '@/types/database';
 import {
   createDemoEscrowDeal,
@@ -17,7 +17,7 @@ import {
   type EscrowDeal,
   type Milestone,
   type MilestoneStatus,
-} from '@/lib/milestone-escrow';
+} from '@/lib/solana/milestone-escrow';
 
 const STATUS_CONFIG: Record<MilestoneStatus, { icon: typeof CheckCircle2; color: string; bg: string; label: string }> = {
   pending:     { icon: Clock,          color: 'text-gray-400',    bg: 'bg-gray-400/10',    label: 'Pending' },

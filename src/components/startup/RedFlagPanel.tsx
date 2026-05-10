@@ -13,7 +13,7 @@ import {
   TrendingDown, GitBranch, Coins, Briefcase, ShieldCheck, Activity,
 } from 'lucide-react';
 import type { DbStartup, DbMetricsHistory } from '@/types/database';
-import { analyzeRedFlags, type RedFlag, type RedFlagReport, type FlagSeverity, type FlagCategory } from '@/lib/red-flag-detection';
+import { analyzeRedFlags, type RedFlag, type RedFlagReport, type FlagSeverity, type FlagCategory } from '@/lib/intelligence/red-flag-detection';
 
 // ── Severity & Category Config ───────────────────────────────────────
 

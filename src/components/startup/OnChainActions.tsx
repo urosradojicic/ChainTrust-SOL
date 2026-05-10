@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ExternalLink, Loader2, Shield, CheckCircle2, XCircle } from 'lucide-react';
-import { explorerAddressUrl } from '@/lib/solana-config';
+import { explorerAddressUrl } from '@/lib/solana/solana-config';
 import { useVerifyOnChain, computeProofHash } from '@/hooks/use-blockchain';
 import type { DbStartup } from '@/types/database';
 

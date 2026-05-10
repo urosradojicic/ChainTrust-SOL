@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
+import { fetchWithTimeout } from '@/lib/security/fetch-with-timeout';
 
 // Pyth Hermes endpoint (public, no key required)
 const HERMES_URL = 'https://hermes.pyth.network';

@@ -28,20 +28,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import ChainStatus from '@/components/common/ChainStatus';
-import { SOLANA_NETWORK, explorerTxUrl, explorerAddressUrl } from '@/lib/solana-config';
+import { SOLANA_NETWORK, explorerTxUrl, explorerAddressUrl } from '@/lib/solana/solana-config';
 import {
   sendProofHashMemo,
   requestDevnetAirdrop,
   MEMO_PROGRAM_ID,
   type LiveAnchorParams,
-} from '@/lib/memo-anchor';
-import { fireConfetti } from '@/lib/confetti';
+} from '@/lib/solana/memo-anchor';
+import { fireConfetti } from '@/lib/format/confetti';
 import {
   readRecentAnchors,
   pushRecentAnchor,
   clearRecentAnchors,
   type RecentAnchor,
-} from '@/lib/recent-anchors';
+} from '@/lib/mock/recent-anchors';
 import { useSolPrice } from '@/hooks/use-pyth-price';
 
 type Stage = 'idle' | 'airdropping' | 'anchoring' | 'success' | 'error';

@@ -1,0 +1,32 @@
+# CODEOWNERS — automatic review request rules.
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Every PR that touches a path on the left auto-requests review from the
+# owner on the right. Order matters: later patterns win.
+
+# Default owner for everything not matched below.
+*                                           @urosradojicic
+
+# Security-critical surfaces — touch these and the security review is gated.
+/SECURITY.md                                @urosradojicic
+/.github/SECURITY.md                        @urosradojicic
+/supabase/migrations/                       @urosradojicic
+/supabase/functions/                        @urosradojicic
+/blockchain/programs/                       @urosradojicic
+/src/lib/security/                          @urosradojicic
+/src/lib/solana/                            @urosradojicic
+/src/contexts/AuthContext.tsx               @urosradojicic
+/src/components/RoleGuard.tsx               @urosradojicic
+
+# Build / CI / supply chain — same.
+/.github/workflows/                         @urosradojicic
+/.devcontainer/                             @urosradojicic
+/package.json                               @urosradojicic
+/package-lock.json                          @urosradojicic
+/vercel.json                                @urosradojicic
+
+# Documentation surfaces — judge-facing should not regress without sign-off.
+/judges/                                    @urosradojicic
+/README.md                                  @urosradojicic
+/ARCHITECTURE.md                            @urosradojicic
+/docs/adr/                                  @urosradojicic

@@ -2,7 +2,7 @@ import { Buffer } from "buffer";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App.tsx";
-import { initTelemetry } from "./lib/telemetry";
+import { initTelemetry } from "./lib/security/telemetry";
 import "./index.css";
 
 // @solana/spl-token (and several Solana libs) reach for Node's Buffer global,

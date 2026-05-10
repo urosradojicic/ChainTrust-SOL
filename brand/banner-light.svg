@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320" role="img" aria-label="ChainTrust — the trust layer for Solana startup fundraising">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#F4F6FB"/>
+      <stop offset="1" stop-color="#EDE7FF"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9945FF"/>
+      <stop offset="0.5" stop-color="#7B61FF"/>
+      <stop offset="1" stop-color="#14F195"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.85" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#9945FF" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#9945FF" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#DDE3F0" stroke-opacity="0.6" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1280" height="320" fill="url(#bg)"/>
+  <rect width="1280" height="320" fill="url(#grid)"/>
+  <rect width="1280" height="320" fill="url(#glow)"/>
+
+  <!-- Top accent rule -->
+  <rect x="0" y="0" width="1280" height="3" fill="url(#accent)"/>
+
+  <!-- Chain icon (matches logomark proportions) -->
+  <g transform="translate(110, 116)">
+    <rect x="0"   y="0" width="56" height="56" rx="10" fill="none" stroke="#7B61FF" stroke-width="2.5"/>
+    <rect x="76"  y="0" width="56" height="56" rx="10" fill="none" stroke="#7B61FF" stroke-width="2.5"/>
+    <rect x="152" y="0" width="56" height="56" rx="10" fill="#14F195"/>
+    <line x1="56"  y1="28" x2="76"  y2="28" stroke="#7B61FF" stroke-width="3"/>
+    <line x1="132" y1="28" x2="152" y2="28" stroke="#14F195" stroke-width="3"/>
+    <path d="M 167 30 L 177 40 L 195 22" fill="none" stroke="#0B1437" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Wordmark + tagline -->
+  <g transform="translate(360, 92)">
+    <text x="0" y="40"  font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif" font-size="64" font-weight="800" fill="#0B1437" letter-spacing="-1.5">ChainTrust</text>
+    <text x="0" y="86"  font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif" font-size="22" font-weight="500" fill="#4A5478" letter-spacing="0.4">The trust layer for Solana startup fundraising</text>
+    <text x="0" y="138" font-family="ui-monospace, 'JetBrains Mono', SFMono-Regular, monospace" font-size="14" font-weight="500" fill="#7B61FF" letter-spacing="2">CRYPTOGRAPHIC PROOF · NOT SELF-REPORT</text>
+  </g>
+
+  <!-- KPI strip -->
+  <g transform="translate(360, 250)" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif">
+    <g>
+      <text x="0" y="0"  font-size="22" font-weight="700" fill="#0E8C5E">24</text>
+      <text x="0" y="22" font-size="11" fill="#4A5478" letter-spacing="0.5">ON-CHAIN INSTRUCTIONS</text>
+    </g>
+    <g transform="translate(220, 0)">
+      <text x="0" y="0"  font-size="22" font-weight="700" fill="#0E8C5E">3+1</text>
+      <text x="0" y="22" font-size="11" fill="#4A5478" letter-spacing="0.5">SECURITY AUDITS</text>
+    </g>
+    <g transform="translate(440, 0)">
+      <text x="0" y="0"  font-size="22" font-weight="700" fill="#0E8C5E">0</text>
+      <text x="0" y="22" font-size="11" fill="#4A5478" letter-spacing="0.5">CRITICAL CVEs</text>
+    </g>
+    <g transform="translate(620, 0)">
+      <text x="0" y="0"  font-size="22" font-weight="700" fill="#0E8C5E">74/74</text>
+      <text x="0" y="22" font-size="11" fill="#4A5478" letter-spacing="0.5">TESTS PASSING</text>
+    </g>
+  </g>
+
+  <!-- Frontier badge -->
+  <g transform="translate(1080, 130)">
+    <rect x="-8" y="-22" width="170" height="44" rx="22" fill="none" stroke="#9945FF" stroke-width="1.5"/>
+    <text x="77" y="6" text-anchor="middle" font-family="ui-sans-serif, -apple-system, 'Segoe UI', Inter, sans-serif" font-size="13" font-weight="700" fill="#9945FF" letter-spacing="1">COLOSSEUM · FRONTIER</text>
+  </g>
+</svg>

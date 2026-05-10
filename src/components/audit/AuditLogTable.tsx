@@ -1,7 +1,7 @@
 import { ExternalLink, History, CheckCircle2, Loader2 } from 'lucide-react';
 import type { DbAuditEntry } from '@/types/database';
 import { useAuditLog } from '@/hooks/use-startups';
-import { explorerTxUrl } from '@/lib/solana-config';
+import { explorerTxUrl } from '@/lib/solana/solana-config';
 
 interface AuditLogTableProps {
   entries: DbAuditEntry[];
