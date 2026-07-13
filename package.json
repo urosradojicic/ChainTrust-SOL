@@ -26,7 +26,7 @@
     "*.{md,json,yml,yaml,html,css}": []
   },
   "dependencies": {
-    "@coral-xyz/anchor": "^0.30.1",
+    "@coral-xyz/anchor": "^0.32.1",
     "@hookform/resolvers": "^3.10.0",
     "@metaplex-foundation/mpl-bubblegum": "^5.0.2",
     "@metaplex-foundation/umi": "^1.5.1",
@@ -62,7 +62,7 @@
     "@radix-ui/react-tooltip": "^1.2.7",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
-    "@solana/spl-token": "^0.4.14",
+    "@solana/spl-token": "^0.4.15",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-coinbase": "^0.1.23",
     "@solana/wallet-adapter-phantom": "^0.9.29",
